@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <code-assistance-data xmlns="http://www.netbeans.org/ns/make-project-private/1">
+        <code-model-enabled>true</code-model-enabled>
+    </code-assistance-data>
+    <data xmlns="http://www.netbeans.org/ns/make-project-private/1">
+        <activeConfTypeElem>0</activeConfTypeElem>
+        <activeConfIndexElem>0</activeConfIndexElem>
+    </data>
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/home/rubens/ProjeSparc-AbstractCreation/source/main/SearchExperiment.cpp</file>
+            <file>file:/home/rubens/ProjeSparc-AbstractCreation/source/ABPOESimetrico.h</file>
+            <file>file:/home/rubens/ProjeSparc-AbstractCreation/source/main/SearchExperiment.h</file>
+            <file>file:/home/rubens/ProjeSparc-AbstractCreation/source/ABPOELimit.cpp</file>
+            <file>file:/home/rubens/ProjeSparc-AbstractCreation/source/GameState.h</file>
+            <file>file:/home/rubens/ProjeSparc-AbstractCreation/source/GenerationClassForMetricold.h</file>
+            <file>file:/home/rubens/ProjeSparc-AbstractCreation/source/GenerationClass.cpp</file>
+            <file>file:/home/rubens/ProjeSparc-AbstractCreation/source/EnumData.h</file>
+            <file>file:/home/rubens/ProjeSparc-AbstractCreation/source/GenerationClassForMetric.cpp</file>
+            <file>file:/home/rubens/ProjeSparc-AbstractCreation/source/AlphaBetaSearchAbstract.cpp</file>
+            <file>file:/home/rubens/ProjeSparc-AbstractCreation/source/GenerationClassForMetric.h</file>
+        </group>
+    </open-files>
+</project-private>
