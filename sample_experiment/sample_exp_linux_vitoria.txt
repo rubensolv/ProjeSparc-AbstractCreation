@@ -128,7 +128,7 @@ Player 0 GenerationClassForMetric 7
 #State StateDescriptionFile 70 /home/rubens/ProjeSparc/sample_experiment/sample_state_derrota.txt
 #State StateDescriptionFile 15 /home/rubens/ProjeSparc/sample_experiment/sample_state_vitoria6.txt
 #State StateDescriptionFile 15 /home/rubens/ProjeSparc/sample_experiment/sample_state_derrota6.txt
-State StateDescriptionFile 792 /home/rubens/ProjeSparc/sample_experiment/sample_state_vitoria12.txt
+State StateDescriptionFile 2 /home/rubens/ProjeSparc/sample_experiment/sample_state_vitoria12.txt
 #State StateDescriptionFile 210 /home/rubens/ProjeSparc-AbstractCreation/sample_experiment/sample_state_derrota10.txt
 
 # Sample SeparatedState States
@@ -193,4 +193,4 @@ ResultsFile PATH_TO\sample_exp true
 #
 ##################################################
 
-Display false PATH_TO\starcraft_images\
+Display true PATH_TO\starcraft_images\

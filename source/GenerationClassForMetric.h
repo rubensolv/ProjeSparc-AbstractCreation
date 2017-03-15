@@ -9,10 +9,12 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <iostream>
 #include "Player.h"
 #include "AlphaBetaSearchParameters.hpp"
 #include "AlphaBetaSearchAbstract.h"
 #include "PortfolioGreedySearchNoTime.h"
+#include "MetricGAB.h"
 
 class TranspositionTable;
 
@@ -51,6 +53,7 @@ namespace SparCraft {
         void listaOrdenadaForMoves(const IDType & playerID, const Unit & unidade, GameState & state, std::vector<Unit> & unidades, const MoveArray & moves);
         void copiarStateCleanUnit(GameState & origState, GameState & copState);
         void iniciarAlphaBeta();
+        void saveMetrics(MetricGAB & metrica);
     private:
         Unit getEnemyClosestvalid(GameState & state, std::vector<Unit> unidadesInimigas);
         //manipulação do controle de atacantes
@@ -82,7 +85,7 @@ namespace SparCraft {
         //controla a inicialição das abstrações para métrica
         void iniciaAbstracao(GameState& state);
         std::vector<Unit> copiaVector(std::vector<Unit> original);
-        void printMedia(GameState& state);
+        void calculateMedia(GameState& state, MetricGAB& metric);
         void gerarCombinacoes(std::vector<std::string> & combinacoes);
     };
 }

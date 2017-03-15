@@ -20,6 +20,7 @@ GenerationClassForMetric::GenerationClassForMetric(const IDType& playerID, int n
     lastTime = 0;
     numUnits = numUnitsAB;
     _controlNumAbs = 0;
+    std::cout << "Instancia da Classe  GenerationClassForMetric " << std::endl;
 }
 
 void GenerationClassForMetric::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>& moveVec) {
@@ -33,6 +34,12 @@ void GenerationClassForMetric::getMoves(GameState& state, const MoveArray& moves
     moveVec.clear();
     UnitScriptData currentScriptData;
     double ms;
+    MetricGAB newMetric;
+    
+    newMetric.SetNumberUnits(state.numUnits(_playerID));
+    newMetric.SetNumberUnitsEnemy(state.numUnits(state.getEnemy(_playerID)));
+    newMetric.SetRound(state.getTime());
+    
     //state.print();
     if (lastTime > state.getTime()) {
         _unitAbsAB.clear();
@@ -45,13 +52,17 @@ void GenerationClassForMetric::getMoves(GameState& state, const MoveArray& moves
         }
 
 
-        std::cout << "Abstração setada = " << _controlNumAbs << " com as unidades:" << std::endl;
-        for (auto & un : _unitAbsAB) {
-            un.print();
-        }
+        //std::cout << "Abstração setada = " << _controlNumAbs << " com as unidades:" << std::endl;
 
         _controlNumAbs++;
     }
+        newMetric.SetNumberAbstract(_controlNumAbs);
+        for (auto & un : _unitAbsAB) {
+            //un.print();
+            newMetric.addUnitControled(un);
+        }
+    
+    
 
     //estado que será utilizado para simular as variações necessárias do AB
     GameState newState;
@@ -83,10 +94,13 @@ void GenerationClassForMetric::getMoves(GameState& state, const MoveArray& moves
 
         //aplico AB
         doAlphaBeta(newState, moveVec, state);
-
+    
+        newMetric.SetTypeAlgoritm("AB");
+        newMetric.SetLTD2(newState.eval(_playerID, SparCraft::EvaluationMethods::LTD2).val());
         //limpo o state por segurança
         copiarStateCleanUnit(state, newState);
-
+        
+        
     } else {
 
         StateEvalScore PGSScore, ABScore;
@@ -122,16 +136,27 @@ void GenerationClassForMetric::getMoves(GameState& state, const MoveArray& moves
             if (ABScore.val() > PGSScore.val()) {
                 moveVec.clear();
                 moveVec.assign(alphaBeta->getResults().bestMoves.begin(), alphaBeta->getResults().bestMoves.end());
+                
+                newMetric.SetTypeAlgoritm("AB");
+                newMetric.SetLTD2(PGSScore.val());
+            }else{
+                newMetric.SetTypeAlgoritm("PGS");
+                newMetric.SetLTD2(PGSScore.val());
             }
 
 
+        }else{
+            newMetric.SetTypeAlgoritm("PGS");
+            newMetric.SetLTD2(PGSScore.val());
         }
     }
         //Lista as informações básicas para as Métricas
         if (_unitAbsAB.size() > 0) {
-            this->printMedia(state);
+            this->calculateMedia(state, newMetric);
+            newMetric.SetTimeExecution(t.getElapsedTimeInMilliSec());
+            saveMetrics(newMetric);
         }
-
+    
 
         /*
     std::cout << "************* INICIO GenerationClass  **************" << std::endl;
@@ -682,7 +707,7 @@ std::vector<Unit> GenerationClassForMetric::copiaVector(std::vector<Unit> origin
     return novo;
 }
 
-void GenerationClassForMetric::printMedia(GameState & state) {
+void GenerationClassForMetric::calculateMedia(GameState & state, MetricGAB& metric) {
     PositionType posicaoMedia(0);
     int qtd = 0;
     std::set<Unit, lex_met> newUnits;
@@ -710,13 +735,15 @@ void GenerationClassForMetric::printMedia(GameState & state) {
     }
 
     double media = ((double) posicaoMedia) / ((double) qtd);
-    std::cout << "Distancia Total = " << posicaoMedia << " qtd= " << qtd << std::endl;
+    //std::cout << "Distancia Total = " << posicaoMedia << " qtd= " << qtd << std::endl;
     if (qtd == 0) {
-        std::cout << "Distancia Media = " << 0 << std::endl;
+        //std::cout << "Distancia Media = " << 0 << std::endl;
+        metric.SetAverageDistance(0);
     } else {
-        std::cout << "Distancia Media = " << media << std::endl;
+        //std::cout << "Distancia Media = " << media << std::endl;
+        metric.SetAverageDistance(media);
     }
-    std::cout << "-------------- FIM DISTANCIAS ---------------------- " << std::endl;
+    //std::cout << "-------------- FIM DISTANCIAS ---------------------- " << std::endl;
 }
 
 void GenerationClassForMetric::gerarCombinacoes(std::vector<std::string>& combinacoes) {
@@ -777,5 +804,33 @@ void GenerationClassForMetric::gerarCombinacoes(std::vector<std::string>& combin
 
 }
 
-
+void GenerationClassForMetric::saveMetrics(MetricGAB & metrica) {
+    std::ofstream arquivo;
+    
+    std::string nomeArq = "estado_"+ std::to_string(metrica.GetNumberAbstract());
+    
+    arquivo.open(nomeArq, std::ios_base::app | std::ios_base::out);
+    
+    if (!arquivo.is_open())
+    {
+        System::FatalError("Problem Opening Output File: Arquivo de metrica");
+    }
+    
+    arquivo<< " Round = " << metrica.GetRound()<< std::endl;
+    arquivo<< " Número de Unidades = " << metrica.GetNumberUnits() << std::endl;
+    arquivo<< " Número de Unidades Inimigas = " << metrica.GetNumberUnitsEnemy() << std::endl;
+    arquivo<< " LTD2 = " << metrica.GetLTD2() << std::endl;
+    arquivo<< " Tempo de Execução = " << metrica.GetTimeExecution()<< std::endl;
+    arquivo<< " Tipo de Algoritmo Utilizado = " << metrica.GetTypeAlgoritm() << std::endl;
+    arquivo<< " Distancia Media das Unidades na Abstração = " << metrica.GetAverageDistance() << std::endl;
+    arquivo<< " Número da Abstração = " << metrica.GetNumberAbstract() << std::endl;
+    arquivo<< " Listagem de Unidades Controladas:" << std::endl;    
+    
+    for(auto & un : metrica.GetUnitControlled()){
+        arquivo <<"   " << (int) un.ID()<< " " << un.type().getName() << " " << un.currentHP() << " " << "("<< un.x() << "," << un.y() << ")" << std::endl;
+    }
+    
+    arquivo<<std::endl;
+    arquivo.close();
+}
 
