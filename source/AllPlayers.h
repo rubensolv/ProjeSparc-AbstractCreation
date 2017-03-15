@@ -34,6 +34,8 @@
 #include "ABPOELimitWithRepeatAction.h"
 #include "GenerationClassWithClosest.h"
 #include "GenerationClassForMetric.h"
+#include "GenerationClassForMetricClosest.h"
+#include "GenerationClassForDeep.h"
 #include "GenerationClassForMonit.h"
 #include "Player_PGSAA.h"
 #include "AbstractScript.h"

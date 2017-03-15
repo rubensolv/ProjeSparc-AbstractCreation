@@ -82,7 +82,9 @@ Player 1 PortfolioGreedySearch 40 NOKDPS 1 0
 #Player 0 ABPGSSimetrico 7
 #Player 0 ABPOESimetrico 7
 #Player 0 ABPOELimit 7
-Player 0 GenerationClassForMetric 7
+#Player 0 GenerationClassForMetric 7
+#Player 0 GenerationClassForMetricClosest 7
+Player 0 GenerationClassForDeep 7
 #Player 1 GenerationClassForMonit
 #Player 0 ABPOEFixo
 #Player 0 ABPOELimit 7
@@ -124,12 +126,12 @@ Player 0 GenerationClassForMetric 7
 
 # Sample StateDescriptionFile States
 #State StateDescriptionFile 10 PATH_TO\sample_state.txt
-State StateDescriptionFile 70 /home/rubens/ProjeSparc/sample_experiment/sample_state_teste.txt
+#State StateDescriptionFile 70 /home/rubens/ProjeSparc/sample_experiment/sample_state_teste.txt
 #State StateDescriptionFile 70 /home/rubens/ProjeSparc/sample_experiment/sample_state_vitoria.txt
 #State StateDescriptionFile 70 /home/rubens/ProjeSparc/sample_experiment/sample_state_derrota.txt
 
 # Sample SeparatedState States
-#State SeparatedState 10 128 128 400 360 840 360 Protoss_Zealot 16
+State SeparatedState 10 128 128 400 360 840 360 Protoss_Zealot 16
 #State SeparatedState 792 128 128 400 360 840 360 Protoss_Dragoon 6 Protoss_Zealot 6
 #State SeparatedState 70 128 128 400 360 840 360 Protoss_Dragoon 4 Terran_Marine 4
 #State SeparatedState 10 128 128 400 360 840 360 Protoss_Dragoon 5 Protoss_Zealot 5

@@ -105,7 +105,7 @@ namespace SparCraft {
             IRStratifiedPolicySearch, MoveForward, MoveBackward, GenerationClass, ABPOEFixo, ABPOELimit, ABPGSSand,
             ABPGSPlus, ABPGSwithRepeatAction, ABPOELimitWithRepeatAction, GenerationClassWithClosest, 
             GenerationClassForMetric, GenerationClassForMonit, Player_PGSAA, AbstractScript, ABPGSSimetrico, 
-            ABPOESimetrico, None, Size
+            ABPOESimetrico, GenerationClassForMetricClosest, GenerationClassForDeep, None, Size
         };
 
         static void init() {
@@ -141,6 +141,8 @@ namespace SparCraft {
             setData(ABPOELimitWithRepeatAction, "ABPOELimitWithRepeatAction");
             setData(GenerationClassWithClosest, "GenerationClassWithClosest");
             setData(GenerationClassForMetric, "GenerationClassForMetric");
+            setData(GenerationClassForMetricClosest, "GenerationClassForMetricClosest");
+            setData(GenerationClassForDeep, "GenerationClassForDeep");
             setData(GenerationClassForMonit, "GenerationClassForMonit");
             setData(Player_PGSAA, "Player_PGSAA");
             setData(AbstractScript, "AbstractScript");

@@ -1,68 +1,49 @@
 
-#include "GenerationClassForMetric.h"
+#include "GenerationClassForMetricClosest.h"
 
 using namespace SparCraft;
 
-GenerationClassForMetric::GenerationClassForMetric(const IDType& playerID) {
+GenerationClassForMetricClosest::GenerationClassForMetricClosest(const IDType& playerID) {
     _playerID = playerID;
     iniciarAlphaBeta();
     pgs = new PortfolioGreedySearchNoTime(_playerID, PlayerModels::NOKDPS, 1, 0, 40);
     lastTime = 0;
     numUnits = 7;
-    _controlNumAbs = 0;
-    std::cout << "Instancia da Classe  GenerationClassForMetric " << std::endl;
+    controlPartidas = 1;
+    std::cout << "Instancia da Classe  GenerationClassForMetricClosest " << std::endl;
 }
 
-GenerationClassForMetric::GenerationClassForMetric(const IDType& playerID, int numUnitsAB) {
+GenerationClassForMetricClosest::GenerationClassForMetricClosest(const IDType& playerID, int numUnitsAB) {
     _playerID = playerID;
     iniciarAlphaBeta();
     pgs = new PortfolioGreedySearchNoTime(_playerID, PlayerModels::NOKDPS, 1, 0, 40);
     lastTime = 0;
     numUnits = numUnitsAB;
-    _controlNumAbs = 0;
-    std::cout << "Instancia da Classe  GenerationClassForMetric " << std::endl;
+    controlPartidas = 1;
+    std::cout << "Instancia da Classe  GenerationClassForMetricClosest " << std::endl;
 }
 
-void GenerationClassForMetric::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>& moveVec) {
+void GenerationClassForMetricClosest::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>& moveVec) {
     //controla a inicialização das abstrações
-    if (_vecAbstracao.size() == 0) {
-        iniciaAbstracao(state);
-    }
-   
+
     Timer t;
     t.start();
     moveVec.clear();
     UnitScriptData currentScriptData;
     double ms;
     MetricGAB newMetric;
-    
+
     newMetric.SetNumberUnits(state.numUnits(_playerID));
     newMetric.SetNumberUnitsEnemy(state.numUnits(state.getEnemy(_playerID)));
     newMetric.SetRound(state.getTime());
-    
+
     //state.print();
     if (lastTime > state.getTime()) {
         _unitAbsAB.clear();
+        controlPartidas++;
     }
     lastTime = state.getTime();
-
-    if (_unitAbsAB.size() == 0) {
-        for (auto & un : _vecAbstracao[_controlNumAbs]) {
-            _unitAbsAB.insert(state.getUnitByID(_playerID, un.ID()));
-        }
-
-
-        //std::cout << "Abstração setada = " << _controlNumAbs << " com as unidades:" << std::endl;
-
-        _controlNumAbs++;
-    }
-        newMetric.SetNumberAbstract(_controlNumAbs);
-        for (auto & un : _unitAbsAB) {
-            //un.print();
-            newMetric.addUnitControled(un);
-        }
-    
-    
+    newMetric.SetNumberAbstract(controlPartidas);
 
     //estado que será utilizado para simular as variações necessárias do AB
     GameState newState;
@@ -94,13 +75,13 @@ void GenerationClassForMetric::getMoves(GameState& state, const MoveArray& moves
 
         //aplico AB
         doAlphaBeta(newState, moveVec, state);
-    
+
         newMetric.SetTypeAlgoritm("AB");
         newMetric.SetLTD2(newState.eval(_playerID, SparCraft::EvaluationMethods::LTD2).val());
         //limpo o state por segurança
         copiarStateCleanUnit(state, newState);
-        
-        
+
+
     } else {
 
         StateEvalScore PGSScore, ABScore;
@@ -112,6 +93,10 @@ void GenerationClassForMetric::getMoves(GameState& state, const MoveArray& moves
         //std::cout << " Tempo total do PGS "<< ms << std::endl;
 
         controlUnitsForAB(state, moves);
+        for (auto & un : _unitAbsAB) {
+            //un.print();
+            newMetric.addUnitControled(un);
+        }
 
         //std::vector<Action> moveVecPgs, movecAB;
 
@@ -136,58 +121,58 @@ void GenerationClassForMetric::getMoves(GameState& state, const MoveArray& moves
             if (ABScore.val() > PGSScore.val()) {
                 moveVec.clear();
                 moveVec.assign(alphaBeta->getResults().bestMoves.begin(), alphaBeta->getResults().bestMoves.end());
-                
+
                 newMetric.SetTypeAlgoritm("AB");
                 newMetric.SetLTD2(PGSScore.val());
-            }else{
+            } else {
                 newMetric.SetTypeAlgoritm("PGS");
                 newMetric.SetLTD2(PGSScore.val());
             }
 
 
-        }else{
+        } else {
             newMetric.SetTypeAlgoritm("PGS");
             newMetric.SetLTD2(PGSScore.val());
         }
     }
-        //Lista as informações básicas para as Métricas
-        if (_unitAbsAB.size() > 0) {
-            this->calculateMedia(state, newMetric);
-            newMetric.SetTimeExecution(t.getElapsedTimeInMilliSec());
-            saveMetrics(newMetric);
-        }
-    
-
-        /*
-    std::cout << "************* INICIO GenerationClass  **************" << std::endl;
-    for (auto & ac : moveVec) {
-        std::cout << ac.debugString() << std::endl;
+    //Lista as informações básicas para as Métricas
+    if (_unitAbsAB.size() > 0) {
+        this->calculateMedia(state, newMetric);
+        newMetric.SetTimeExecution(t.getElapsedTimeInMilliSec());
+        saveMetrics(newMetric);
     }
-    std::cout << "************* FIM GenerationClass  **************" << std::endl;
-    std::cout << "##################################################" << std::endl;
-         */
-        ms = t.getElapsedTimeInMilliSec();
-        //printf("\nGenerationClass   Execução completa %lf ms\n", ms);
 
 
-        /*
-    MoveArray movesPGS;
-    state.generateMoves(movesPGS, _playerID);
-    std::vector<Action> moveVecPgs;
-    GameState copy(state);
-    currentScriptData.calculateMoves(_playerID, movesPGS, copy, moveVecPgs);
-    std::cout<<"************* INICIO GenerationClass PGS **************"<<std::endl;
-    for(auto & ac : moveVecPgs){
-        std::cout<<ac.debugString()<<std::endl;
-    }
-    std::cout<<"************* FIM GenerationClass PGS **************"<<std::endl;
-    std::cout<<"##################################################"<<std::endl;
-         */
+    /*
+std::cout << "************* INICIO GenerationClass  **************" << std::endl;
+for (auto & ac : moveVec) {
+    std::cout << ac.debugString() << std::endl;
+}
+std::cout << "************* FIM GenerationClass  **************" << std::endl;
+std::cout << "##################################################" << std::endl;
+     */
+    ms = t.getElapsedTimeInMilliSec();
+    //printf("\nGenerationClass   Execução completa %lf ms\n", ms);
 
-    
+
+    /*
+MoveArray movesPGS;
+state.generateMoves(movesPGS, _playerID);
+std::vector<Action> moveVecPgs;
+GameState copy(state);
+currentScriptData.calculateMoves(_playerID, movesPGS, copy, moveVecPgs);
+std::cout<<"************* INICIO GenerationClass PGS **************"<<std::endl;
+for(auto & ac : moveVecPgs){
+    std::cout<<ac.debugString()<<std::endl;
+}
+std::cout<<"************* FIM GenerationClass PGS **************"<<std::endl;
+std::cout<<"##################################################"<<std::endl;
+     */
+
+
 }
 
-bool GenerationClassForMetric::unitsInMoves(GameState& state, const MoveArray & moves) {
+bool GenerationClassForMetricClosest::unitsInMoves(GameState& state, const MoveArray & moves) {
     for (size_t unitIndex(0); unitIndex < moves.numUnits(); ++unitIndex) {
         const Unit & unit = state.getUnit(_playerID, unitIndex);
         for (auto & un : _unitAbsAB) {
@@ -203,15 +188,26 @@ bool GenerationClassForMetric::unitsInMoves(GameState& state, const MoveArray & 
 //separo as unidades que serão utilizadas para compor a abstração que será utilizada no AB
 //e faço controle e manutenção destas
 
-void GenerationClassForMetric::controlUnitsForAB(GameState & state, const MoveArray & moves) {
+void GenerationClassForMetricClosest::controlUnitsForAB(GameState & state, const MoveArray & moves) {
+    Unit ourUnit;
     //verifico se as unidades não foram mortas
-    std::set<Unit, lex_met> tempUnitAbsAB;
+    if (_unitAbsAB.size() == 0) {
+        ourUnit = state.getUnit(_playerID, (rand() % state.numUnits(_playerID)));
+    }
+
+    std::set<Unit, lex_metc> tempUnitAbsAB;
     for (auto & un : _unitAbsAB) {
         if (state.unitExist(_playerID, un.ID())) {
             tempUnitAbsAB.insert(un);
+            if (&ourUnit == nullptr) {
+                ourUnit = un;
+            }
         }
     }
     _unitAbsAB = tempUnitAbsAB;
+
+    //defino a unidade Pivo para seleção dos mais próximo
+
 
     if (state.numUnits(_playerID) <= numUnits) {
         _unitAbsAB.clear();
@@ -225,17 +221,24 @@ void GenerationClassForMetric::controlUnitsForAB(GameState & state, const MoveAr
                 and _unitAbsAB.size() == 0) {
             _unitAbsAB.insert(state.getUnit(_playerID, 0));
         } else {
-            int control = 0;
-            while (_unitAbsAB.size() < numUnits and control < 20) {
-                _unitAbsAB.insert(state.getUnit(_playerID, rand() % state.numUnits(_playerID)));
-                control++;
+
+            std::vector<Unit> unidadesAliadas;
+            listaOrdenadaForMoves(_playerID, ourUnit, state, unidadesAliadas, moves);
+
+            for (auto & unt : unidadesAliadas) {
+                if (_unitAbsAB.size() >= numUnits or _unitAbsAB.size() == state.numUnits(_playerID)) {
+                    break;
+                }
+                if(unt.ID() != 255){
+                    _unitAbsAB.insert(unt);
+                }
+
             }
         }
     }
-
 }
 
-void GenerationClassForMetric::analisarAbstractForm(GameState newState, std::vector<Unit> unidadesInimigas) {
+void GenerationClassForMetricClosest::analisarAbstractForm(GameState newState, std::vector<Unit> unidadesInimigas) {
     //obtenho a unidade inimiga contida na abstração
     Unit & enemy = newState.getUnit(newState.getEnemy(_playerID), 0);
 
@@ -254,7 +257,7 @@ void GenerationClassForMetric::analisarAbstractForm(GameState newState, std::vec
  *  Função que consiste do processo de analisar se exitem outras unidades inimigas que podem
  * ser atacadas pelas unidades contidas na abstração e adicionar estas unidades inimigas ao estado.
  */
-void GenerationClassForMetric::addMoreEnemy(GameState& newState, std::vector<Unit>& unInimigas) {
+void GenerationClassForMetricClosest::addMoreEnemy(GameState& newState, std::vector<Unit>& unInimigas) {
     if (unInimigas.size() > 0) {
         //obter unidades aliadas da abstração
         std::vector<Unit> unAl;
@@ -287,7 +290,7 @@ void GenerationClassForMetric::addMoreEnemy(GameState& newState, std::vector<Uni
  *  & unInimigas    - Vetor com todas as unidades inimigas
  *  & state         - Estado real do jogo
  */
-bool GenerationClassForMetric::applyClosestInicialization(std::vector<Unit> & unAliadas, std::vector<Unit> & unInimigas, GameState & state) {
+bool GenerationClassForMetricClosest::applyClosestInicialization(std::vector<Unit> & unAliadas, std::vector<Unit> & unInimigas, GameState & state) {
     if (unAliadas.size() != state.numUnits(_playerID)) {
         return false;
     }
@@ -306,7 +309,7 @@ bool GenerationClassForMetric::applyClosestInicialization(std::vector<Unit> & un
 //função que analisa os movimentos sugeridos pelo AB e busca encontrar ataques perdidos
 //funciona apenas com 1 unidade inimiga
 
-void GenerationClassForMetric::removeLoseAttacks(GameState& newState, std::vector<Action>& moveVec, GameState & state) {
+void GenerationClassForMetricClosest::removeLoseAttacks(GameState& newState, std::vector<Action>& moveVec, GameState & state) {
     _UnReut.clear();
     Unit unAval;
 
@@ -348,7 +351,7 @@ void GenerationClassForMetric::removeLoseAttacks(GameState& newState, std::vecto
 
 //função utilizada para remoção das ações de dentro do vetor moveVec
 
-void GenerationClassForMetric::removeActionInVector(Action& action, std::vector<Action>& moveVec) {
+void GenerationClassForMetricClosest::removeActionInVector(Action& action, std::vector<Action>& moveVec) {
     std::vector<Action> newMoveVec;
     for (auto & mov : moveVec) {
         if (!(mov == action)) {
@@ -364,7 +367,7 @@ void GenerationClassForMetric::removeActionInVector(Action& action, std::vector<
 //Comportamento inicial: Será criada a média da distância Euclidiana de todas as unidades aliadas em relação
 //às unidades inimigas. Será escolhida a unidade inimiga que tiver a menor distância.
 
-Unit & GenerationClassForMetric::getCalculateEnemy(GameState& state, std::vector<Unit> unidadesInimigas) {
+Unit & GenerationClassForMetricClosest::getCalculateEnemy(GameState& state, std::vector<Unit> unidadesInimigas) {
     std::map<Unit, PositionType> unDistance;
     std::map<Unit, PositionType>::iterator myIt;
     PositionType sum;
@@ -419,7 +422,7 @@ Unit & GenerationClassForMetric::getCalculateEnemy(GameState& state, std::vector
 //função para rodar a abstração que será testada.
 //entrada: Novo GameState com as unidades testadas. Vetor de ações que será retornado. GameState original.
 
-void GenerationClassForMetric::doAlphaBeta(GameState & newState, std::vector<Action> & moveVec, GameState & state) {
+void GenerationClassForMetricClosest::doAlphaBeta(GameState & newState, std::vector<Action> & moveVec, GameState & state) {
     //executa a busca
     alphaBeta->doSearch(newState);
     for (auto & mov : alphaBeta->getResults().bestMoves) {
@@ -446,7 +449,7 @@ void GenerationClassForMetric::doAlphaBeta(GameState & newState, std::vector<Act
 
 //adicionar uma unidade no vetor de controle de ataque de unidades.
 
-void GenerationClassForMetric::addAttack(const Unit& unitEnemy, const Unit & unitAttack) {
+void GenerationClassForMetricClosest::addAttack(const Unit& unitEnemy, const Unit & unitAttack) {
     if (_unAttack.find(unitEnemy) == _unAttack.end()) {
         //não foi encontrado. Insere no map
         std::vector<Unit> unitsAttack;
@@ -460,7 +463,7 @@ void GenerationClassForMetric::addAttack(const Unit& unitEnemy, const Unit & uni
 
 //utilizada para debug e verificação do map de controle de ataques.
 
-void GenerationClassForMetric::printMapAttack() {
+void GenerationClassForMetricClosest::printMapAttack() {
     std::cout << " ********************************** " << std::endl;
     std::cout << " Relatório de unidades atacadas " << std::endl;
     for (std::map<Unit, std::vector<Unit> >::const_iterator it = _unAttack.begin(); it != _unAttack.end(); ++it) {
@@ -477,7 +480,7 @@ void GenerationClassForMetric::printMapAttack() {
 
 //Verifica qual a unidade válida para inclusão 
 
-Unit GenerationClassForMetric::getEnemyClosestvalid(GameState& state, std::vector<Unit> unidadesInimigas) {
+Unit GenerationClassForMetricClosest::getEnemyClosestvalid(GameState& state, std::vector<Unit> unidadesInimigas) {
     for (auto & un : unidadesInimigas) {
         if (!state.unitExist(un.player(), un.ID())) {
             if (unitNeedMoreAttackForKilled(un)) {
@@ -492,7 +495,7 @@ Unit GenerationClassForMetric::getEnemyClosestvalid(GameState& state, std::vecto
  * passada como referência (inclusive a unidade passada como ponto de referencia)
  * levando em consideração as unidades que tem movimento válido
  */
-void GenerationClassForMetric::listaOrdenadaForMoves(const IDType& playerID, const Unit& unidade, GameState& state, std::vector<Unit>& unidades, const MoveArray & moves) {
+void GenerationClassForMetricClosest::listaOrdenadaForMoves(const IDType& playerID, const Unit& unidade, GameState& state, std::vector<Unit>& unidades, const MoveArray & moves) {
     unidades.clear();
     //declaração
     Unit t;
@@ -514,7 +517,7 @@ void GenerationClassForMetric::listaOrdenadaForMoves(const IDType& playerID, con
     sortUnit(unidades, unidade, state);
 }
 
-void GenerationClassForMetric::sortUnit(std::vector<Unit>& unidades, const Unit& base, GameState & state) {
+void GenerationClassForMetricClosest::sortUnit(std::vector<Unit>& unidades, const Unit& base, GameState & state) {
     for (int i = 1; i < unidades.size(); i++) {
         Unit key = unidades[i];
         int j = i - 1;
@@ -533,7 +536,7 @@ void GenerationClassForMetric::sortUnit(std::vector<Unit>& unidades, const Unit&
  * Retorna todas as unidades de um player ordenados pela distância da unidade
  * passada como referência (inclusive a unidade passada como ponto de referencia)
  */
-void GenerationClassForMetric::listaOrdenada(const IDType& playerID, const Unit & unidade, GameState& state, std::vector<Unit> & unidades) {
+void GenerationClassForMetricClosest::listaOrdenada(const IDType& playerID, const Unit & unidade, GameState& state, std::vector<Unit> & unidades) {
     unidades.clear();
     //declaração
     Unit t;
@@ -561,7 +564,7 @@ void GenerationClassForMetric::listaOrdenada(const IDType& playerID, const Unit 
  * com as unidades zeradas, mantando assim as outras informações 
  * necessárias.
  */
-void GenerationClassForMetric::copiarStateCleanUnit(GameState& origState, GameState & copState) {
+void GenerationClassForMetricClosest::copiarStateCleanUnit(GameState& origState, GameState & copState) {
     copState = origState;
     copState.cleanUpStateUnits();
 }
@@ -569,7 +572,7 @@ void GenerationClassForMetric::copiarStateCleanUnit(GameState& origState, GameSt
 //inicializa o player alpha beta com as configurações necessárias para executar
 //os testes relacionados à classe
 
-void GenerationClassForMetric::iniciarAlphaBeta() {
+void GenerationClassForMetricClosest::iniciarAlphaBeta() {
 
     // convert them to the proper enum types
     int moveOrderingID = 1;
@@ -622,13 +625,13 @@ void GenerationClassForMetric::iniciarAlphaBeta() {
 
 //função para cálculo da distância baseada na fórmula de cálculo da Distância Manhantan
 
-const PositionType GenerationClassForMetric::getDistManhantan(const Position& pInicial, const Position & pFinal) {
+const PositionType GenerationClassForMetricClosest::getDistManhantan(const Position& pInicial, const Position & pFinal) {
     return abs(pInicial.x() - pFinal.x()) + abs(pInicial.y() - pFinal.y());
 }
 
 //função para cálculo da distância baseada na fórmua de cálculo utilizando a Distância Euclidiana
 
-const PositionType GenerationClassForMetric::getDistEuclidiana(const Position& pInicial, const Position & pFinal) {
+const PositionType GenerationClassForMetricClosest::getDistEuclidiana(const Position& pInicial, const Position & pFinal) {
     return sqrt(((pInicial.x() - pFinal.x())*(pInicial.x() - pFinal.x()) +
             (pInicial.y() - pFinal.y())*(pInicial.y() - pFinal.y())
             ));
@@ -637,7 +640,7 @@ const PositionType GenerationClassForMetric::getDistEuclidiana(const Position& p
 //função utilizada para validar se existe a necessidade de mais um ataque para
 //uma unidade inimiga ou se ela já irá morrer com os ataques existentes.
 
-const bool GenerationClassForMetric::unitNeedMoreAttackForKilled(Unit un) {
+const bool GenerationClassForMetricClosest::unitNeedMoreAttackForKilled(Unit un) {
     if (_unAttack.find(un) == _unAttack.end()) {
         return true;
     }
@@ -654,7 +657,7 @@ const bool GenerationClassForMetric::unitNeedMoreAttackForKilled(Unit un) {
 
 //utilizada para remover um ataque da lista de atacantes de um determinado inimigo
 
-void GenerationClassForMetric::removeAttackInUnAttack(Unit enemy, Unit Attacker) {
+void GenerationClassForMetricClosest::removeAttackInUnAttack(Unit enemy, Unit Attacker) {
     std::vector<Unit> cleanUnit;
     for (auto & unAttack : _unAttack.find(enemy)->second) {
         if (!(unAttack.ID() == Attacker.ID())) {
@@ -664,42 +667,7 @@ void GenerationClassForMetric::removeAttackInUnAttack(Unit enemy, Unit Attacker)
     _unAttack.find(enemy)->second = cleanUnit;
 }
 
-void GenerationClassForMetric::iniciaAbstracao(GameState & state) {
-    std::vector<std::string> combinacoes;
-
-    gerarCombinacoes(combinacoes);
-
-    std::vector<Unit> unTemp;
-    for (auto & com : combinacoes) {
-        for (int i = 0; i < com.length(); i++) {
-            char nova = com[i];
-
-            if(nova == '*'){
-                unTemp.push_back(state.getUnit(_playerID, 10));
-            }else if(nova == '&'){
-                unTemp.push_back(state.getUnit(_playerID, 11));
-            }else{
-                int x = (int) nova - 48;
-                unTemp.push_back(state.getUnit(_playerID, x));
-            }
-        }
-
-        _vecAbstracao.push_back(copiaVector(unTemp));
-        unTemp.clear();
-    }
-    /*
-    for(auto & units : _vecAbstracao){
-        for(auto & un : units){
-            un.print();
-        }
-        std::cout<<"-------"<<std::endl;
-    }
-    */
-
-
-}
-
-std::vector<Unit> GenerationClassForMetric::copiaVector(std::vector<Unit> original) {
+std::vector<Unit> GenerationClassForMetricClosest::copiaVector(std::vector<Unit> original) {
     std::vector<Unit> novo;
     for (auto & un : original) {
         novo.push_back(un);
@@ -707,10 +675,10 @@ std::vector<Unit> GenerationClassForMetric::copiaVector(std::vector<Unit> origin
     return novo;
 }
 
-void GenerationClassForMetric::calculateMedia(GameState & state, MetricGAB& metric) {
+void GenerationClassForMetricClosest::calculateMedia(GameState & state, MetricGAB& metric) {
     PositionType posicaoMedia(0);
     int qtd = 0;
-    std::set<Unit, lex_met> newUnits;
+    std::set<Unit, lex_metc> newUnits;
     for (auto & un : _unitAbsAB) {
         if (state.unitExist(_playerID, un.ID())) {
             newUnits.insert(state.getUnitByID(_playerID, un.ID()));
@@ -746,91 +714,32 @@ void GenerationClassForMetric::calculateMedia(GameState & state, MetricGAB& metr
     //std::cout << "-------------- FIM DISTANCIAS ---------------------- " << std::endl;
 }
 
-void GenerationClassForMetric::gerarCombinacoes(std::vector<std::string>& combinacoes) {
-    unsigned MAX, MASK, NUM;
-    int i, j, r, k;
-    /* Armazena a string de entrada. */
-    char input[31];
-    /* Armazena cada combinação. */
-    char str[31];
-
-    strcpy(input, "0123456789*&");
-    r = 7;
-
-
-    MAX = ~(1 << strlen(input));
-
-    /* Primeiro número é o 1. */
-    NUM = 1;
-
-    /* Quando o número alcançar MAX, o loop
-     * será encerrado.
-     */
-    while (MAX & NUM) {
-        /* Conta os bits 1's. */
-        MASK = 1;
-        k = 0;
-        while (MAX & MASK) {
-            if (NUM & MASK) k++;
-            MASK = MASK << 1;
-        }
-
-        /* Monta o resultado somente se
-         * a quantidade de bits k é igual
-         * a r. */
-        if (k == r) {
-            MASK = 1;
-            i = j = 0;
-
-            while (MAX & MASK) {
-                /* Verdadeiro se NUM tem um bit 1
-                 * na posição indicada por MASK. */
-                if (NUM & MASK) {
-                    /* Gera a combinação em str */
-                    str[i] = input[j];
-                    i++;
-                }
-                j++;
-                /* Desloca a máscara */
-                MASK = MASK << 1;
-            }
-
-            str[i] = 0;
-            combinacoes.push_back(str);
-        }
-
-        NUM++;
-    }
-
-}
-
-void GenerationClassForMetric::saveMetrics(MetricGAB & metrica) {
+void GenerationClassForMetricClosest::saveMetrics(MetricGAB & metrica) {
     std::ofstream arquivo;
-    
-    std::string nomeArq = "estado_"+ std::to_string(metrica.GetNumberAbstract());
-    
+
+    std::string nomeArq = "estado_" + std::to_string(metrica.GetNumberAbstract());
+
     arquivo.open(nomeArq, std::ios_base::app | std::ios_base::out);
-    
-    if (!arquivo.is_open())
-    {
+
+    if (!arquivo.is_open()) {
         System::FatalError("Problem Opening Output File: Arquivo de metrica");
     }
-    
-    arquivo<< " Round = " << metrica.GetRound()<< std::endl;
-    arquivo<< " Número de Unidades = " << metrica.GetNumberUnits() << std::endl;
-    arquivo<< " Número de Unidades Inimigas = " << metrica.GetNumberUnitsEnemy() << std::endl;
-    arquivo<< " LTD2 = " << metrica.GetLTD2() << std::endl;
-    arquivo<< " Tempo de Execução = " << metrica.GetTimeExecution()<< std::endl;
-    arquivo<< " Tipo de Algoritmo Utilizado = " << metrica.GetTypeAlgoritm() << std::endl;
-    arquivo<< " Distancia Media das Unidades na Abstração = " << metrica.GetAverageDistance() << std::endl;
-    arquivo<< " Número da Abstração = " << metrica.GetNumberAbstract() << std::endl;
-    arquivo<< " Listagem de Unidades Controladas:" << std::endl;    
-    
-    for(auto & un : metrica.GetUnitControlled()){
-        arquivo <<"   " << (int) un.ID()<< " " << un.type().getName() << " " << un.currentHP() << " " << "("<< un.x() << "," << un.y() << ")" << std::endl;
+
+    arquivo << " Round = " << metrica.GetRound() << std::endl;
+    arquivo << " Número de Unidades = " << metrica.GetNumberUnits() << std::endl;
+    arquivo << " Número de Unidades Inimigas = " << metrica.GetNumberUnitsEnemy() << std::endl;
+    arquivo << " LTD2 = " << metrica.GetLTD2() << std::endl;
+    arquivo << " Tempo de Execução = " << metrica.GetTimeExecution() << std::endl;
+    arquivo << " Tipo de Algoritmo Utilizado = " << metrica.GetTypeAlgoritm() << std::endl;
+    arquivo << " Distancia Media das Unidades na Abstração = " << metrica.GetAverageDistance() << std::endl;
+    arquivo << " Número da Abstração = " << metrica.GetNumberAbstract() << std::endl;
+    arquivo << " Listagem de Unidades Controladas:" << std::endl;
+
+    for (auto & un : metrica.GetUnitControlled()) {
+        arquivo << "   " << (int) un.ID() << " " << un.type().getName() << " " << un.currentHP() << " " << "(" << un.x() << "," << un.y() << ")" << std::endl;
     }
-    
-    arquivo<<std::endl;
+
+    arquivo << std::endl;
     arquivo.close();
 }
 
