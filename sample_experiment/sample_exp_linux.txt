@@ -81,10 +81,15 @@ Player 1 PortfolioGreedySearch 40 NOKDPS 1 0
 #Player 0 GenerationClass 7
 #Player 0 ABPGSSimetrico 7
 #Player 0 ABPOESimetrico 7
+#Player 0 ABPOESimetricoDeep 7
+Player 0 ABPOELimitDeep 7
+#Player 0 ABPGSSimetricoDeep 7
+#Player 0 PortfolioGreedySearchDeep 0 NOKDPS 1 0
+#Player 0 PortfolioOnlineEvolutionDeep 0 NOKDPS 1 0
 #Player 0 ABPOELimit 7
 #Player 0 GenerationClassForMetric 7
 #Player 0 GenerationClassForMetricClosest 7
-Player 0 GenerationClassForDeep 7
+#Player 0 GenerationClassForDeep 7
 #Player 1 GenerationClassForMonit
 #Player 0 ABPOEFixo
 #Player 0 ABPOELimit 7

@@ -138,7 +138,7 @@ void GenerationClassForMetric::getMoves(GameState& state, const MoveArray& moves
                 moveVec.assign(alphaBeta->getResults().bestMoves.begin(), alphaBeta->getResults().bestMoves.end());
                 
                 newMetric.SetTypeAlgoritm("AB");
-                newMetric.SetLTD2(PGSScore.val());
+                newMetric.SetLTD2(ABScore.val());
             }else{
                 newMetric.SetTypeAlgoritm("PGS");
                 newMetric.SetLTD2(PGSScore.val());

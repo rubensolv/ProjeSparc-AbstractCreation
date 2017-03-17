@@ -1,38 +1,49 @@
 
-#include "ABPOESimetrico.h"
+#include "ABPOESimetricoDeep.h"
 
 using namespace SparCraft;
 
-ABPOESimetrico::ABPOESimetrico(const IDType& playerID) {
+ABPOESimetricoDeep::ABPOESimetricoDeep(const IDType& playerID) {
     _playerID = playerID;
     iniciarAlphaBeta();
     poe = new PortfolioOnlineEvolutionLimit(_playerID, PlayerModels::NOKDPS, 1, 0, 40);
     lastTime = 0;
     numUnits = 7;
+    controlPartidas = 1;
+    std::cout << "Instancia da Classe  ABPOESimetricoDeep " << std::endl;
 }
 
-ABPOESimetrico::ABPOESimetrico(const IDType& playerID, int numUnitsAB) {
+ABPOESimetricoDeep::ABPOESimetricoDeep(const IDType& playerID, int numUnitsAB) {
     _playerID = playerID;
     iniciarAlphaBeta();
     poe = new PortfolioOnlineEvolutionLimit(_playerID, PlayerModels::NOKDPS, 1, 0, 40);
     lastTime = 0;
     numUnits = numUnitsAB;
+    controlPartidas = 1;
+    std::cout << "Instancia da Classe  ABPOESimetricoDeep " << std::endl;
 }
 
 
-void ABPOESimetrico::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>& moveVec) {
+void ABPOESimetricoDeep::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>& moveVec) {
     
     Timer t;
     t.start();
     moveVec.clear();
     UnitScriptData currentScriptData;
     double ms;
+    MetricDeep newMetric;
+    newMetric.SetNumberUnits(state.numUnits(_playerID));
+    newMetric.SetNumberUnitsEnemy(state.numUnits(state.getEnemy(_playerID)));
+    newMetric.SetRound(state.getTime());
+    
     //state.print();
     if(lastTime > state.getTime()){
         _unitAbsAB.clear();
+        controlPartidas++;
     }
     lastTime = state.getTime();
-    
+    newMetric.SetNumberAbstract(controlPartidas);
+    newMetric.SetStateString(state.toString());
 
     //estado que será utilizado para simular as variações necessárias do AB
     GameState newState;
@@ -65,6 +76,9 @@ void ABPOESimetrico::getMoves(GameState& state, const MoveArray& moves, std::vec
         //aplico AB
         doAlphaBeta(newState, moveVec, state);
 
+        newMetric.SetTypeAlgoritm("AB");
+        newMetric.SetLTD2(newState.eval(_playerID, SparCraft::EvaluationMethods::LTD2).val());
+        
         //limpo o state por segurança        
         copiarStateCleanUnit(state, newState);
 
@@ -77,6 +91,10 @@ void ABPOESimetrico::getMoves(GameState& state, const MoveArray& moves, std::vec
         ms = t.getElapsedTimeInMilliSec() - ms;
         
         controlUnitsForAB(state, moves);
+        for (auto & un : _unitAbsAB) {
+            //un.print();
+            newMetric.addUnitControled(un);
+        }
         
         std::vector<Action> moveVecPgs, movecAB;
 
@@ -139,20 +157,34 @@ void ABPOESimetrico::getMoves(GameState& state, const MoveArray& moves, std::vec
             if (gABPGS.getState().eval(_playerID, SparCraft::EvaluationMethods::LTD2) >
                     gPGS.getState().eval(_playerID, SparCraft::EvaluationMethods::LTD2)) {
                 moveVec.assign(alphaBeta->getResults().bestMoves.begin(), alphaBeta->getResults().bestMoves.end());
-                std::cout<<"POE - Escolhemos o ABPOESimetrico"<<std::endl;
+                
+                newMetric.SetTypeAlgoritm("AB");
+                newMetric.SetLTD2(gABPGS.getState().eval(_playerID, SparCraft::EvaluationMethods::LTD2).val());
             } else {
                 moveVec = moveVecPgs;
+                
+                newMetric.SetTypeAlgoritm("PGS");
+                newMetric.SetLTD2(gPGS.getState().eval(_playerID, SparCraft::EvaluationMethods::LTD2).val());
             }
 
         } else {
             moveVec = moveVecPgs;
+            newMetric.SetTypeAlgoritm("PGS");
+            newMetric.SetLTD2(copy.eval(_playerID, SparCraft::EvaluationMethods::LTD2).val());
         }
 
 
 
 
     }
-
+    
+    //Lista as informações básicas para as Métricas
+    if (_unitAbsAB.size() > 0) {
+        this->calculateMedia(state, newMetric);
+    }
+    
+    newMetric.SetTimeExecution(t.getElapsedTimeInMilliSec());
+    saveMetrics(newMetric, moveVec);
 
 
     /*
@@ -181,7 +213,7 @@ void ABPOESimetrico::getMoves(GameState& state, const MoveArray& moves, std::vec
      */
 }
 
-bool ABPOESimetrico::unitsInMoves(GameState& state, const MoveArray& moves) {
+bool ABPOESimetricoDeep::unitsInMoves(GameState& state, const MoveArray& moves) {
     for (size_t unitIndex(0); unitIndex < moves.numUnits(); ++unitIndex) {
         const Unit & unit = state.getUnit(_playerID, unitIndex);
         for (auto & un : _unitAbsAB) {
@@ -197,10 +229,10 @@ bool ABPOESimetrico::unitsInMoves(GameState& state, const MoveArray& moves) {
 //separo as unidades que serão utilizadas para compor a abstração que será utilizada no AB
 //e faço controle e manutenção destas
 
-void ABPOESimetrico::controlUnitsForAB(GameState & state, const MoveArray & moves) {
-    int numUnits = 4;
+void ABPOESimetricoDeep::controlUnitsForAB(GameState & state, const MoveArray & moves) {
+    
     //verifico se as unidades não foram mortas
-    std::set<Unit, lex_ps> tempUnitAbsAB;
+    std::set<Unit, lex_psDeep> tempUnitAbsAB;
     for (auto & un : _unitAbsAB) {
         if (state.unitExist(_playerID, un.ID()))  {
             tempUnitAbsAB.insert(un);
@@ -230,7 +262,7 @@ void ABPOESimetrico::controlUnitsForAB(GameState & state, const MoveArray & move
 
 }
 
-void ABPOESimetrico::analisarAbstractForm(GameState newState, std::vector<Unit> unidadesInimigas) {
+void ABPOESimetricoDeep::analisarAbstractForm(GameState newState, std::vector<Unit> unidadesInimigas) {
     //obtenho a unidade inimiga contida na abstração
     Unit & enemy = newState.getUnit(newState.getEnemy(_playerID), 0);
 
@@ -249,7 +281,7 @@ void ABPOESimetrico::analisarAbstractForm(GameState newState, std::vector<Unit> 
  *  Função que consiste do processo de analisar se exitem outras unidades inimigas que podem
  * ser atacadas pelas unidades contidas na abstração e adicionar estas unidades inimigas ao estado.
  */
-void ABPOESimetrico::addMoreEnemy(GameState& newState, std::vector<Unit>& unInimigas) {
+void ABPOESimetricoDeep::addMoreEnemy(GameState& newState, std::vector<Unit>& unInimigas) {
     if (unInimigas.size() > 0) {
         //obter unidades aliadas da abstração
         std::vector<Unit> unAl;
@@ -282,7 +314,7 @@ void ABPOESimetrico::addMoreEnemy(GameState& newState, std::vector<Unit>& unInim
  *  & unInimigas    - Vetor com todas as unidades inimigas
  *  & state         - Estado real do jogo
  */
-bool ABPOESimetrico::applyClosestInicialization(std::vector<Unit> & unAliadas, std::vector<Unit> & unInimigas, GameState & state) {
+bool ABPOESimetricoDeep::applyClosestInicialization(std::vector<Unit> & unAliadas, std::vector<Unit> & unInimigas, GameState & state) {
     if (unAliadas.size() != state.numUnits(_playerID)) {
         return false;
     }
@@ -301,7 +333,7 @@ bool ABPOESimetrico::applyClosestInicialization(std::vector<Unit> & unAliadas, s
 //função que analisa os movimentos sugeridos pelo AB e busca encontrar ataques perdidos
 //funciona apenas com 1 unidade inimiga
 
-void ABPOESimetrico::removeLoseAttacks(GameState& newState, std::vector<Action>& moveVec, GameState & state) {
+void ABPOESimetricoDeep::removeLoseAttacks(GameState& newState, std::vector<Action>& moveVec, GameState & state) {
     _UnReut.clear();
     Unit unAval;
 
@@ -343,7 +375,7 @@ void ABPOESimetrico::removeLoseAttacks(GameState& newState, std::vector<Action>&
 
 //função utilizada para remoção das ações de dentro do vetor moveVec
 
-void ABPOESimetrico::removeActionInVector(Action& action, std::vector<Action>& moveVec) {
+void ABPOESimetricoDeep::removeActionInVector(Action& action, std::vector<Action>& moveVec) {
     std::vector<Action> newMoveVec;
     for (auto & mov : moveVec) {
         if (!(mov == action)) {
@@ -359,7 +391,7 @@ void ABPOESimetrico::removeActionInVector(Action& action, std::vector<Action>& m
 //Comportamento inicial: Será criada a média da distância Euclidiana de todas as unidades aliadas em relação
 //às unidades inimigas. Será escolhida a unidade inimiga que tiver a menor distância.
 
-Unit& ABPOESimetrico::getCalculateEnemy(GameState& state, std::vector<Unit> unidadesInimigas) {
+Unit& ABPOESimetricoDeep::getCalculateEnemy(GameState& state, std::vector<Unit> unidadesInimigas) {
     std::map<Unit, PositionType> unDistance;
     std::map<Unit, PositionType>::iterator myIt;
     PositionType sum;
@@ -414,7 +446,7 @@ Unit& ABPOESimetrico::getCalculateEnemy(GameState& state, std::vector<Unit> unid
 //função para rodar a abstração que será testada.
 //entrada: Novo GameState com as unidades testadas. Vetor de ações que será retornado. GameState original.
 
-void ABPOESimetrico::doAlphaBeta(GameState & newState, std::vector<Action> & moveVec, GameState & state) {
+void ABPOESimetricoDeep::doAlphaBeta(GameState & newState, std::vector<Action> & moveVec, GameState & state) {
     //executa a busca
     alphaBeta->doSearch(newState);
     for (auto & mov : alphaBeta->getResults().bestMoves) {
@@ -441,7 +473,7 @@ void ABPOESimetrico::doAlphaBeta(GameState & newState, std::vector<Action> & mov
 
 //adicionar uma unidade no vetor de controle de ataque de unidades.
 
-void ABPOESimetrico::addAttack(const Unit& unitEnemy, const Unit& unitAttack) {
+void ABPOESimetricoDeep::addAttack(const Unit& unitEnemy, const Unit& unitAttack) {
     if (_unAttack.find(unitEnemy) == _unAttack.end()) {
         //não foi encontrado. Insere no map
         std::vector<Unit> unitsAttack;
@@ -455,7 +487,7 @@ void ABPOESimetrico::addAttack(const Unit& unitEnemy, const Unit& unitAttack) {
 
 //utilizada para debug e verificação do map de controle de ataques.
 
-void ABPOESimetrico::printMapAttack() {
+void ABPOESimetricoDeep::printMapAttack() {
     std::cout << " ********************************** " << std::endl;
     std::cout << " Relatório de unidades atacadas " << std::endl;
     for (std::map<Unit, std::vector<Unit> >::const_iterator it = _unAttack.begin(); it != _unAttack.end(); ++it) {
@@ -472,7 +504,7 @@ void ABPOESimetrico::printMapAttack() {
 
 //Verifica qual a unidade válida para inclusão 
 
-Unit ABPOESimetrico::getEnemyClosestvalid(GameState& state, std::vector<Unit> unidadesInimigas) {
+Unit ABPOESimetricoDeep::getEnemyClosestvalid(GameState& state, std::vector<Unit> unidadesInimigas) {
     for (auto & un : unidadesInimigas) {
         if (!state.unitExist(un.player(), un.ID())) {
             if (unitNeedMoreAttackForKilled(un)) {
@@ -487,7 +519,7 @@ Unit ABPOESimetrico::getEnemyClosestvalid(GameState& state, std::vector<Unit> un
  * passada como referência (inclusive a unidade passada como ponto de referencia)
  * levando em consideração as unidades que tem movimento válido
  */
-void ABPOESimetrico::listaOrdenadaForMoves(const IDType& playerID, const Unit& unidade, GameState& state, std::vector<Unit>& unidades, const MoveArray& moves) {
+void ABPOESimetricoDeep::listaOrdenadaForMoves(const IDType& playerID, const Unit& unidade, GameState& state, std::vector<Unit>& unidades, const MoveArray& moves) {
     unidades.clear();
     //declaração
     Unit t;
@@ -509,7 +541,7 @@ void ABPOESimetrico::listaOrdenadaForMoves(const IDType& playerID, const Unit& u
     sortUnit(unidades, unidade, state);
 }
 
-void ABPOESimetrico::sortUnit(std::vector<Unit>& unidades, const Unit& base, GameState & state) {
+void ABPOESimetricoDeep::sortUnit(std::vector<Unit>& unidades, const Unit& base, GameState & state) {
     for (int i = 1; i < unidades.size(); i++) {
         Unit key = unidades[i];
         int j = i - 1;
@@ -528,7 +560,7 @@ void ABPOESimetrico::sortUnit(std::vector<Unit>& unidades, const Unit& base, Gam
  * Retorna todas as unidades de um player ordenados pela distância da unidade
  * passada como referência (inclusive a unidade passada como ponto de referencia)
  */
-void ABPOESimetrico::listaOrdenada(const IDType& playerID, const Unit & unidade, GameState& state, std::vector<Unit> & unidades) {
+void ABPOESimetricoDeep::listaOrdenada(const IDType& playerID, const Unit & unidade, GameState& state, std::vector<Unit> & unidades) {
     unidades.clear();
     //declaração
     Unit t;
@@ -556,7 +588,7 @@ void ABPOESimetrico::listaOrdenada(const IDType& playerID, const Unit & unidade,
  * com as unidades zeradas, mantando assim as outras informações 
  * necessárias.
  */
-void ABPOESimetrico::copiarStateCleanUnit(GameState& origState, GameState& copState) {
+void ABPOESimetricoDeep::copiarStateCleanUnit(GameState& origState, GameState& copState) {
     copState = origState;
     copState.cleanUpStateUnits();
 }
@@ -564,7 +596,7 @@ void ABPOESimetrico::copiarStateCleanUnit(GameState& origState, GameState& copSt
 //inicializa o player alpha beta com as configurações necessárias para executar
 //os testes relacionados à classe
 
-void ABPOESimetrico::iniciarAlphaBeta() {
+void ABPOESimetricoDeep::iniciarAlphaBeta() {
 
     // convert them to the proper enum types
     int moveOrderingID = 1;
@@ -617,13 +649,13 @@ void ABPOESimetrico::iniciarAlphaBeta() {
 
 //função para cálculo da distância baseada na fórmula de cálculo da Distância Manhantan
 
-const PositionType ABPOESimetrico::getDistManhantan(const Position& pInicial, const Position& pFinal) {
+const PositionType ABPOESimetricoDeep::getDistManhantan(const Position& pInicial, const Position& pFinal) {
     return abs(pInicial.x() - pFinal.x()) + abs(pInicial.y() - pFinal.y());
 }
 
 //função para cálculo da distância baseada na fórmua de cálculo utilizando a Distância Euclidiana
 
-const PositionType ABPOESimetrico::getDistEuclidiana(const Position& pInicial, const Position& pFinal) {
+const PositionType ABPOESimetricoDeep::getDistEuclidiana(const Position& pInicial, const Position& pFinal) {
     return sqrt(((pInicial.x() - pFinal.x())*(pInicial.x() - pFinal.x()) +
             (pInicial.y() - pFinal.y())*(pInicial.y() - pFinal.y())
             ));
@@ -632,7 +664,7 @@ const PositionType ABPOESimetrico::getDistEuclidiana(const Position& pInicial, c
 //função utilizada para validar se existe a necessidade de mais um ataque para
 //uma unidade inimiga ou se ela já irá morrer com os ataques existentes.
 
-const bool ABPOESimetrico::unitNeedMoreAttackForKilled(Unit un) {
+const bool ABPOESimetricoDeep::unitNeedMoreAttackForKilled(Unit un) {
     if (_unAttack.find(un) == _unAttack.end()) {
         return true;
     }
@@ -649,7 +681,7 @@ const bool ABPOESimetrico::unitNeedMoreAttackForKilled(Unit un) {
 
 //utilizada para remover um ataque da lista de atacantes de um determinado inimigo
 
-void ABPOESimetrico::removeAttackInUnAttack(Unit enemy, Unit Attacker) {
+void ABPOESimetricoDeep::removeAttackInUnAttack(Unit enemy, Unit Attacker) {
     std::vector<Unit> cleanUnit;
     for (auto & unAttack : _unAttack.find(enemy)->second) {
         if (!(unAttack.ID() == Attacker.ID())) {
@@ -657,6 +689,91 @@ void ABPOESimetrico::removeAttackInUnAttack(Unit enemy, Unit Attacker) {
         }
     }
     _unAttack.find(enemy)->second = cleanUnit;
+}
+
+void ABPOESimetricoDeep::calculateMedia(GameState& state, MetricDeep& metric) {
+ PositionType posicaoMedia(0);
+    int qtd = 0;
+    std::set<Unit, lex_metdeep> newUnits;
+    for (auto & un : _unitAbsAB) {
+        if (state.unitExist(_playerID, un.ID())) {
+            newUnits.insert(state.getUnitByID(_playerID, un.ID()));
+        }
+    }
+
+    std::vector<Unit> unidades;
+    for (auto & un : newUnits) {
+        unidades.push_back(un);
+    }
+
+    for (int i = 0; i < (unidades.size() - 1); i++) {
+        //std::cout<<"Unidade Base: ";
+        // unidades[i].print();
+        for (int j = i + 1; j < unidades.size(); j++) {
+            //std::cout<<"____Unidade secundaria: ";
+            //unidades[j].print();
+            posicaoMedia += getDistEuclidiana(unidades[i].currentPosition(state.getTime()), unidades[j].currentPosition(state.getTime()));
+            qtd++;
+        }
+        //std::cout<<" "<<std::endl;
+    }
+
+    double media = ((double) posicaoMedia) / ((double) qtd);
+    //std::cout << "Distancia Total = " << posicaoMedia << " qtd= " << qtd << std::endl;
+    if (qtd == 0) {
+        //std::cout << "Distancia Media = " << 0 << std::endl;
+        metric.SetAverageDistance(0);
+    } else {
+        //std::cout << "Distancia Media = " << media << std::endl;
+        metric.SetAverageDistance(media);
+    }
+    //std::cout << "-------------- FIM DISTANCIAS ---------------------- " << std::endl;
+}
+
+std::vector<Unit> ABPOESimetricoDeep::copiaVector(std::vector<Unit> original) {
+    std::vector<Unit> novo;
+    for (auto & un : original) {
+        novo.push_back(un);
+    }
+    return novo;
+}
+
+void ABPOESimetricoDeep::saveMetrics(MetricDeep& metrica, std::vector<Action>& moveVec) {
+    mkdir("resultDeep",0777);
+    std::ofstream arquivo;
+
+    std::string nomeArq = "resultDeep/ABPOESimetricoDeep_"+ std::to_string(_playerID)+"_"+metrica.getTimeToString()+"_" + std::to_string(metrica.GetNumberAbstract());
+
+    arquivo.open(nomeArq, std::ios_base::app | std::ios_base::out);
+
+    if (!arquivo.is_open()) {
+        System::FatalError("Problem Opening Output File: Arquivo de metrica");
+    }
+
+    arquivo << " Round = " << metrica.GetRound() << std::endl;
+    arquivo << " Número de Unidades = " << metrica.GetNumberUnits() << std::endl;
+    arquivo << " Número de Unidades Inimigas = " << metrica.GetNumberUnitsEnemy() << std::endl;
+    arquivo << " LTD2 = " << metrica.GetLTD2() << std::endl;
+    arquivo << " Tempo de Execução = " << metrica.GetTimeExecution() << std::endl;
+    arquivo << " Tipo de Algoritmo Utilizado = " << metrica.GetTypeAlgoritm() << std::endl;
+    arquivo << " Distancia Media das Unidades na Abstração = " << metrica.GetAverageDistance() << std::endl;
+    arquivo << " Número da Abstração = " << metrica.GetNumberAbstract() << std::endl;
+    arquivo << " Listagem de Unidades Controladas:" << std::endl;
+
+    for (auto & un : metrica.GetUnitControlled()) {
+        arquivo << "   " << (int) un.ID() << " " << un.type().getName() << " " << un.currentHP() << " " << "(" << un.x() << "," << un.y() << ")" << std::endl;
+    }
+    
+    arquivo << " Cópia do estado:" << std::endl;
+    arquivo << metrica.GetStateString() << std::endl;
+    
+    arquivo << " Movimentos sugeridos:" << std::endl;
+    for(auto & act : moveVec){
+        arquivo << act.debugString() << std::endl;
+    }
+
+    arquivo << std::endl;
+    arquivo.close();
 }
 
 

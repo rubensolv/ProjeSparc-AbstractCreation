@@ -125,9 +125,17 @@ void UnitScriptData::setUnitScript(const IDType & player, const int & id, const 
     }
         
     _unitScriptMap[player][id] = script;
+    
 }
 
 void UnitScriptData::setUnitScript(const Unit & unit, const IDType & script)
 {
     setUnitScript(unit.player(), unit.ID(), script);
 }
+
+const std::map<int, IDType> UnitScriptData::getMapUnitScript(const IDType & player) const{
+    return _unitScriptMap[player];
+}
+
+
+

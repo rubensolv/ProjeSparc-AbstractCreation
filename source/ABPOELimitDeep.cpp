@@ -1,38 +1,48 @@
 
-#include "ABPOELimit.h"
+#include "ABPOELimitDeep.h"
 
 using namespace SparCraft;
 
-ABPOELimit::ABPOELimit(const IDType& playerID) {
+ABPOELimitDeep::ABPOELimitDeep(const IDType& playerID) {
     _playerID = playerID;
     iniciarAlphaBeta();
     poe = new PortfolioOnlineEvolutionLimit(_playerID, PlayerModels::NOKDPS, 1, 0, 40);
     lastTime = 0;
     numUnits = 7;
+    controlPartidas = 1;
 }
 
-ABPOELimit::ABPOELimit(const IDType& playerID, int numUnitsAB) {
+ABPOELimitDeep::ABPOELimitDeep(const IDType& playerID, int numUnitsAB) {
     _playerID = playerID;
     iniciarAlphaBeta();
     poe = new PortfolioOnlineEvolutionLimit(_playerID, PlayerModels::NOKDPS, 1, 0, 40);
     lastTime = 0;
     numUnits = numUnitsAB;
+    controlPartidas = 1;
 }
 
+void ABPOELimitDeep::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>& moveVec) {
 
-void ABPOELimit::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>& moveVec) {
-    
     Timer t;
     t.start();
     moveVec.clear();
     UnitScriptData currentScriptData;
     double ms;
+    MetricDeep newMetric;
+    newMetric.SetNumberUnits(state.numUnits(_playerID));
+    newMetric.SetNumberUnitsEnemy(state.numUnits(state.getEnemy(_playerID)));
+    newMetric.SetRound(state.getTime());
+
+
     //state.print();
-    if(lastTime > state.getTime()){
+    if (lastTime > state.getTime()) {
         _unitAbsAB.clear();
+        controlPartidas++;
     }
     lastTime = state.getTime();
-    
+    newMetric.SetNumberAbstract(controlPartidas);
+    newMetric.SetStateString(state.toString());
+
 
     //estado que será utilizado para simular as variações necessárias do AB
     GameState newState;
@@ -65,6 +75,9 @@ void ABPOELimit::getMoves(GameState& state, const MoveArray& moves, std::vector<
         //aplico AB
         doAlphaBeta(newState, moveVec, state);
 
+        newMetric.SetTypeAlgoritm("AB");
+        newMetric.SetLTD2(newState.eval(_playerID, SparCraft::EvaluationMethods::LTD2).val());
+
         //limpo o state por segurança        
         copiarStateCleanUnit(state, newState);
 
@@ -75,9 +88,13 @@ void ABPOELimit::getMoves(GameState& state, const MoveArray& moves, std::vector<
         ms = t.getElapsedTimeInMilliSec();
         currentScriptData = poe->searchForScripts(_playerID, state);
         ms = t.getElapsedTimeInMilliSec() - ms;
-        
+
         controlUnitsForAB(state, moves);
-        
+        for (auto & un : _unitAbsAB) {
+            //un.print();
+            newMetric.addUnitControled(un);
+        }
+
         std::vector<Action> moveVecPgs, movecAB;
 
         MoveArray movesPGS;
@@ -85,13 +102,13 @@ void ABPOELimit::getMoves(GameState& state, const MoveArray& moves, std::vector<
         GameState copy(state);
         currentScriptData.calculateMoves(_playerID, movesPGS, copy, moveVecPgs);
 
-        if (unitsInMoves(state, moves) and ((40-ms)> 2) ) {
+        if (unitsInMoves(state, moves) and ((40 - ms) > 2)) {
             //Executo o AB
             std::set<IDType> unitAbsAB;
-            for(auto & un : _unitAbsAB){
+            for (auto & un : _unitAbsAB) {
                 unitAbsAB.insert(un.ID());
             }
-            alphaBeta->setLimitTime(40 - ms );
+            alphaBeta->setLimitTime(40 - ms);
             StateEvalScore bestScore;
             alphaBeta->doSearchWithMoves(state, currentScriptData, unitAbsAB, _playerID, bestScore);
             movecAB.assign(alphaBeta->getResults().bestMoves.begin(), alphaBeta->getResults().bestMoves.end());
@@ -110,18 +127,18 @@ void ABPOELimit::getMoves(GameState& state, const MoveArray& moves, std::vector<
             }
 
             std::vector<Action> moveVecPgsEnemy;
-            if(state.bothCanMove()){
+            if (state.bothCanMove()) {
                 //gero os movimentos inimigos
                 MoveArray movesPGSEnemy;
                 state.generateMoves(movesPGSEnemy, enemyPlayer);
                 GameState copy2(state);
-                baseScriptData.calculateMoves(enemyPlayer,movesPGSEnemy, copy2, moveVecPgsEnemy);
+                baseScriptData.calculateMoves(enemyPlayer, movesPGSEnemy, copy2, moveVecPgsEnemy);
             }
-            
+
             //Execução AB-PGS
             Game gABPGS(state, 50);
             gABPGS.getState().makeMoves(movecAB);
-            if(gABPGS.getState().bothCanMove()){
+            if (gABPGS.getState().bothCanMove()) {
                 gABPGS.getState().makeMoves(moveVecPgsEnemy);
             }
             gABPGS.getState().finishedMoving();
@@ -130,25 +147,36 @@ void ABPOELimit::getMoves(GameState& state, const MoveArray& moves, std::vector<
             //Execução PGS
             Game gPGS(state, 50);
             gPGS.getState().makeMoves(moveVecPgs);
-            if(gPGS.getState().bothCanMove()){
+            if (gPGS.getState().bothCanMove()) {
                 gPGS.getState().makeMoves(moveVecPgsEnemy);
             }
             gPGS.getState().finishedMoving();
             gPGS.playIndividualScripts(baseScriptData);
-            
+
             if (gABPGS.getState().eval(_playerID, SparCraft::EvaluationMethods::LTD2) >
                     gPGS.getState().eval(_playerID, SparCraft::EvaluationMethods::LTD2)) {
                 moveVec.assign(alphaBeta->getResults().bestMoves.begin(), alphaBeta->getResults().bestMoves.end());
-                std::cout<<"POE - Escolhemos o ABPOE"<<std::endl;
+                newMetric.SetTypeAlgoritm("AB");
+                newMetric.SetLTD2(gABPGS.getState().eval(_playerID, SparCraft::EvaluationMethods::LTD2).val());
             } else {
                 moveVec = moveVecPgs;
+                newMetric.SetTypeAlgoritm("POE");
+                newMetric.SetLTD2(gPGS.getState().eval(_playerID, SparCraft::EvaluationMethods::LTD2).val());
             }
 
         } else {
             moveVec = moveVecPgs;
+            newMetric.SetTypeAlgoritm("POE");
+            newMetric.SetLTD2(copy.eval(_playerID, SparCraft::EvaluationMethods::LTD2).val());
         }
 
+        //Lista as informações básicas para as Métricas
+        if (_unitAbsAB.size() > 0) {
+            this->calculateMedia(state, newMetric);
+        }
 
+        newMetric.SetTimeExecution(t.getElapsedTimeInMilliSec());
+        saveMetrics(newMetric, moveVec);
 
 
     }
@@ -181,7 +209,7 @@ void ABPOELimit::getMoves(GameState& state, const MoveArray& moves, std::vector<
      */
 }
 
-bool ABPOELimit::unitsInMoves(GameState& state, const MoveArray& moves) {
+bool ABPOELimitDeep::unitsInMoves(GameState& state, const MoveArray& moves) {
     for (size_t unitIndex(0); unitIndex < moves.numUnits(); ++unitIndex) {
         const Unit & unit = state.getUnit(_playerID, unitIndex);
         for (auto & un : _unitAbsAB) {
@@ -197,16 +225,16 @@ bool ABPOELimit::unitsInMoves(GameState& state, const MoveArray& moves) {
 //separo as unidades que serão utilizadas para compor a abstração que será utilizada no AB
 //e faço controle e manutenção destas
 
-void ABPOELimit::controlUnitsForAB(GameState & state, const MoveArray & moves) {
+void ABPOELimitDeep::controlUnitsForAB(GameState & state, const MoveArray & moves) {
     //verifico se as unidades não foram mortas
-    std::set<Unit, lex_compare_PoeL> tempUnitAbsAB;
+    std::set<Unit, lex_compare_PoeLD> tempUnitAbsAB;
     for (auto & un : _unitAbsAB) {
-        if (state.unitExist(_playerID, un.ID()))  {
+        if (state.unitExist(_playerID, un.ID())) {
             tempUnitAbsAB.insert(un);
         }
     }
     _unitAbsAB = tempUnitAbsAB;
-    
+
     if (state.numUnits(_playerID) <= numUnits) {
         _unitAbsAB.clear();
         //adiciono todas as unidades para serem controladas pelo AB
@@ -214,7 +242,7 @@ void ABPOELimit::controlUnitsForAB(GameState & state, const MoveArray & moves) {
             _unitAbsAB.insert(state.getUnit(_playerID, u));
         }
     } else if (!(_unitAbsAB.size() == numUnits)) {
-        
+
         if ((state.numUnits(_playerID) < 2 or moves.numUnits() < 2)
                 and _unitAbsAB.size() == 0) {
             _unitAbsAB.insert(state.getUnit(_playerID, 0));
@@ -229,7 +257,7 @@ void ABPOELimit::controlUnitsForAB(GameState & state, const MoveArray & moves) {
 
 }
 
-void ABPOELimit::analisarAbstractForm(GameState newState, std::vector<Unit> unidadesInimigas) {
+void ABPOELimitDeep::analisarAbstractForm(GameState newState, std::vector<Unit> unidadesInimigas) {
     //obtenho a unidade inimiga contida na abstração
     Unit & enemy = newState.getUnit(newState.getEnemy(_playerID), 0);
 
@@ -248,7 +276,7 @@ void ABPOELimit::analisarAbstractForm(GameState newState, std::vector<Unit> unid
  *  Função que consiste do processo de analisar se exitem outras unidades inimigas que podem
  * ser atacadas pelas unidades contidas na abstração e adicionar estas unidades inimigas ao estado.
  */
-void ABPOELimit::addMoreEnemy(GameState& newState, std::vector<Unit>& unInimigas) {
+void ABPOELimitDeep::addMoreEnemy(GameState& newState, std::vector<Unit>& unInimigas) {
     if (unInimigas.size() > 0) {
         //obter unidades aliadas da abstração
         std::vector<Unit> unAl;
@@ -281,7 +309,7 @@ void ABPOELimit::addMoreEnemy(GameState& newState, std::vector<Unit>& unInimigas
  *  & unInimigas    - Vetor com todas as unidades inimigas
  *  & state         - Estado real do jogo
  */
-bool ABPOELimit::applyClosestInicialization(std::vector<Unit> & unAliadas, std::vector<Unit> & unInimigas, GameState & state) {
+bool ABPOELimitDeep::applyClosestInicialization(std::vector<Unit> & unAliadas, std::vector<Unit> & unInimigas, GameState & state) {
     if (unAliadas.size() != state.numUnits(_playerID)) {
         return false;
     }
@@ -300,7 +328,7 @@ bool ABPOELimit::applyClosestInicialization(std::vector<Unit> & unAliadas, std::
 //função que analisa os movimentos sugeridos pelo AB e busca encontrar ataques perdidos
 //funciona apenas com 1 unidade inimiga
 
-void ABPOELimit::removeLoseAttacks(GameState& newState, std::vector<Action>& moveVec, GameState & state) {
+void ABPOELimitDeep::removeLoseAttacks(GameState& newState, std::vector<Action>& moveVec, GameState & state) {
     _UnReut.clear();
     Unit unAval;
 
@@ -342,7 +370,7 @@ void ABPOELimit::removeLoseAttacks(GameState& newState, std::vector<Action>& mov
 
 //função utilizada para remoção das ações de dentro do vetor moveVec
 
-void ABPOELimit::removeActionInVector(Action& action, std::vector<Action>& moveVec) {
+void ABPOELimitDeep::removeActionInVector(Action& action, std::vector<Action>& moveVec) {
     std::vector<Action> newMoveVec;
     for (auto & mov : moveVec) {
         if (!(mov == action)) {
@@ -358,7 +386,7 @@ void ABPOELimit::removeActionInVector(Action& action, std::vector<Action>& moveV
 //Comportamento inicial: Será criada a média da distância Euclidiana de todas as unidades aliadas em relação
 //às unidades inimigas. Será escolhida a unidade inimiga que tiver a menor distância.
 
-Unit& ABPOELimit::getCalculateEnemy(GameState& state, std::vector<Unit> unidadesInimigas) {
+Unit& ABPOELimitDeep::getCalculateEnemy(GameState& state, std::vector<Unit> unidadesInimigas) {
     std::map<Unit, PositionType> unDistance;
     std::map<Unit, PositionType>::iterator myIt;
     PositionType sum;
@@ -413,7 +441,7 @@ Unit& ABPOELimit::getCalculateEnemy(GameState& state, std::vector<Unit> unidades
 //função para rodar a abstração que será testada.
 //entrada: Novo GameState com as unidades testadas. Vetor de ações que será retornado. GameState original.
 
-void ABPOELimit::doAlphaBeta(GameState & newState, std::vector<Action> & moveVec, GameState & state) {
+void ABPOELimitDeep::doAlphaBeta(GameState & newState, std::vector<Action> & moveVec, GameState & state) {
     //executa a busca
     alphaBeta->doSearch(newState);
     for (auto & mov : alphaBeta->getResults().bestMoves) {
@@ -440,7 +468,7 @@ void ABPOELimit::doAlphaBeta(GameState & newState, std::vector<Action> & moveVec
 
 //adicionar uma unidade no vetor de controle de ataque de unidades.
 
-void ABPOELimit::addAttack(const Unit& unitEnemy, const Unit& unitAttack) {
+void ABPOELimitDeep::addAttack(const Unit& unitEnemy, const Unit& unitAttack) {
     if (_unAttack.find(unitEnemy) == _unAttack.end()) {
         //não foi encontrado. Insere no map
         std::vector<Unit> unitsAttack;
@@ -454,7 +482,7 @@ void ABPOELimit::addAttack(const Unit& unitEnemy, const Unit& unitAttack) {
 
 //utilizada para debug e verificação do map de controle de ataques.
 
-void ABPOELimit::printMapAttack() {
+void ABPOELimitDeep::printMapAttack() {
     std::cout << " ********************************** " << std::endl;
     std::cout << " Relatório de unidades atacadas " << std::endl;
     for (std::map<Unit, std::vector<Unit> >::const_iterator it = _unAttack.begin(); it != _unAttack.end(); ++it) {
@@ -471,7 +499,7 @@ void ABPOELimit::printMapAttack() {
 
 //Verifica qual a unidade válida para inclusão 
 
-Unit ABPOELimit::getEnemyClosestvalid(GameState& state, std::vector<Unit> unidadesInimigas) {
+Unit ABPOELimitDeep::getEnemyClosestvalid(GameState& state, std::vector<Unit> unidadesInimigas) {
     for (auto & un : unidadesInimigas) {
         if (!state.unitExist(un.player(), un.ID())) {
             if (unitNeedMoreAttackForKilled(un)) {
@@ -486,7 +514,7 @@ Unit ABPOELimit::getEnemyClosestvalid(GameState& state, std::vector<Unit> unidad
  * passada como referência (inclusive a unidade passada como ponto de referencia)
  * levando em consideração as unidades que tem movimento válido
  */
-void ABPOELimit::listaOrdenadaForMoves(const IDType& playerID, const Unit& unidade, GameState& state, std::vector<Unit>& unidades, const MoveArray& moves) {
+void ABPOELimitDeep::listaOrdenadaForMoves(const IDType& playerID, const Unit& unidade, GameState& state, std::vector<Unit>& unidades, const MoveArray& moves) {
     unidades.clear();
     //declaração
     Unit t;
@@ -508,7 +536,7 @@ void ABPOELimit::listaOrdenadaForMoves(const IDType& playerID, const Unit& unida
     sortUnit(unidades, unidade, state);
 }
 
-void ABPOELimit::sortUnit(std::vector<Unit>& unidades, const Unit& base, GameState & state) {
+void ABPOELimitDeep::sortUnit(std::vector<Unit>& unidades, const Unit& base, GameState & state) {
     for (int i = 1; i < unidades.size(); i++) {
         Unit key = unidades[i];
         int j = i - 1;
@@ -527,7 +555,7 @@ void ABPOELimit::sortUnit(std::vector<Unit>& unidades, const Unit& base, GameSta
  * Retorna todas as unidades de um player ordenados pela distância da unidade
  * passada como referência (inclusive a unidade passada como ponto de referencia)
  */
-void ABPOELimit::listaOrdenada(const IDType& playerID, const Unit & unidade, GameState& state, std::vector<Unit> & unidades) {
+void ABPOELimitDeep::listaOrdenada(const IDType& playerID, const Unit & unidade, GameState& state, std::vector<Unit> & unidades) {
     unidades.clear();
     //declaração
     Unit t;
@@ -555,7 +583,7 @@ void ABPOELimit::listaOrdenada(const IDType& playerID, const Unit & unidade, Gam
  * com as unidades zeradas, mantando assim as outras informações 
  * necessárias.
  */
-void ABPOELimit::copiarStateCleanUnit(GameState& origState, GameState& copState) {
+void ABPOELimitDeep::copiarStateCleanUnit(GameState& origState, GameState& copState) {
     copState = origState;
     copState.cleanUpStateUnits();
 }
@@ -563,7 +591,7 @@ void ABPOELimit::copiarStateCleanUnit(GameState& origState, GameState& copState)
 //inicializa o player alpha beta com as configurações necessárias para executar
 //os testes relacionados à classe
 
-void ABPOELimit::iniciarAlphaBeta() {
+void ABPOELimitDeep::iniciarAlphaBeta() {
 
     // convert them to the proper enum types
     int moveOrderingID = 1;
@@ -616,13 +644,13 @@ void ABPOELimit::iniciarAlphaBeta() {
 
 //função para cálculo da distância baseada na fórmula de cálculo da Distância Manhantan
 
-const PositionType ABPOELimit::getDistManhantan(const Position& pInicial, const Position& pFinal) {
+const PositionType ABPOELimitDeep::getDistManhantan(const Position& pInicial, const Position& pFinal) {
     return abs(pInicial.x() - pFinal.x()) + abs(pInicial.y() - pFinal.y());
 }
 
 //função para cálculo da distância baseada na fórmua de cálculo utilizando a Distância Euclidiana
 
-const PositionType ABPOELimit::getDistEuclidiana(const Position& pInicial, const Position& pFinal) {
+const PositionType ABPOELimitDeep::getDistEuclidiana(const Position& pInicial, const Position& pFinal) {
     return sqrt(((pInicial.x() - pFinal.x())*(pInicial.x() - pFinal.x()) +
             (pInicial.y() - pFinal.y())*(pInicial.y() - pFinal.y())
             ));
@@ -631,7 +659,7 @@ const PositionType ABPOELimit::getDistEuclidiana(const Position& pInicial, const
 //função utilizada para validar se existe a necessidade de mais um ataque para
 //uma unidade inimiga ou se ela já irá morrer com os ataques existentes.
 
-const bool ABPOELimit::unitNeedMoreAttackForKilled(Unit un) {
+const bool ABPOELimitDeep::unitNeedMoreAttackForKilled(Unit un) {
     if (_unAttack.find(un) == _unAttack.end()) {
         return true;
     }
@@ -648,7 +676,7 @@ const bool ABPOELimit::unitNeedMoreAttackForKilled(Unit un) {
 
 //utilizada para remover um ataque da lista de atacantes de um determinado inimigo
 
-void ABPOELimit::removeAttackInUnAttack(Unit enemy, Unit Attacker) {
+void ABPOELimitDeep::removeAttackInUnAttack(Unit enemy, Unit Attacker) {
     std::vector<Unit> cleanUnit;
     for (auto & unAttack : _unAttack.find(enemy)->second) {
         if (!(unAttack.ID() == Attacker.ID())) {
@@ -658,6 +686,90 @@ void ABPOELimit::removeAttackInUnAttack(Unit enemy, Unit Attacker) {
     _unAttack.find(enemy)->second = cleanUnit;
 }
 
+std::vector<Unit> ABPOELimitDeep::copiaVector(std::vector<Unit> original) {
+    std::vector<Unit> novo;
+    for (auto & un : original) {
+        novo.push_back(un);
+    }
+    return novo;
+}
+
+void ABPOELimitDeep::calculateMedia(GameState & state, MetricDeep& metric) {
+    PositionType posicaoMedia(0);
+    int qtd = 0;
+    std::set<Unit, lex_metdeep> newUnits;
+    for (auto & un : _unitAbsAB) {
+        if (state.unitExist(_playerID, un.ID())) {
+            newUnits.insert(state.getUnitByID(_playerID, un.ID()));
+        }
+    }
+
+    std::vector<Unit> unidades;
+    for (auto & un : newUnits) {
+        unidades.push_back(un);
+    }
+
+    for (int i = 0; i < (unidades.size() - 1); i++) {
+        //std::cout<<"Unidade Base: ";
+        // unidades[i].print();
+        for (int j = i + 1; j < unidades.size(); j++) {
+            //std::cout<<"____Unidade secundaria: ";
+            //unidades[j].print();
+            posicaoMedia += getDistEuclidiana(unidades[i].currentPosition(state.getTime()), unidades[j].currentPosition(state.getTime()));
+            qtd++;
+        }
+        //std::cout<<" "<<std::endl;
+    }
+
+    double media = ((double) posicaoMedia) / ((double) qtd);
+    //std::cout << "Distancia Total = " << posicaoMedia << " qtd= " << qtd << std::endl;
+    if (qtd == 0) {
+        //std::cout << "Distancia Media = " << 0 << std::endl;
+        metric.SetAverageDistance(0);
+    } else {
+        //std::cout << "Distancia Media = " << media << std::endl;
+        metric.SetAverageDistance(media);
+    }
+    //std::cout << "-------------- FIM DISTANCIAS ---------------------- " << std::endl;
+}
+
+void ABPOELimitDeep::saveMetrics(MetricDeep & metrica, std::vector<Action>& moveVec) {
+    mkdir("resultDeep", 0777);
+    std::ofstream arquivo;
+
+    std::string nomeArq = "resultDeep/ABPOELimitDeep_" + std::to_string(_playerID) + "_" + metrica.getTimeToString() + "_" + std::to_string(metrica.GetNumberAbstract());
+
+    arquivo.open(nomeArq, std::ios_base::app | std::ios_base::out);
+
+    if (!arquivo.is_open()) {
+        System::FatalError("Problem Opening Output File: Arquivo de metrica");
+    }
+
+    arquivo << " Round = " << metrica.GetRound() << std::endl;
+    arquivo << " Número de Unidades = " << metrica.GetNumberUnits() << std::endl;
+    arquivo << " Número de Unidades Inimigas = " << metrica.GetNumberUnitsEnemy() << std::endl;
+    arquivo << " LTD2 = " << metrica.GetLTD2() << std::endl;
+    arquivo << " Tempo de Execução = " << metrica.GetTimeExecution() << std::endl;
+    arquivo << " Tipo de Algoritmo Utilizado = " << metrica.GetTypeAlgoritm() << std::endl;
+    arquivo << " Distancia Media das Unidades na Abstração = " << metrica.GetAverageDistance() << std::endl;
+    arquivo << " Número da Abstração = " << metrica.GetNumberAbstract() << std::endl;
+    arquivo << " Listagem de Unidades Controladas:" << std::endl;
+
+    for (auto & un : metrica.GetUnitControlled()) {
+        arquivo << "   " << (int) un.ID() << " " << un.type().getName() << " " << un.currentHP() << " " << "(" << un.x() << "," << un.y() << ")" << std::endl;
+    }
+
+    arquivo << " Cópia do estado:" << std::endl;
+    arquivo << metrica.GetStateString() << std::endl;
+
+    arquivo << " Movimentos sugeridos:" << std::endl;
+    for (auto & act : moveVec) {
+        arquivo << act.debugString() << std::endl;
+    }
+
+    arquivo << std::endl;
+    arquivo.close();
+}
 
 
 

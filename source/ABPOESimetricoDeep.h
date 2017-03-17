@@ -8,10 +8,14 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
+#include <iostream>
+#include <sys/stat.h>
 #include "Player.h"
 #include "AlphaBetaSearchParameters.hpp"
 #include "AlphaBetaSearchSimetric.h"
 #include "PortfolioOnlineEvolutionLimit.h"
+#include "MetricDeep.h"
 
 class TranspositionTable;
 
@@ -20,7 +24,7 @@ namespace SparCraft {
     class AlphaBetaSearchSimetric;
     class PortfolioOnlineEvolutionLimit;
     
-    struct lex_ps {
+    struct lex_psDeep {
 
         bool operator()(const Unit & lUn, const Unit & rUn) const {
             return lUn < rUn;
@@ -28,17 +32,18 @@ namespace SparCraft {
     }; 
     
 
-    class ABPOESimetrico : public Player {
+    class ABPOESimetricoDeep : public Player {
         AlphaBetaSearchSimetric * alphaBeta;
         PortfolioOnlineEvolutionLimit * poe;
         std::map<Unit, std::vector<Unit>> _unAttack;
         std::vector<Unit> _UnReut;
-        std::set<Unit, lex_ps> _unitAbsAB;
+        std::set<Unit, lex_psDeep> _unitAbsAB;
         TimeType lastTime;
         int numUnits;
+        int controlPartidas;
     public:
-        ABPOESimetrico(const IDType & playerID);
-        ABPOESimetrico(const IDType & playerID , int numUnitsAB);
+        ABPOESimetricoDeep(const IDType & playerID);
+        ABPOESimetricoDeep(const IDType & playerID , int numUnitsAB);
         void getMoves(GameState & state, const MoveArray & moves, std::vector<Action> & moveVec);
 
         IDType getType() {
@@ -48,6 +53,7 @@ namespace SparCraft {
         void listaOrdenadaForMoves(const IDType & playerID, const Unit & unidade, GameState & state, std::vector<Unit> & unidades, const MoveArray & moves);
         void copiarStateCleanUnit(GameState & origState, GameState & copState);
         void iniciarAlphaBeta();
+        void saveMetrics(MetricDeep & metrica, std::vector<Action>& moveVec);
     private:
         Unit getEnemyClosestvalid(GameState & state, std::vector<Unit> unidadesInimigas);
         //manipulação do controle de atacantes
@@ -75,6 +81,10 @@ namespace SparCraft {
 
         //ideia de analisar as ações dada à uma unidade
         void analisarAbstractForm(GameState newState, std::vector<Unit> unidadesInimigas);
+        
+        //controla a inicialição das abstrações para métrica
+        std::vector<Unit> copiaVector(std::vector<Unit> original);
+        void calculateMedia(GameState& state, MetricDeep& metric);
     };
 }
 

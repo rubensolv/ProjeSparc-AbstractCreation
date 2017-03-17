@@ -10,11 +10,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <iostream>
+#include <sys/stat.h>
 #include "Player.h"
 #include "AlphaBetaSearchParameters.hpp"
 #include "AlphaBetaSearchAbstract.h"
 #include "PortfolioGreedySearchNoTime.h"
-#include "MetricGAB.h"
+#include "MetricDeep.h"
 
 class TranspositionTable;
 
@@ -23,7 +24,7 @@ namespace SparCraft {
     class AlphaBetaSearchAbstract;
     class PortfolioGreedySearchNoTime;
     
-    struct lex_metfar {
+    struct lex_metdeep {
 
         bool operator()(const Unit & lUn, const Unit & rUn) const {
             return lUn < rUn;
@@ -36,7 +37,7 @@ namespace SparCraft {
         PortfolioGreedySearchNoTime * pgs;
         std::map<Unit, std::vector<Unit>> _unAttack;
         std::vector<Unit> _UnReut;
-        std::set<Unit, lex_metfar> _unitAbsAB;
+        std::set<Unit, lex_metdeep> _unitAbsAB;
         TimeType lastTime;
         int numUnits;
         int controlPartidas;
@@ -52,7 +53,7 @@ namespace SparCraft {
         void listaOrdenadaForMoves(const IDType & playerID, const Unit & unidade, GameState & state, std::vector<Unit> & unidades, const MoveArray & moves);
         void copiarStateCleanUnit(GameState & origState, GameState & copState);
         void iniciarAlphaBeta();
-        void saveMetrics(MetricGAB & metrica);
+        void saveMetrics(MetricDeep & metrica, std::vector<Action>& moveVec);
     private:
         Unit getEnemyClosestvalid(GameState & state, std::vector<Unit> unidadesInimigas);
         //manipulação do controle de atacantes
@@ -83,7 +84,7 @@ namespace SparCraft {
         
         //controla a inicialição das abstrações para métrica
         std::vector<Unit> copiaVector(std::vector<Unit> original);
-        void calculateMedia(GameState& state, MetricGAB& metric);
+        void calculateMedia(GameState& state, MetricDeep& metric);
     };
 }
 

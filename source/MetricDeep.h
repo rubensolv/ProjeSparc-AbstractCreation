@@ -4,10 +4,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include "Unit.h"
+#include "Timer.h"
 
 namespace SparCraft {
 
-    class MetricGAB {
+    class MetricDeep {
         int round;
         int numberUnits;
         int numberUnitsEnemy;
@@ -17,13 +18,17 @@ namespace SparCraft {
         std::string typeAlgoritm;
         double averageDistance;
         int numberAbstract;
+        std::string stateString;
     public:
-        MetricGAB();
-        MetricGAB(int round, int numberUnits) :
+        MetricDeep();
+        MetricDeep(int round, int numberUnits) :
             round(round), numberUnits(numberUnits) {
         }
-        MetricGAB(const MetricGAB& orig);
-        virtual ~MetricGAB();        
+        MetricDeep(const MetricDeep& orig);
+        virtual ~MetricDeep();   
+        
+        std::string getTimeToString();
+        
         ScoreType GetLTD2() const {
             return LTD2;
         }
@@ -98,6 +103,14 @@ namespace SparCraft {
 
         void SetNumberUnitsEnemy(int numberUnitsEnemy) {
             this->numberUnitsEnemy = numberUnitsEnemy;
+        }
+        
+        std::string GetStateString() const {
+            return stateString;
+        }
+
+        void SetStateString(std::string stateString) {
+            this->stateString = stateString;
         }
 
     private:

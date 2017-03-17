@@ -43,5 +43,7 @@ public:
     const IDType &      getScript(const IDType & player, const size_t & index);
     const PlayerPtr &   getPlayerPtr(const IDType & player, const size_t & index);
     const size_t        getNumScripts(const IDType & player) const;
+    const std::map<int, IDType> getMapUnitScript(const IDType & player) const;
+    
 };
 }

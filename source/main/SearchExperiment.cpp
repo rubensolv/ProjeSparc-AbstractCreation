@@ -537,6 +537,20 @@ void SearchExperiment::addPlayer(const std::string & line)
         
         players[playerID].push_back(PlayerPtr(new ABPOESimetrico(playerID, numUnits))); 
     }
+    else if (playerModelID == PlayerModels::ABPOESimetricoDeep)				
+    { 
+        int numUnits(0);
+        iss >> numUnits;
+        
+        players[playerID].push_back(PlayerPtr(new ABPOESimetricoDeep(playerID, numUnits))); 
+    }
+    else if (playerModelID == PlayerModels::ABPGSSimetricoDeep)				
+    { 
+        int numUnits(0);
+        iss >> numUnits;
+        
+        players[playerID].push_back(PlayerPtr(new ABPGSSimetricoDeep(playerID, numUnits))); 
+    }
     
         else if (playerModelID == PlayerModels::ABPOEFixo)				
     { 
@@ -548,6 +562,13 @@ void SearchExperiment::addPlayer(const std::string & line)
         iss >> numUnits;
         
         players[playerID].push_back(PlayerPtr(new ABPOELimit(playerID, numUnits)));
+    }
+        else if (playerModelID == PlayerModels::ABPOELimitDeep)				
+    { 
+        int numUnits(0);
+        iss >> numUnits;
+        
+        players[playerID].push_back(PlayerPtr(new ABPOELimitDeep(playerID, numUnits)));
     }
         else if (playerModelID == PlayerModels::ABPGSSand)				
     { 
@@ -634,6 +655,20 @@ else if (playerModelID == PlayerModels::ImprovedPortfolioGreedySearch)
 
         players[playerID].push_back(PlayerPtr(new Player_PortfolioOnlineEvolution(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit)));
     }
+    else if (playerModelID == PlayerModels::PortfolioOnlineEvolutionDeep)
+    {
+        std::string enemyPlayerModel;
+        size_t timeLimit(40);
+        int iterations(1);
+        int responses(0);
+
+        iss >> timeLimit;
+        iss >> enemyPlayerModel;
+        iss >> iterations;
+        iss >> responses;
+
+        players[playerID].push_back(PlayerPtr(new Player_PortfolioOnlineEvolutionDeep(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit)));
+    }
     else if (playerModelID == PlayerModels::PortfolioGreedySearch)				
     { 
         std::string enemyPlayerModel;
@@ -647,6 +682,20 @@ else if (playerModelID == PlayerModels::ImprovedPortfolioGreedySearch)
         iss >> responses;
 
         players[playerID].push_back(PlayerPtr(new Player_PortfolioGreedySearch(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit))); 
+    }
+    else if (playerModelID == PlayerModels::PortfolioGreedySearchDeep)				
+    { 
+        std::string enemyPlayerModel;
+        size_t timeLimit(0);
+        int iterations(1);
+        int responses(0);
+
+        iss >> timeLimit;
+        iss >> enemyPlayerModel;
+        iss >> iterations;
+        iss >> responses;
+
+        players[playerID].push_back(PlayerPtr(new Player_PortfolioGreedySearchDeep(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit))); 
     }
     else if (playerModelID == PlayerModels::IRStratifiedPolicySearch)
     {

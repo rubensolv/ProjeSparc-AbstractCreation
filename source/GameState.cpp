@@ -1303,7 +1303,7 @@ std::string GameState::toString() const
 		{
 			const Unit & unit(getUnit(p, u));
 
-			ss << "  P" << (int)unit.player() << " " << unit.currentHP() << " (" << unit.x() << ", " << unit.y() << ") " << unit.name() << std::endl;
+			ss << "  P" << (int)unit.player() << " " << (int) unit.ID() << " " << unit.currentHP() << " " << unit.firstTimeFree() << " (" << unit.x() << ", " << unit.y() << ") " << unit.name() << std::endl;
 		}
 	}
 	ss << std::endl;

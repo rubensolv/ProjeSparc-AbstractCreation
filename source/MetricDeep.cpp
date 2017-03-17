@@ -11,11 +11,11 @@
  * Created on 6 de Março de 2017, 13:57
  */
 
-#include "MetricGAB.h"
+#include "MetricDeep.h"
 
 using namespace SparCraft;
 
-MetricGAB::MetricGAB() {
+MetricDeep::MetricDeep() {
     round = -1;
     numberUnits = -1;
     numberUnitsEnemy = -1;
@@ -27,17 +27,17 @@ MetricGAB::MetricGAB() {
 }
 
 
-MetricGAB::MetricGAB(const MetricGAB& orig) {
+MetricDeep::MetricDeep(const MetricDeep& orig) {
 }
 
-MetricGAB::~MetricGAB() {
+MetricDeep::~MetricDeep() {
 }
 
-void MetricGAB::addUnitControled(Unit unit){
+void MetricDeep::addUnitControled(Unit unit){
     unitControlled.push_back(unit);
 }
 
-void MetricGAB::print() {
+void MetricDeep::print() {
     std::cout<< "---------------------------------------------------------------------- " <<std::endl;
     std::cout<< " Round = " << round<< std::endl;
     std::cout<< " Número de Unidades = " << numberUnits<< std::endl;
@@ -53,6 +53,15 @@ void MetricGAB::print() {
     }
     std::cout<< "---------------------------------------------------------------------- " <<std::endl;
 }
+
+std::string MetricDeep::getTimeToString() {
+    const time_t timer = time(NULL);
+    struct tm *sTempo;
+    sTempo = localtime(&timer);
+    
+    return std::to_string(sTempo->tm_mday)+"_"+ std::to_string(sTempo->tm_hour);
+}
+
 
 
 

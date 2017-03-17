@@ -1,4 +1,5 @@
 
+
 #include "GenerationClassForDeep.h"
 
 using namespace SparCraft;
@@ -25,13 +26,13 @@ GenerationClassForDeep::GenerationClassForDeep(const IDType& playerID, int numUn
 
 void GenerationClassForDeep::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>& moveVec) {
     //controla a inicialização das abstrações
-
+    
     Timer t;
     t.start();
     moveVec.clear();
     UnitScriptData currentScriptData;
     double ms;
-    MetricGAB newMetric;
+    MetricDeep newMetric;
 
     newMetric.SetNumberUnits(state.numUnits(_playerID));
     newMetric.SetNumberUnitsEnemy(state.numUnits(state.getEnemy(_playerID)));
@@ -44,6 +45,7 @@ void GenerationClassForDeep::getMoves(GameState& state, const MoveArray& moves, 
     }
     lastTime = state.getTime();
     newMetric.SetNumberAbstract(controlPartidas);
+    newMetric.SetStateString(state.toString());
 
     //estado que será utilizado para simular as variações necessárias do AB
     GameState newState;
@@ -123,7 +125,7 @@ void GenerationClassForDeep::getMoves(GameState& state, const MoveArray& moves, 
                 moveVec.assign(alphaBeta->getResults().bestMoves.begin(), alphaBeta->getResults().bestMoves.end());
 
                 newMetric.SetTypeAlgoritm("AB");
-                newMetric.SetLTD2(PGSScore.val());
+                newMetric.SetLTD2(ABScore.val());
             } else {
                 newMetric.SetTypeAlgoritm("PGS");
                 newMetric.SetLTD2(PGSScore.val());
@@ -138,9 +140,10 @@ void GenerationClassForDeep::getMoves(GameState& state, const MoveArray& moves, 
     //Lista as informações básicas para as Métricas
     if (_unitAbsAB.size() > 0) {
         this->calculateMedia(state, newMetric);
-        newMetric.SetTimeExecution(t.getElapsedTimeInMilliSec());
-        saveMetrics(newMetric);
     }
+    
+    newMetric.SetTimeExecution(t.getElapsedTimeInMilliSec());
+    saveMetrics(newMetric, moveVec);
 
 
     /*
@@ -190,7 +193,7 @@ bool GenerationClassForDeep::unitsInMoves(GameState& state, const MoveArray & mo
 
 void GenerationClassForDeep::controlUnitsForAB(GameState & state, const MoveArray & moves) {
     //verifico se as unidades não foram mortas
-    std::set<Unit, lex_met> tempUnitAbsAB;
+    std::set<Unit, lex_metdeep> tempUnitAbsAB;
     for (auto & un : _unitAbsAB) {
         if (state.unitExist(_playerID, un.ID())) {
             tempUnitAbsAB.insert(un);
@@ -657,10 +660,10 @@ std::vector<Unit> GenerationClassForDeep::copiaVector(std::vector<Unit> original
     return novo;
 }
 
-void GenerationClassForDeep::calculateMedia(GameState & state, MetricGAB& metric) {
+void GenerationClassForDeep::calculateMedia(GameState & state, MetricDeep& metric) {
     PositionType posicaoMedia(0);
     int qtd = 0;
-    std::set<Unit, lex_metfar> newUnits;
+    std::set<Unit, lex_metdeep> newUnits;
     for (auto & un : _unitAbsAB) {
         if (state.unitExist(_playerID, un.ID())) {
             newUnits.insert(state.getUnitByID(_playerID, un.ID()));
@@ -696,10 +699,11 @@ void GenerationClassForDeep::calculateMedia(GameState & state, MetricGAB& metric
     //std::cout << "-------------- FIM DISTANCIAS ---------------------- " << std::endl;
 }
 
-void GenerationClassForDeep::saveMetrics(MetricGAB & metrica) {
+void GenerationClassForDeep::saveMetrics(MetricDeep & metrica, std::vector<Action>& moveVec) {
+    mkdir("resultDeep",0777);
     std::ofstream arquivo;
 
-    std::string nomeArq = "estado_" + std::to_string(metrica.GetNumberAbstract());
+    std::string nomeArq = "resultDeep/GenerationClassForDeep_"+ std::to_string(_playerID)+"_"+metrica.getTimeToString()+"_" + std::to_string(metrica.GetNumberAbstract());
 
     arquivo.open(nomeArq, std::ios_base::app | std::ios_base::out);
 
@@ -719,6 +723,14 @@ void GenerationClassForDeep::saveMetrics(MetricGAB & metrica) {
 
     for (auto & un : metrica.GetUnitControlled()) {
         arquivo << "   " << (int) un.ID() << " " << un.type().getName() << " " << un.currentHP() << " " << "(" << un.x() << "," << un.y() << ")" << std::endl;
+    }
+    
+    arquivo << " Cópia do estado:" << std::endl;
+    arquivo << metrica.GetStateString() << std::endl;
+    
+    arquivo << " Movimentos sugeridos:" << std::endl;
+    for(auto & act : moveVec){
+        arquivo << act.debugString() << std::endl;
     }
 
     arquivo << std::endl;

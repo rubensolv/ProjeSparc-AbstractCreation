@@ -1,8 +1,8 @@
-#include "PortfolioGreedySearch.h"
+#include "PortfolioGreedySearchDeep.h"
 
 using namespace SparCraft;
 
-PortfolioGreedySearch::PortfolioGreedySearch(const IDType & player, const IDType & enemyScript, const size_t & iter, const size_t & responses, const size_t & timeLimit)
+PortfolioGreedySearchDeep::PortfolioGreedySearchDeep(const IDType & player, const IDType & enemyScript, const size_t & iter, const size_t & responses, const size_t & timeLimit, int numPartida)
 	: _player(player)
 	, _enemyScript(enemyScript)
 	, _iterations(iter)
@@ -13,15 +13,17 @@ PortfolioGreedySearch::PortfolioGreedySearch(const IDType & player, const IDType
 	_playerScriptPortfolio.push_back(PlayerModels::NOKDPS);
 	_playerScriptPortfolio.push_back(PlayerModels::KiterDPS);
 	//_playerScriptPortfolio.push_back(PlayerModels::Cluster);
+        controlPartidas = numPartida;
 }
 
 
-UnitScriptData PortfolioGreedySearch::searchForScripts(const IDType & player, const GameState & state)
+UnitScriptData PortfolioGreedySearchDeep::searchForScripts(const IDType & player, const GameState & state)
 {
     Timer t;
     t.start();
 
     const IDType enemyPlayer(state.getEnemy(player));
+    
 
     // calculate the seed scripts for each player
     // they will be used to seed the initial root search
@@ -61,10 +63,19 @@ UnitScriptData PortfolioGreedySearch::searchForScripts(const IDType & player, co
     return  currentScriptData;
 }
 
-std::vector<Action> PortfolioGreedySearch::search(const IDType & player, const GameState & state)
+std::vector<Action> PortfolioGreedySearchDeep::search(const IDType & player, const GameState & state)
 {
     Timer t;
+    MetricDeep newMetric;
     t.start();
+    
+    newMetric.SetNumberUnits(state.numUnits(player));
+    newMetric.SetNumberUnitsEnemy(state.numUnits(state.getEnemy(player)));
+    newMetric.SetRound(state.getTime());
+    
+    newMetric.SetNumberAbstract(controlPartidas);
+    newMetric.SetStateString(state.toString());
+    newMetric.SetTypeAlgoritm("PGSNormal");
 
     const IDType enemyPlayer(state.getEnemy(player));
 
@@ -116,11 +127,14 @@ std::vector<Action> PortfolioGreedySearch::search(const IDType & player, const G
     //printf("\nMove PGS chosen in %lf ms\n", ms);
 
     _totalEvals = 0;
+    newMetric.SetLTD2(eval(player, state, currentScriptData).val());
+    newMetric.SetTimeExecution(t.getElapsedTimeInMilliSec());
+    saveMetrics(newMetric, moveVec);
 
     return moveVec;
 }
 
-void PortfolioGreedySearch::doPortfolioSearch(const IDType & player, const GameState & state, UnitScriptData & currentScriptData, Timer & t)
+void PortfolioGreedySearchDeep::doPortfolioSearch(const IDType & player, const GameState & state, UnitScriptData & currentScriptData, Timer & t)
 {
   //  Timer t;
  //   t.start();
@@ -168,7 +182,7 @@ void PortfolioGreedySearch::doPortfolioSearch(const IDType & player, const GameS
     }   
 }
 
-IDType PortfolioGreedySearch::calculateInitialSeed(const IDType & player, const GameState & state)
+IDType PortfolioGreedySearchDeep::calculateInitialSeed(const IDType & player, const GameState & state)
 {
     IDType bestScript;
     StateEvalScore bestScriptScore;
@@ -204,7 +218,7 @@ IDType PortfolioGreedySearch::calculateInitialSeed(const IDType & player, const 
     return bestScript;
 }
 
-StateEvalScore PortfolioGreedySearch::eval(const IDType & player, const GameState & state, UnitScriptData & playerScriptsChosen)
+StateEvalScore PortfolioGreedySearchDeep::eval(const IDType & player, const GameState & state, UnitScriptData & playerScriptsChosen)
 {
     const IDType enemyPlayer(state.getEnemy(player));
 
@@ -217,13 +231,47 @@ StateEvalScore PortfolioGreedySearch::eval(const IDType & player, const GameStat
     return g.getState().eval(player, SparCraft::EvaluationMethods::LTD2);
 }
 
-void  PortfolioGreedySearch::setAllScripts(const IDType & player, const GameState & state, UnitScriptData & data, const IDType & script)
+void  PortfolioGreedySearchDeep::setAllScripts(const IDType & player, const GameState & state, UnitScriptData & data, const IDType & script)
 {
     for (size_t unitIndex(0); unitIndex < state.numUnits(player); ++unitIndex)
     {
         data.setUnitScript(state.getUnit(player, unitIndex), script);
     }
 }
+
+void PortfolioGreedySearchDeep::saveMetrics(MetricDeep& metrica, std::vector<Action>& moveVec) {
+    mkdir("resultDeep",0777);
+    std::ofstream arquivo;
+
+    std::string nomeArq = "resultDeep/PortfolioGreedySearchDeep_"+ std::to_string(_player)+"_"+metrica.getTimeToString()+"_" + std::to_string(metrica.GetNumberAbstract());
+
+    arquivo.open(nomeArq, std::ios_base::app | std::ios_base::out);
+
+    if (!arquivo.is_open()) {
+        System::FatalError("Problem Opening Output File: Arquivo de metrica");
+    }
+
+    arquivo << " Round = " << metrica.GetRound() << std::endl;
+    arquivo << " Número de Unidades = " << metrica.GetNumberUnits() << std::endl;
+    arquivo << " Número de Unidades Inimigas = " << metrica.GetNumberUnitsEnemy() << std::endl;
+    arquivo << " LTD2 = " << metrica.GetLTD2() << std::endl;
+    arquivo << " Tempo de Execução = " << metrica.GetTimeExecution() << std::endl;
+    arquivo << " Tipo de Algoritmo Utilizado = " << metrica.GetTypeAlgoritm() << std::endl;
+    arquivo << " Distancia Media das Unidades na Abstração = " << metrica.GetAverageDistance() << std::endl;
+    arquivo << " Número da Abstração = " << metrica.GetNumberAbstract() << std::endl;
+    
+    arquivo << " Cópia do estado:" << std::endl;
+    arquivo << metrica.GetStateString() << std::endl;
+    
+    arquivo << " Movimentos sugeridos:" << std::endl;
+    for(auto & act : moveVec){
+        arquivo << act.debugString() << std::endl;
+    }
+
+    arquivo << std::endl;
+    arquivo.close();
+}
+
 
 /*
 std::vector<Action> PortfolioGreedySparCraft::search(const IDType & player, const GameState & state)
