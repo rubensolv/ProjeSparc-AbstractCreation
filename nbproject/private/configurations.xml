@@ -2,8 +2,6 @@
 <configurationDescriptor version="100">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
-      <df name=".settings">
-      </df>
       <df name="asset">
         <df name="images">
           <df name="command_icons">
@@ -19,7 +17,7 @@
         </df>
       </df>
       <df name="bin">
-        <df name="estados_vitoria">
+        <df name="resultDeep">
         </df>
       </df>
       <df name="bwapidata">
@@ -159,16 +157,22 @@
         <in>ABPGSSand.h</in>
         <in>ABPGSSimetrico.cpp</in>
         <in>ABPGSSimetrico.h</in>
+        <in>ABPGSSimetricoDeep.cpp</in>
+        <in>ABPGSSimetricoDeep.h</in>
         <in>ABPGSwithRepeatAction.cpp</in>
         <in>ABPGSwithRepeatAction.h</in>
         <in>ABPOEFixo.cpp</in>
         <in>ABPOEFixo.h</in>
         <in>ABPOELimit.cpp</in>
         <in>ABPOELimit.h</in>
+        <in>ABPOELimitDeep.cpp</in>
+        <in>ABPOELimitDeep.h</in>
         <in>ABPOELimitWithRepeatAction.cpp</in>
         <in>ABPOELimitWithRepeatAction.h</in>
         <in>ABPOESimetrico.cpp</in>
         <in>ABPOESimetrico.h</in>
+        <in>ABPOESimetricoDeep.cpp</in>
+        <in>ABPOESimetricoDeep.h</in>
         <in>AbstractScript.cpp</in>
         <in>AbstractScript.h</in>
         <in>Action.cpp</in>
@@ -199,6 +203,12 @@
         <in>BeamLearner_EpsilonGreedy.h</in>
         <in>BeamLearner_QLearning.cpp</in>
         <in>BeamLearner_QLearning.h</in>
+        <in>CacheKeySimple.cpp</in>
+        <in>CacheKeySimple.h</in>
+        <in>CacheKeySimpleHash.cpp</in>
+        <in>CacheKeySimpleHash.h</in>
+        <in>CacheSimple.cpp</in>
+        <in>CacheSimple.h</in>
         <in>Common.cpp</in>
         <in>Common.h</in>
         <in>ConfigFileGenerator.h</in>
@@ -210,8 +220,12 @@
         <in>GameState.h</in>
         <in>GenerationClass.cpp</in>
         <in>GenerationClass.h</in>
+        <in>GenerationClassForDeep.cpp</in>
+        <in>GenerationClassForDeep.h</in>
         <in>GenerationClassForMetric.cpp</in>
         <in>GenerationClassForMetric.h</in>
+        <in>GenerationClassForMetricClosest.cpp</in>
+        <in>GenerationClassForMetricClosest.h</in>
         <in>GenerationClassForMetricold.cpp</in>
         <in>GenerationClassForMetricold.h</in>
         <in>GenerationClassForMonit.cpp</in>
@@ -230,6 +244,10 @@
         <in>Logger.cpp</in>
         <in>Logger.h</in>
         <in>Map.hpp</in>
+        <in>MetricDeep.cpp</in>
+        <in>MetricDeep.h</in>
+        <in>MetricGAB.cpp</in>
+        <in>MetricGAB.h</in>
         <in>MoveArray.cpp</in>
         <in>MoveArray.h</in>
         <in>MoveSet.hpp</in>
@@ -273,8 +291,14 @@
         <in>Player_PGSAA.h</in>
         <in>Player_PortfolioGreedySearch.cpp</in>
         <in>Player_PortfolioGreedySearch.h</in>
+        <in>Player_PortfolioGreedySearchCache.cpp</in>
+        <in>Player_PortfolioGreedySearchCache.h</in>
+        <in>Player_PortfolioGreedySearchDeep.cpp</in>
+        <in>Player_PortfolioGreedySearchDeep.h</in>
         <in>Player_PortfolioOnlineEvolution.cpp</in>
         <in>Player_PortfolioOnlineEvolution.h</in>
+        <in>Player_PortfolioOnlineEvolutionDeep.cpp</in>
+        <in>Player_PortfolioOnlineEvolutionDeep.h</in>
         <in>Player_Random.cpp</in>
         <in>Player_Random.h</in>
         <in>Player_StratifiedPolicySearch.cpp</in>
@@ -283,10 +307,16 @@
         <in>Player_UCT.h</in>
         <in>PortfolioGreedySearch.cpp</in>
         <in>PortfolioGreedySearch.h</in>
+        <in>PortfolioGreedySearchCache.cpp</in>
+        <in>PortfolioGreedySearchCache.h</in>
+        <in>PortfolioGreedySearchDeep.cpp</in>
+        <in>PortfolioGreedySearchDeep.h</in>
         <in>PortfolioGreedySearchNoTime.cpp</in>
         <in>PortfolioGreedySearchNoTime.h</in>
         <in>PortfolioOnlineEvolution.cpp</in>
         <in>PortfolioOnlineEvolution.h</in>
+        <in>PortfolioOnlineEvolutionDeep.cpp</in>
+        <in>PortfolioOnlineEvolutionDeep.h</in>
         <in>PortfolioOnlineEvolutionLimit.cpp</in>
         <in>PortfolioOnlineEvolutionLimit.h</in>
         <in>PortfolioOnlineGenome.cpp</in>

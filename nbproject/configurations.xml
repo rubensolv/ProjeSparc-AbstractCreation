@@ -53,11 +53,14 @@
         <in>ABPGSPlus.cpp</in>
         <in>ABPGSSand.cpp</in>
         <in>ABPGSSimetrico.cpp</in>
+        <in>ABPGSSimetricoDeep.cpp</in>
         <in>ABPGSwithRepeatAction.cpp</in>
         <in>ABPOEFixo.cpp</in>
         <in>ABPOELimit.cpp</in>
+        <in>ABPOELimitDeep.cpp</in>
         <in>ABPOELimitWithRepeatAction.cpp</in>
         <in>ABPOESimetrico.cpp</in>
+        <in>ABPOESimetricoDeep.cpp</in>
         <in>AbstractScript.cpp</in>
         <in>Action.cpp</in>
         <in>AdaptableStratType.cpp</in>
@@ -71,12 +74,20 @@
         <in>BeamLearner.cpp</in>
         <in>BeamLearner_EpsilonGreedy.cpp</in>
         <in>BeamLearner_QLearning.cpp</in>
+        <in>CacheKeySimple.cpp</in>
+        <in>CacheKeySimple.h</in>
+        <in>CacheKeySimpleHash.cpp</in>
+        <in>CacheKeySimpleHash.h</in>
+        <in>CacheSimple.cpp</in>
+        <in>CacheSimple.h</in>
         <in>Common.cpp</in>
         <in>EnumData.cpp</in>
         <in>Game.cpp</in>
         <in>GameState.cpp</in>
         <in>GenerationClass.cpp</in>
+        <in>GenerationClassForDeep.cpp</in>
         <in>GenerationClassForMetric.cpp</in>
+        <in>GenerationClassForMetricClosest.cpp</in>
         <in>GenerationClassForMetricold.cpp</in>
         <in>GenerationClassForMonit.cpp</in>
         <in>GenerationClassWithClosest.cpp</in>
@@ -85,6 +96,10 @@
         <in>ImprovedPortfolioGreedySearch.cpp</in>
         <in>ImprovedPortfolioGreedySearchNoTime.cpp</in>
         <in>Logger.cpp</in>
+        <in>MetricDeep.cpp</in>
+        <in>MetricDeep.h</in>
+        <in>MetricGAB.cpp</in>
+        <in>MetricGAB.h</in>
         <in>MoveArray.cpp</in>
         <in>PGSAA.cpp</in>
         <in>Player.cpp</in>
@@ -106,13 +121,19 @@
         <in>Player_NOKDPS.cpp</in>
         <in>Player_PGSAA.cpp</in>
         <in>Player_PortfolioGreedySearch.cpp</in>
+        <in>Player_PortfolioGreedySearchCache.cpp</in>
+        <in>Player_PortfolioGreedySearchDeep.cpp</in>
         <in>Player_PortfolioOnlineEvolution.cpp</in>
+        <in>Player_PortfolioOnlineEvolutionDeep.cpp</in>
         <in>Player_Random.cpp</in>
         <in>Player_StratifiedPolicySearch.cpp</in>
         <in>Player_UCT.cpp</in>
         <in>PortfolioGreedySearch.cpp</in>
+        <in>PortfolioGreedySearchCache.cpp</in>
+        <in>PortfolioGreedySearchDeep.cpp</in>
         <in>PortfolioGreedySearchNoTime.cpp</in>
         <in>PortfolioOnlineEvolution.cpp</in>
+        <in>PortfolioOnlineEvolutionDeep.cpp</in>
         <in>PortfolioOnlineEvolutionLimit.cpp</in>
         <in>PortfolioOnlineGenome.cpp</in>
         <in>SparCraft.cpp</in>
@@ -401,6 +422,10 @@
         <ccTool flags="0">
         </ccTool>
       </item>
+      <item path="source/ABPGSSimetricoDeep.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
       <item path="source/ABPGSwithRepeatAction.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
@@ -413,6 +438,10 @@
         <ccTool flags="0">
         </ccTool>
       </item>
+      <item path="source/ABPOELimitDeep.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
       <item path="source/ABPOELimitWithRepeatAction.cpp"
             ex="false"
             tool="1"
@@ -421,6 +450,10 @@
         </ccTool>
       </item>
       <item path="source/ABPOESimetrico.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="source/ABPOESimetricoDeep.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
       </item>
@@ -482,6 +515,18 @@
         <ccTool flags="0">
         </ccTool>
       </item>
+      <item path="source/CacheKeySimple.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="source/CacheKeySimple.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="source/CacheKeySimpleHash.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="source/CacheKeySimpleHash.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="source/CacheSimple.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="source/CacheSimple.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="source/Common.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
@@ -502,7 +547,18 @@
         <ccTool flags="0">
         </ccTool>
       </item>
+      <item path="source/GenerationClassForDeep.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
       <item path="source/GenerationClassForMetric.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="source/GenerationClassForMetricClosest.cpp"
             ex="false"
             tool="1"
             flavor2="8">
@@ -555,6 +611,14 @@
       <item path="source/Logger.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
+      </item>
+      <item path="source/MetricDeep.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="source/MetricDeep.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="source/MetricGAB.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="source/MetricGAB.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="source/MoveArray.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
@@ -655,7 +719,28 @@
         <ccTool flags="0">
         </ccTool>
       </item>
+      <item path="source/Player_PortfolioGreedySearchCache.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="source/Player_PortfolioGreedySearchDeep.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
       <item path="source/Player_PortfolioOnlineEvolution.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="source/Player_PortfolioOnlineEvolutionDeep.cpp"
             ex="false"
             tool="1"
             flavor2="8">
@@ -681,6 +766,20 @@
         <ccTool flags="0">
         </ccTool>
       </item>
+      <item path="source/PortfolioGreedySearchCache.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="source/PortfolioGreedySearchDeep.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
       <item path="source/PortfolioGreedySearchNoTime.cpp"
             ex="false"
             tool="1"
@@ -689,6 +788,13 @@
         </ccTool>
       </item>
       <item path="source/PortfolioOnlineEvolution.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="source/PortfolioOnlineEvolutionDeep.cpp"
             ex="false"
             tool="1"
             flavor2="8">

@@ -1,8 +1,8 @@
-#include "PortfolioGreedySearch.h"
+#include "PortfolioGreedySearchCache.h"
 
 using namespace SparCraft;
 
-PortfolioGreedySearch::PortfolioGreedySearch(const IDType & player, const IDType & enemyScript, const size_t & iter, const size_t & responses, const size_t & timeLimit)
+PortfolioGreedySearchCache::PortfolioGreedySearchCache(const IDType & player, const IDType & enemyScript, const size_t & iter, const size_t & responses, const size_t & timeLimit)
 	: _player(player)
 	, _enemyScript(enemyScript)
 	, _iterations(iter)
@@ -13,10 +13,16 @@ PortfolioGreedySearch::PortfolioGreedySearch(const IDType & player, const IDType
 	_playerScriptPortfolio.push_back(PlayerModels::NOKDPS);
 	_playerScriptPortfolio.push_back(PlayerModels::KiterDPS);
 	//_playerScriptPortfolio.push_back(PlayerModels::Cluster);
+        
+        cacheLTD2 = new CacheSimple();
 }
 
+PortfolioGreedySearchCache::~PortfolioGreedySearchCache()
+{
+    delete cacheLTD2;
+}
 
-UnitScriptData PortfolioGreedySearch::searchForScripts(const IDType & player, const GameState & state)
+UnitScriptData PortfolioGreedySearchCache::searchForScripts(const IDType & player, const GameState & state)
 {
     Timer t;
     t.start();
@@ -61,7 +67,7 @@ UnitScriptData PortfolioGreedySearch::searchForScripts(const IDType & player, co
     return  currentScriptData;
 }
 
-std::vector<Action> PortfolioGreedySearch::search(const IDType & player, const GameState & state)
+std::vector<Action> PortfolioGreedySearchCache::search(const IDType & player, const GameState & state)
 {
     Timer t;
     t.start();
@@ -120,7 +126,7 @@ std::vector<Action> PortfolioGreedySearch::search(const IDType & player, const G
     return moveVec;
 }
 
-void PortfolioGreedySearch::doPortfolioSearch(const IDType & player, const GameState & state, UnitScriptData & currentScriptData, Timer & t)
+void PortfolioGreedySearchCache::doPortfolioSearch(const IDType & player, const GameState & state, UnitScriptData & currentScriptData, Timer & t)
 {
   //  Timer t;
  //   t.start();
@@ -168,7 +174,7 @@ void PortfolioGreedySearch::doPortfolioSearch(const IDType & player, const GameS
     }   
 }
 
-IDType PortfolioGreedySearch::calculateInitialSeed(const IDType & player, const GameState & state)
+IDType PortfolioGreedySearchCache::calculateInitialSeed(const IDType & player, const GameState & state)
 {
     IDType bestScript;
     StateEvalScore bestScriptScore;
@@ -204,8 +210,13 @@ IDType PortfolioGreedySearch::calculateInitialSeed(const IDType & player, const 
     return bestScript;
 }
 
-StateEvalScore PortfolioGreedySearch::eval(const IDType & player, const GameState & state, UnitScriptData & playerScriptsChosen)
+StateEvalScore PortfolioGreedySearchCache::eval(const IDType & player, const GameState & state, UnitScriptData & playerScriptsChosen)
 {
+    ScoreType valCache = cacheLTD2->hitItemCache(playerScriptsChosen, player);
+    if( valCache != -9999 ){
+        std::cout << " Valor LTD2 contido no cache é:"<< valCache << std::endl;
+    }
+    
     const IDType enemyPlayer(state.getEnemy(player));
 
 	Game g(state, 100);
@@ -214,10 +225,13 @@ StateEvalScore PortfolioGreedySearch::eval(const IDType & player, const GameStat
 
         //return g.playLimitedIndividualScripts(player, playerScriptsChosen, 4);
     g.playIndividualScripts(playerScriptsChosen);
-    return g.getState().eval(player, SparCraft::EvaluationMethods::LTD2);
+    StateEvalScore tempStateEval = g.getState().eval(player, SparCraft::EvaluationMethods::LTD2);
+    std::cout << " Valor LTD2 calculado pelo Playout:"<< tempStateEval.val() << std::endl;    
+    cacheLTD2->addItemCache(playerScriptsChosen, player, tempStateEval.val());
+    return tempStateEval;
 }
 
-void  PortfolioGreedySearch::setAllScripts(const IDType & player, const GameState & state, UnitScriptData & data, const IDType & script)
+void  PortfolioGreedySearchCache::setAllScripts(const IDType & player, const GameState & state, UnitScriptData & data, const IDType & script)
 {
     for (size_t unitIndex(0); unitIndex < state.numUnits(player); ++unitIndex)
     {

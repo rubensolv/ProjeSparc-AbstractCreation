@@ -70,6 +70,7 @@ Player 1 PortfolioGreedySearch 40 NOKDPS 1 0
 #Player 0 PortfolioGreedySearch 0 NOKDPS 1 0
 #Player 1 PortfolioOnlineEvolution 40 NOKDPS 1 0
 #Player 0 Player_PGSAA 40 NOKDPS 1 0
+Player 0 PortfolioGreedySearchCache 60 NOKDPS 1 0
 
 #Sample StratifiedPolicySearch Players
 #Player 0 StratifiedPolicySearch 40 NOKDPS 1 0
@@ -82,7 +83,7 @@ Player 1 PortfolioGreedySearch 40 NOKDPS 1 0
 #Player 0 ABPGSSimetrico 7
 #Player 0 ABPOESimetrico 7
 #Player 0 ABPOESimetricoDeep 7
-Player 0 ABPOELimitDeep 7
+#Player 0 ABPOELimitDeep 7
 #Player 0 ABPGSSimetricoDeep 7
 #Player 0 PortfolioGreedySearchDeep 0 NOKDPS 1 0
 #Player 0 PortfolioOnlineEvolutionDeep 0 NOKDPS 1 0

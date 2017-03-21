@@ -9,6 +9,7 @@
 #include "Player_AdaptiveBeamAlphaBeta.h"
 #include "Player_PortfolioGreedySearch.h"
 #include "Player_PortfolioGreedySearchDeep.h"
+#include "Player_PortfolioGreedySearchCache.h"
 #include "Player_PortfolioOnlineEvolutionDeep.h"
 #include "Player_StratifiedPolicySearch.h"
 #include "Player_IRStratifiedPolicySearch.h"
