@@ -37,6 +37,7 @@
 #include "ABPOELimitWithRepeatAction.h"
 #include "GenerationClassWithClosest.h"
 #include "GenerationClassForMetric.h"
+#include "GenerationClassForMetricSample.h"
 #include "GenerationClassForMetricClosest.h"
 #include "GenerationClassForDeep.h"
 #include "ABPOESimetricoDeep.h"

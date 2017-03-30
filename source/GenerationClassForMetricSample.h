@@ -8,8 +8,10 @@
  */
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include <iostream>
+#include <fstream>
 #include "Player.h"
 #include "AlphaBetaSearchParameters.hpp"
 #include "AlphaBetaSearchAbstract.h"
@@ -23,7 +25,7 @@ namespace SparCraft {
     class AlphaBetaSearchAbstract;
     class PortfolioGreedySearchNoTime;
     
-    struct lex_met {
+    struct lex_mets {
 
         bool operator()(const Unit & lUn, const Unit & rUn) const {
             return lUn < rUn;
@@ -31,23 +33,23 @@ namespace SparCraft {
     };
     
 
-    class GenerationClassForMetric : public Player {
+    class GenerationClassForMetricSample : public Player {
         AlphaBetaSearchAbstract * alphaBeta;
         PortfolioGreedySearchNoTime * pgs;
         std::map<Unit, std::vector<Unit>> _unAttack;
         std::vector<Unit> _UnReut;
-        std::set<Unit, lex_met> _unitAbsAB;
+        std::set<Unit, lex_mets> _unitAbsAB;
         TimeType lastTime;
 	std::vector< std::vector<Unit> > _vecAbstracao;
         int _controlNumAbs;
         int numUnits;
     public:
-        GenerationClassForMetric(const IDType & playerID);
-        GenerationClassForMetric(const IDType & playerID, int numUnitsAB);
+        GenerationClassForMetricSample(const IDType & playerID);
+        GenerationClassForMetricSample(const IDType & playerID, int numUnitsAB);
         void getMoves(GameState & state, const MoveArray & moves, std::vector<Action> & moveVec);
 
         IDType getType() {
-            return PlayerModels::GenerationClassForMetric;
+            return PlayerModels::GenerationClassForMetricSample;
         }
         void listaOrdenada(const IDType & playerID, const Unit & unidade, GameState & state, std::vector<Unit> & unidades);
         void listaOrdenadaForMoves(const IDType & playerID, const Unit & unidade, GameState & state, std::vector<Unit> & unidades, const MoveArray & moves);
@@ -86,7 +88,9 @@ namespace SparCraft {
         void iniciaAbstracao(GameState& state);
         std::vector<Unit> copiaVector(std::vector<Unit> original);
         void calculateMedia(GameState& state, MetricGAB& metric);
-        void gerarCombinacoes(std::vector<std::string> & combinacoes);
+        void lerAmostragem(std::vector<std::vector<int> > & combinacoes);
+        void split(const std::string &s, std::vector<std::string> & v);
+        
     };
 }
 

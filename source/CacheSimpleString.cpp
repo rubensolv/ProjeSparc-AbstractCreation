@@ -1,27 +1,28 @@
 
 
-#include "CacheSimple.h"
+#include "CacheSimpleString.h"
 
 using namespace SparCraft;
 
-CacheSimple::CacheSimple() {
+CacheSimpleString::CacheSimpleString() {
 }
 
-CacheSimple::CacheSimple(const CacheSimple& orig) {
+CacheSimpleString::CacheSimpleString(const CacheSimpleString& orig) {
 }
 
-CacheSimple::~CacheSimple() {
+CacheSimpleString::~CacheSimpleString() {
 }
 
-void CacheSimple::addItemCache(UnitScriptData& playerScript, const IDType& player, ScoreType LTD2Value) {
+void CacheSimpleString::addItemCache(UnitScriptData& playerScript, const IDType& player, ScoreType LTD2Value) {
     //converter UnitScriptData em CacheKeySimple
-    CacheKeySimple keyValue;
-    keyValue.readScriptData(playerScript, player);
+    //CacheKeySimple keyValue;
+    //keyValue.readScriptData(playerScript, player);
+    //keyValue.print();
     //busca o valor no cache
     //if(cache.find(keyValue) == cache.end()){
         //não foi encontrado
         //cache[keyValue] = LTD2Value;
-        cache.emplace(keyValue, LTD2Value);
+        cache.emplace(readScriptData(playerScript,player), LTD2Value);
         
     //}
     //????????????????????????????????????????????
@@ -29,18 +30,28 @@ void CacheSimple::addItemCache(UnitScriptData& playerScript, const IDType& playe
     //????????????????????????????????????????????
 }
 
-ScoreType CacheSimple::hitItemCache(UnitScriptData& playerScript, const IDType& player) {
+ScoreType CacheSimpleString::hitItemCache(UnitScriptData& playerScript, const IDType& player) {
     ScoreType retorno(-9999);
-    CacheKeySimple keyValue;
-    keyValue.readScriptData(playerScript, player);
-    
-    if( !(cache.find(keyValue)==cache.end()) ){
-        return cache.find(keyValue)->second;
+    //CacheKeySimple keyValue;
+    //keyValue.readScriptData(playerScript, player);
+    std::string buscarKey = readScriptData(playerScript, player);
+    if( !(cache.find(buscarKey)==cache.end()) ){
+        return cache.find(buscarKey)->second;
     }
     
     return retorno;
 }
 
+void CacheSimpleString::print() {
+    std::cout<< "Tamanho do cache: " << cache.size() <<std::endl;
+}
 
 
+std::string CacheSimpleString::readScriptData(UnitScriptData & currentScript, const IDType& player) {
+    std::string retorno = "";
+    for(auto & script : currentScript.getMapUnitScript(player)){
+        retorno += std::to_string(script.second) + ";";
+    }
+    return retorno;
+}
 

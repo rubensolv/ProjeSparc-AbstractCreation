@@ -17,6 +17,7 @@ void CacheSimple::addItemCache(UnitScriptData& playerScript, const IDType& playe
     //converter UnitScriptData em CacheKeySimple
     CacheKeySimple keyValue;
     keyValue.readScriptData(playerScript, player);
+    keyValue.print();
     //busca o valor no cache
     //if(cache.find(keyValue) == cache.end()){
         //não foi encontrado
@@ -41,6 +42,12 @@ ScoreType CacheSimple::hitItemCache(UnitScriptData& playerScript, const IDType& 
     return retorno;
 }
 
+void CacheSimple::print() {
+    std::cout<< "****************** PRINT CACHE ***************"<<std::endl;
+    std::cout<< "Tamanho do cache: " << cache.size() <<std::endl;
+    
+    std::cout<< "****************** FIM PRINT CACHE ***************"<<std::endl;
+}
 
 
 

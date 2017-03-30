@@ -17,6 +17,10 @@
         </df>
       </df>
       <df name="bin">
+        <df name="amostragens">
+        </df>
+        <df name="Monitoramento">
+        </df>
         <df name="resultDeep">
         </df>
       </df>
@@ -209,6 +213,8 @@
         <in>CacheKeySimpleHash.h</in>
         <in>CacheSimple.cpp</in>
         <in>CacheSimple.h</in>
+        <in>CacheSimpleString.cpp</in>
+        <in>CacheSimpleString.h</in>
         <in>Common.cpp</in>
         <in>Common.h</in>
         <in>ConfigFileGenerator.h</in>
@@ -226,6 +232,8 @@
         <in>GenerationClassForMetric.h</in>
         <in>GenerationClassForMetricClosest.cpp</in>
         <in>GenerationClassForMetricClosest.h</in>
+        <in>GenerationClassForMetricSample.cpp</in>
+        <in>GenerationClassForMetricSample.h</in>
         <in>GenerationClassForMetricold.cpp</in>
         <in>GenerationClassForMetricold.h</in>
         <in>GenerationClassForMonit.cpp</in>

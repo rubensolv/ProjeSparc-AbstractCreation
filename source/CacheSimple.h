@@ -21,7 +21,7 @@ namespace SparCraft {
         void clear();
         const bool operator==(const CacheKeySimple &cacheKey) const;
         void readScriptData(UnitScriptData & currentScript, const IDType& player);
-
+        void print();
     private:
 
     };
@@ -45,7 +45,7 @@ namespace SparCraft {
         virtual ~CacheSimple();
         ScoreType hitItemCache(UnitScriptData & playerScript, const IDType & player);
         void addItemCache(UnitScriptData & playerScript, const IDType & player, ScoreType LTD2Value);
-        
+        void print();
     private:
         
 

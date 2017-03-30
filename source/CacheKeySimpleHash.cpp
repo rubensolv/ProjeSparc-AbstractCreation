@@ -15,7 +15,7 @@ CacheKeySimpleHash::~CacheKeySimpleHash() {
 size_t CacheKeySimpleHash::operator()(const CacheKeySimple& cacheKey) const {   
     size_t retorno;
     for(auto & keys : cacheKey.scriptVector){
-        retorno += std::hash<unsigned char>()(keys);
+        retorno = retorno ^ std::hash<unsigned char>()(keys);
     }
     
     return retorno;

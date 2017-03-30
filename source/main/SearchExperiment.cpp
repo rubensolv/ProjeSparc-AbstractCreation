@@ -590,6 +590,12 @@ void SearchExperiment::addPlayer(const std::string & line)
     { 
         players[playerID].push_back(PlayerPtr(new GenerationClassWithClosest(playerID)));
     }
+        else if (playerModelID == PlayerModels::GenerationClassForMetricSample)				
+    { 
+        int numUnits(0);
+        iss >> numUnits;
+        players[playerID].push_back(PlayerPtr(new GenerationClassForMetricSample(playerID, numUnits)));
+    }
         else if (playerModelID == PlayerModels::GenerationClassForMetric)				
     { 
         int numUnits(0);

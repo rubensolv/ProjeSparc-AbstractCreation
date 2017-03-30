@@ -107,7 +107,7 @@ namespace SparCraft {
             GenerationClassForMetric, GenerationClassForMonit, Player_PGSAA, AbstractScript, ABPGSSimetrico, 
             ABPOESimetrico, GenerationClassForMetricClosest, GenerationClassForDeep, ABPGSSimetricoDeep, 
             PortfolioGreedySearchDeep, PortfolioOnlineEvolutionDeep, ABPOESimetricoDeep, ABPOELimitDeep,
-            PortfolioGreedySearchCache, None, Size
+            PortfolioGreedySearchCache, GenerationClassForMetricSample, None, Size
         };
 
         static void init() {
@@ -144,6 +144,7 @@ namespace SparCraft {
             setData(ABPOELimitWithRepeatAction, "ABPOELimitWithRepeatAction");
             setData(GenerationClassWithClosest, "GenerationClassWithClosest");
             setData(GenerationClassForMetric, "GenerationClassForMetric");
+            setData(GenerationClassForMetricSample, "GenerationClassForMetricSample");
             setData(GenerationClassForMetricClosest, "GenerationClassForMetricClosest");
             //For Deep data
             setData(GenerationClassForDeep, "GenerationClassForDeep");

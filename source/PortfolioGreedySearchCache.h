@@ -6,16 +6,16 @@
 #include "Game.h"
 #include "Action.h"
 #include "UnitScriptData.h"
-#include "CacheSimple.h"
+#include "CacheSimpleString.h"
 #include <memory>
 
 namespace SparCraft {    
     typedef std::shared_ptr<Player> PlayerPtr;
     
-    class CacheSimple;
+    class CacheSimpleString;
     
     class PortfolioGreedySearchCache {
-        CacheSimple * cacheLTD2;
+        CacheSimpleString * cacheLTD2;
     protected:
         const IDType _player;
         const IDType _enemyScript;
@@ -25,6 +25,7 @@ namespace SparCraft {
         size_t _totalEvals;
         size_t _timeLimit;
         std::ofstream _fileTime;
+        int _qtdPlayoutIgnorar;
 
         void doPortfolioSearch(const IDType & player, const GameState & state, UnitScriptData & currentData, Timer & t);
         std::vector<Action> getMoveVec(const IDType & player, const GameState & state, const std::vector<IDType> & playerScripts);

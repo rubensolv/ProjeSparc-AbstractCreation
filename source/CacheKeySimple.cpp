@@ -44,5 +44,11 @@ void CacheKeySimple::readScriptData(UnitScriptData & currentScript, const IDType
 
 }
 
+void CacheKeySimple::print() {
+    for (auto & elem : scriptVector) {
+        std::cout<< (int) elem << ";";
+    }
+    std::cout<<" "<<std::endl;
 
+}
 

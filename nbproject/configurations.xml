@@ -80,6 +80,8 @@
         <in>CacheKeySimpleHash.h</in>
         <in>CacheSimple.cpp</in>
         <in>CacheSimple.h</in>
+        <in>CacheSimpleString.cpp</in>
+        <in>CacheSimpleString.h</in>
         <in>Common.cpp</in>
         <in>EnumData.cpp</in>
         <in>Game.cpp</in>
@@ -88,6 +90,7 @@
         <in>GenerationClassForDeep.cpp</in>
         <in>GenerationClassForMetric.cpp</in>
         <in>GenerationClassForMetricClosest.cpp</in>
+        <in>GenerationClassForMetricSample.cpp</in>
         <in>GenerationClassForMetricold.cpp</in>
         <in>GenerationClassForMonit.cpp</in>
         <in>GenerationClassWithClosest.cpp</in>
@@ -527,6 +530,10 @@
       </item>
       <item path="source/CacheSimple.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="source/CacheSimpleString.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="source/CacheSimpleString.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="source/Common.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
@@ -559,6 +566,13 @@
         </ccTool>
       </item>
       <item path="source/GenerationClassForMetricClosest.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="source/GenerationClassForMetricSample.cpp"
             ex="false"
             tool="1"
             flavor2="8">
