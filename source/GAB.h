@@ -12,39 +12,31 @@
 #include "AlphaBetaSearchParameters.hpp"
 #include "AlphaBetaSearchAbstract.h"
 #include "PortfolioGreedySearchNoTime.h"
+#include "ManagerAbstraction.h"
 
 class TranspositionTable;
 
 namespace SparCraft {
 
     class AlphaBetaSearchAbstract;
-    class PortfolioGreedySearchNoTime;
-    
-    struct lex_compare {
+    class PortfolioGreedySearchNoTime;   
 
-        bool operator()(const Unit & lUn, const Unit & rUn) const {
-            return lUn < rUn;
-        }
-    };
-    
-
-    class GenerationClass : public Player {
+    class GAB : public Player {
         AlphaBetaSearchAbstract * alphaBeta;
         PortfolioGreedySearchNoTime * pgs;
         std::map<Unit, std::vector<Unit>> _unAttack;
         std::vector<Unit> _UnReut;
-        std::set<Unit, lex_compare> _unitAbsAB;
+        std::set<Unit> _unitAbsAB;
         TimeType lastTime;
         int numUnits;
+        ManagerAbstraction * manager;
     public:
-        GenerationClass(const IDType & playerID);
-        GenerationClass(const IDType & playerID, int numUnitsAB);
+        GAB(const IDType & playerID);
+        GAB(const IDType & playerID, int numUnitsAB, std::string controlAbstraction);
         void getMoves(GameState & state, const MoveArray & moves, std::vector<Action> & moveVec);
-        void getMoves3(GameState & state, const MoveArray & moves, std::vector<Action> & moveVec);
-        void getMoves2(GameState & state, const MoveArray & moves, std::vector<Action> & moveVec);
 
         IDType getType() {
-            return PlayerModels::GenerationClass;
+            return PlayerModels::GAB;
         }
         void listaOrdenada(const IDType & playerID, const Unit & unidade, GameState & state, std::vector<Unit> & unidades);
         void listaOrdenadaForMoves(const IDType & playerID, const Unit & unidade, GameState & state, std::vector<Unit> & unidades, const MoveArray & moves);
@@ -74,9 +66,11 @@ namespace SparCraft {
         //idéia da movimentação por inicialiaçao
         bool applyClosestInicialization(std::vector<Unit> & unAliadas, std::vector<Unit> & unInimigas, GameState & state);
 
-
         //ideia de analisar as ações dada à uma unidade
         void analisarAbstractForm(GameState newState, std::vector<Unit> unidadesInimigas);
+        
+        //métodos utilização das classes de gestão de unidades
+        void iniciarClasseAbstracao(std::string controlAbstraction);
     };
 }
 

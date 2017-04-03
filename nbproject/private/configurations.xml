@@ -220,6 +220,8 @@
         <in>ConfigFileGenerator.h</in>
         <in>EnumData.cpp</in>
         <in>EnumData.h</in>
+        <in>GAB.cpp</in>
+        <in>GAB.h</in>
         <in>Game.cpp</in>
         <in>Game.h</in>
         <in>GameState.cpp</in>
@@ -251,6 +253,10 @@
         <in>ImprovedPortfolioGreedySearchNoTime.h</in>
         <in>Logger.cpp</in>
         <in>Logger.h</in>
+        <in>ManagerAbstraction.cpp</in>
+        <in>ManagerAbstraction.h</in>
+        <in>ManagerRandom.cpp</in>
+        <in>ManagerRandom.h</in>
         <in>Map.hpp</in>
         <in>MetricDeep.cpp</in>
         <in>MetricDeep.h</in>
@@ -305,6 +311,8 @@
         <in>Player_PortfolioGreedySearchDeep.h</in>
         <in>Player_PortfolioOnlineEvolution.cpp</in>
         <in>Player_PortfolioOnlineEvolution.h</in>
+        <in>Player_PortfolioOnlineEvolutionCache.cpp</in>
+        <in>Player_PortfolioOnlineEvolutionCache.h</in>
         <in>Player_PortfolioOnlineEvolutionDeep.cpp</in>
         <in>Player_PortfolioOnlineEvolutionDeep.h</in>
         <in>Player_Random.cpp</in>
@@ -323,6 +331,8 @@
         <in>PortfolioGreedySearchNoTime.h</in>
         <in>PortfolioOnlineEvolution.cpp</in>
         <in>PortfolioOnlineEvolution.h</in>
+        <in>PortfolioOnlineEvolutionCache.cpp</in>
+        <in>PortfolioOnlineEvolutionCache.h</in>
         <in>PortfolioOnlineEvolutionDeep.cpp</in>
         <in>PortfolioOnlineEvolutionDeep.h</in>
         <in>PortfolioOnlineEvolutionLimit.cpp</in>

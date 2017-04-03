@@ -302,3 +302,8 @@ void PortfolioOnlineGenome::printScripts(const IDType & player, const GameState 
 		}
 	}
 }
+
+const std::map<int, IDType> PortfolioOnlineGenome::getMapUnitScript(const IDType& player) const {
+    return _unitScriptMap[player][0];
+}
+

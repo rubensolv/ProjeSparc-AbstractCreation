@@ -60,6 +60,7 @@ public:
     const PlayerPtr &   getPlayerPtr(const IDType & player, const size_t & index);
     const size_t        getNumScripts(const IDType & player) const;
     const StateEvalScore & getFitness() const;
+    const std::map<int, IDType> getMapUnitScript(const IDType & player) const;
 
     friend bool operator<(const PortfolioOnlineGenome & l, const PortfolioOnlineGenome & r)
     {

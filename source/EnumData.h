@@ -107,7 +107,7 @@ namespace SparCraft {
             GenerationClassForMetric, GenerationClassForMonit, Player_PGSAA, AbstractScript, ABPGSSimetrico, 
             ABPOESimetrico, GenerationClassForMetricClosest, GenerationClassForDeep, ABPGSSimetricoDeep, 
             PortfolioGreedySearchDeep, PortfolioOnlineEvolutionDeep, ABPOESimetricoDeep, ABPOELimitDeep,
-            PortfolioGreedySearchCache, GenerationClassForMetricSample, None, Size
+            PortfolioGreedySearchCache, GenerationClassForMetricSample, PortfolioOnlineEvolutionCache, GAB, None, Size
         };
 
         static void init() {
@@ -126,6 +126,7 @@ namespace SparCraft {
             setData(Cluster, "Cluster");
             setData(PortfolioGreedySearch, "PortfolioGreedySearch");
             setData(PortfolioOnlineEvolution, "PortfolioOnlineEvolution");
+            setData(PortfolioOnlineEvolutionCache, "PortfolioOnlineEvolutionCache");
             setData(PortfolioGreedySearchCache, "PortfolioGreedySearchCache");
             setData(ImprovedPortfolioGreedySearch, "ImprovedPortfolioGreedySearch");
             setData(UCT, "UCT");
@@ -136,6 +137,7 @@ namespace SparCraft {
             setData(MoveBackward, "MoveBackward");
             //incluída para teste
             setData(GenerationClass, "GenerationClass");
+            setData(GAB, "GAB");
             setData(ABPOEFixo, "ABPOEFixo");
             setData(ABPOELimit, "ABPOELimit");
             setData(ABPGSSand, "ABPGSSand");

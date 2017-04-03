@@ -529,12 +529,20 @@ void SearchExperiment::addPlayer(const std::string & line)
         
         players[playerID].push_back(PlayerPtr(new GenerationClass(playerID, numUnits))); 
     }
-    
-    else if (playerModelID == PlayerModels::ABPOESimetrico)				
+        else if (playerModelID == PlayerModels::GAB)				
+    { 
+        int numUnits(0);
+        std::string controlAbstractionID;
+        iss >> numUnits;
+        iss >> controlAbstractionID;
+        
+        players[playerID].push_back(PlayerPtr(new GAB(playerID, numUnits, controlAbstractionID))); 
+    }
+        else if (playerModelID == PlayerModels::ABPOESimetrico)				
     { 
         int numUnits(0);
         iss >> numUnits;
-        
+                
         players[playerID].push_back(PlayerPtr(new ABPOESimetrico(playerID, numUnits))); 
     }
     else if (playerModelID == PlayerModels::ABPOESimetricoDeep)				
@@ -716,6 +724,20 @@ else if (playerModelID == PlayerModels::ImprovedPortfolioGreedySearch)
         iss >> responses;
 
         players[playerID].push_back(PlayerPtr(new Player_PortfolioGreedySearchDeep(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit))); 
+    }
+    else if (playerModelID == PlayerModels::PortfolioOnlineEvolutionCache)				
+    { 
+        std::string enemyPlayerModel;
+        size_t timeLimit(0);
+        int iterations(1);
+        int responses(0);
+
+        iss >> timeLimit;
+        iss >> enemyPlayerModel;
+        iss >> iterations;
+        iss >> responses;
+
+        players[playerID].push_back(PlayerPtr(new Player_PortfolioOnlineEvolutionCache(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit))); 
     }
     else if (playerModelID == PlayerModels::IRStratifiedPolicySearch)
     {

@@ -55,3 +55,30 @@ std::string CacheSimpleString::readScriptData(UnitScriptData & currentScript, co
     return retorno;
 }
 
+void CacheSimpleString::addPOItemCache(PortfolioOnlineGenome& currentGenome, const IDType& player, ScoreType LTD2Value) {
+    cache.emplace(readPOGenome(currentGenome,player), LTD2Value);
+}
+
+
+ScoreType CacheSimpleString::hitItemPOCache(PortfolioOnlineGenome& currentGenome, const IDType& player) {
+    ScoreType retorno(-9999);
+    //CacheKeySimple keyValue;
+    //keyValue.readScriptData(playerScript, player);
+    std::string buscarKey = readPOGenome(currentGenome, player);
+    if( !(cache.find(buscarKey)==cache.end()) ){
+        return cache.find(buscarKey)->second;
+    }
+    
+    return retorno;
+}
+
+
+
+std::string CacheSimpleString::readPOGenome(PortfolioOnlineGenome& currentGenome, const IDType& player) {
+    std::string retorno = "";
+    for(auto & script : currentGenome.getMapUnitScript(player)){
+        retorno += std::to_string(script.second) + ";";
+    }
+    return retorno;
+}
+

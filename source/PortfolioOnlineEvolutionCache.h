@@ -9,14 +9,18 @@
 #include <algorithm>
 #include <ctime>
 #include "PortfolioOnlineGenome.h"
+#include "CacheSimpleString.h"
 
 namespace SparCraft
 {
 	
 typedef	std::shared_ptr<Player> PlayerPtr;
 
-class PortfolioOnlineEvolution
+class CacheSimpleString;
+
+class PortfolioOnlineEvolutionCache
 {
+    CacheSimpleString * cacheLTD2;
 protected:
 	
     const IDType				_player;
@@ -31,6 +35,7 @@ protected:
     size_t						_selectedMembers;
     size_t						_offspringPerSelected;
     std::ofstream				_fileTime;
+    int                         _qtdPlayoutIgnorar;
 
     void						init(const IDType & player,const GameState & state, std::vector<PortfolioOnlineGenome> & population);
     void                        doPortfolioSearch(const IDType & player,const GameState & state,PortfolioOnlineGenome & currentData);
@@ -43,7 +48,7 @@ protected:
 
 public:
 
-    PortfolioOnlineEvolution(const IDType & player, const IDType & enemyScript, const size_t & iter, const size_t & responses, const size_t & timeLimit);
+    PortfolioOnlineEvolutionCache(const IDType & player, const IDType & enemyScript, const size_t & iter, const size_t & responses, const size_t & timeLimit);
     std::vector<Action> search(const IDType & player, const GameState & state);
     UnitScriptData searchForScripts(const IDType & player, const GameState & state);
 };
