@@ -1,17 +1,17 @@
-#include "ManagerRandom.h"
+#include "ManagerClosest.h"
 
 using namespace SparCraft;
 
-ManagerRandom::ManagerRandom(const IDType & playerID, int numUnits) {
+ManagerClosest::ManagerClosest(const IDType & playerID, int numUnits) {
     this->_playerID = playerID;
     this->numUnits = numUnits;
 }
 
 
-ManagerRandom::~ManagerRandom() {
+ManagerClosest::~ManagerClosest() {
 }
 
-void ManagerRandom::controlUnitsForAB(GameState& state, const MoveArray& moves, std::set<Unit>& unidades) {
+void ManagerClosest::controlUnitsForAB(GameState& state, const MoveArray& moves, std::set<Unit>& unidades) {
 //verifico se as unidades não foram mortas
     std::set<Unit> tempUnitAbsAB;
     for (auto & un : unidades) {

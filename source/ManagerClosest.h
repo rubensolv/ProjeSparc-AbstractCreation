@@ -6,10 +6,10 @@
 
 namespace SparCraft {
 
-    class ManagerRandom : public ManagerAbstraction{
+    class ManagerClosest : public ManagerAbstraction{
     public:
-        ManagerRandom(const IDType & playerID, int numUnits);
-        virtual ~ManagerRandom();
+        ManagerClosest(const IDType & playerID, int numUnits);
+        virtual ~ManagerClosest();
         void controlUnitsForAB(GameState & state, const MoveArray & moves, std::set<Unit> & unidades);
     private:
 
