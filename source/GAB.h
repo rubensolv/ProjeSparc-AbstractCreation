@@ -13,6 +13,8 @@
 #include "AlphaBetaSearchAbstract.h"
 #include "PortfolioGreedySearchNoTime.h"
 #include "ManagerAbstraction.h"
+#include "ManagerRandom.h"
+#include "ManagerClosest.h"
 
 class TranspositionTable;
 

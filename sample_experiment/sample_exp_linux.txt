@@ -81,7 +81,8 @@ Player 1 PortfolioGreedySearch 40 NOKDPS 1 0
 
 # Sample Scripted Players
 #Player 0 GenerationClass 7
-Player 0 GAB 7 Random
+#Method to select units: {Random, Closest}
+Player 0 GAB 7 Closest
 #Player 1 ABPGSSimetrico 7
 #Player 0 ABPOESimetrico 7
 #Player 0 ABPOESimetricoDeep 7

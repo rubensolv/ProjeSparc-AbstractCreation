@@ -1,6 +1,5 @@
 
 #include "GAB.h"
-#include "ManagerRandom.h"
 
 using namespace SparCraft;
 
@@ -22,7 +21,7 @@ GAB::GAB(const IDType& playerID, int numUnitsAB, std::string controlAbstraction)
 }
 
 void GAB::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>& moveVec) {
-    
+    state.print();
     Timer t;
     t.start();
     moveVec.clear();
@@ -622,6 +621,9 @@ void GAB::removeAttackInUnAttack(Unit enemy, Unit Attacker) {
 void GAB::iniciarClasseAbstracao(std::string controlAbstraction) {
     if(controlAbstraction.compare("Random") == 0){
         manager = new ManagerRandom(_playerID, numUnits);
+    }
+    if(controlAbstraction.compare("Closest") == 0){
+        manager = new ManagerClosest(_playerID, numUnits);
     }
 }
 
