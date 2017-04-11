@@ -81,8 +81,9 @@ Player 1 PortfolioGreedySearch 40 NOKDPS 1 0
 
 # Sample Scripted Players
 #Player 0 GenerationClass 7
-#Method to select units: {Random, Closest}
-Player 0 GAB 7 Closest
+Player 0 DovePlayerAlpha
+#Method to select units: {Random, Closest, Farther, LessLife, MoreLife, ClosestEnemy, FartherEnemy, MoreDPS, LessDPS}
+#Player 0 GAB 7 Farther
 #Player 1 ABPGSSimetrico 7
 #Player 0 ABPOESimetrico 7
 #Player 0 ABPOESimetricoDeep 7
@@ -142,14 +143,14 @@ Player 0 GAB 7 Closest
 
 # Sample SeparatedState States
 #State SeparatedState 10 128 128 400 360 840 360 Protoss_Zealot 16
-State SeparatedState 50 128 128 400 360 840 360 Protoss_Dragoon 6 Protoss_Zealot 6
+State SeparatedState 10 128 128 400 360 840 360 Protoss_Dragoon 10 
 #State SeparatedState 70 128 128 400 360 840 360 Protoss_Dragoon 4 Terran_Marine 4
 #State SeparatedState 10 128 128 400 360 840 360 Protoss_Dragoon 5 Protoss_Zealot 5
 #State SeparatedState 10 128 128 400 360 840 360 Zerg_Zergling 10
 #State SeparatedState 100 128 128 400 360 840 360 Zerg_Zergling 15 Protoss_Dragoon 8
 #State SeparatedState 100 128 128 400 360 840 360 Protoss_Dragoon 4 Terran_Marine 4
 #State SeparatedState 100 128 128 400 360 840 360 Protoss_Dragoon 8 Protoss_Zealot 8
-#State SeparatedState 10 128 128 400 360 840 360 Protoss_Dragoon 25 Protoss_Zealot 25
+#State SeparatedState 4 128 128 400 360 840 360 Protoss_Dragoon 25 Protoss_Zealot 25
 #State SeparatedState 4 128 128 400 360 840 360 Protoss_Dragoon 16 Terran_Marine 25
 #State SeparatedState 100 128 128 400 360 840 360 Terran_Marine 20 Zerg_Zergling 20
 #State SeparatedState 10 128 128 400 360 840 360 Protoss_Zealot 16

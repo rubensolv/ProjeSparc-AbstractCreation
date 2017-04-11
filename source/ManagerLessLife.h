@@ -7,11 +7,11 @@
 
 namespace SparCraft {
     
-    class ManagerClosest : public ManagerAbstraction{
+    class ManagerLessLife : public ManagerAbstraction{
         Position _centroide;
     public:
-        ManagerClosest(const IDType & playerID, int numUnits);
-        virtual ~ManagerClosest();
+        ManagerLessLife(const IDType & playerID, int numUnits);
+        virtual ~ManagerLessLife();
         void controlUnitsForAB(GameState & state, const MoveArray & moves, std::set<Unit> & unidades);
     private:
         void unitsDie(GameState& state,std::set<Unit>& unidades);
@@ -22,6 +22,7 @@ namespace SparCraft {
         const PositionType getDistEuclidiana(const Position& pInicial, const Position& pFinal);
         bool unitExistInArray(Unit & unit, std::set<Unit>& unidades);
         bool existUnitsToAdd(std::set<Unit>& unidades, GameState & state);
+        IDType getIDUnitLessLife(GameState & state);
     };
 
 }

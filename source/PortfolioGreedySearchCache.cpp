@@ -21,7 +21,7 @@ PortfolioGreedySearchCache::~PortfolioGreedySearchCache() {
     delete cacheLTD2;
 }
 
-UnitScriptData PortfolioGreedySearchCache::searchForScripts(const IDType & player, const GameState & state) {
+UnitScriptData PortfolioGreedySearchCache::searchForScripts(const IDType & player, const GameState & state, StateEvalScore & bestScore) {
     Timer t;
     t.start();
 
@@ -42,8 +42,8 @@ UnitScriptData PortfolioGreedySearchCache::searchForScripts(const IDType & playe
 
     // do the initial root portfolio search for our player
     UnitScriptData currentScriptData(originalScriptData);
-    doPortfolioSearch(player, state, currentScriptData, t);
-
+    doPortfolioSearch(player, state, currentScriptData, t, bestScore);
+/*
     // iterate as many times as required
     for (size_t i(0); i < _responses; ++i) {
         // do the portfolio search to improve the enemy's scripts
@@ -52,7 +52,7 @@ UnitScriptData PortfolioGreedySearchCache::searchForScripts(const IDType & playe
         // then do portfolio search again for us to improve vs. enemy's update
         doPortfolioSearch(player, state, currentScriptData, t);
     }
-
+*/
     // convert the script vector into a move vector and return it
     //MoveArray moves;
     //state.generateMoves(moves, player);
@@ -64,7 +64,7 @@ UnitScriptData PortfolioGreedySearchCache::searchForScripts(const IDType & playe
     return currentScriptData;
 }
 
-std::vector<Action> PortfolioGreedySearchCache::search(const IDType & player, const GameState & state) {
+std::vector<Action> PortfolioGreedySearchCache::search(const IDType & player, const GameState & state, StateEvalScore & bestScore) {
     Timer t;
     t.start();
 
@@ -85,15 +85,15 @@ std::vector<Action> PortfolioGreedySearchCache::search(const IDType & player, co
 
     // do the initial root portfolio search for our player
     UnitScriptData currentScriptData(originalScriptData);
-    doPortfolioSearch(player, state, currentScriptData, t);
+    doPortfolioSearch(player, state, currentScriptData, t, bestScore);
 
     // iterate as many times as required
     for (size_t i(0); i < _responses; ++i) {
         // do the portfolio search to improve the enemy's scripts
-        doPortfolioSearch(enemyPlayer, state, currentScriptData, t);
+        doPortfolioSearch(enemyPlayer, state, currentScriptData, t, bestScore);
 
         // then do portfolio search again for us to improve vs. enemy's update
-        doPortfolioSearch(player, state, currentScriptData, t);
+        doPortfolioSearch(player, state, currentScriptData, t, bestScore);
     }
 
     ms = t.getElapsedTimeInMilliSec();
@@ -121,30 +121,36 @@ std::vector<Action> PortfolioGreedySearchCache::search(const IDType & player, co
     return moveVec;
 }
 
-void PortfolioGreedySearchCache::doPortfolioSearch(const IDType & player, const GameState & state, UnitScriptData & currentScriptData, Timer & t) {
+void PortfolioGreedySearchCache::doPortfolioSearch(const IDType & player, const GameState & state, UnitScriptData & currentScriptData, Timer & t, StateEvalScore & bestScore) {
     //  Timer t;
     //   t.start();
-
+    
     // the enemy of this player
     const IDType enemyPlayer(state.getEnemy(player));
 
-    while (t.getElapsedTimeInMilliSec() < _timeLimit)
-        //for (size_t i(0); i<_iterations; ++i)
+    int counterIterations = 0;
+
+    while(t.getElapsedTimeInMilliSec() < _timeLimit)
+    //for (size_t i(0); i<_iterations; ++i)
     {
         // set up data for best scripts
-        IDType bestScriptVec[Constants::Max_Units];
-        StateEvalScore bestScoreVec[Constants::Max_Units];
+        IDType          bestScriptVec[Constants::Max_Units];
+	    StateEvalScore  bestScoreVec[Constants::Max_Units];
+	    bool hasImproved = false;
 
         // for each unit that can move
-        for (size_t unitIndex(0); unitIndex < state.numUnits(player); ++unitIndex) {
-            if (_timeLimit > 0 && t.getElapsedTimeInMilliSec() > _timeLimit) {
+        for (size_t unitIndex(0); unitIndex<state.numUnits(player); ++unitIndex)
+        {
+            if (_timeLimit > 0 && t.getElapsedTimeInMilliSec() > _timeLimit)
+            {
                 break;
             }
 
             const Unit & unit(state.getUnit(player, unitIndex));
 
             // iterate over each script move that it can execute
-            for (size_t sIndex(0); sIndex < _playerScriptPortfolio.size(); ++sIndex) {
+            for (size_t sIndex(0); sIndex<_playerScriptPortfolio.size(); ++sIndex)
+            {
                 // set the current script for this unit
                 currentScriptData.setUnitScript(unit, _playerScriptPortfolio[sIndex]);
 
@@ -152,16 +158,38 @@ void PortfolioGreedySearchCache::doPortfolioSearch(const IDType & player, const 
                 StateEvalScore score = eval(player, state, currentScriptData);
 
                 // if we have a better score, set it
-                if (sIndex == 0 || score > bestScoreVec[unitIndex]) {
+                if (sIndex == 0 || score > bestScoreVec[unitIndex])
+                {
                     bestScriptVec[unitIndex] = _playerScriptPortfolio[sIndex];
-                    bestScoreVec[unitIndex] = score;
+                    bestScoreVec[unitIndex]  = score;
+
+                    //std::cout << "Eval: " << score.val() << std::endl;
+                }
+
+                if((counterIterations == 0 && sIndex == 0) || score > bestScore)
+                {
+                	bestScore = score;
+                    hasImproved = true;
                 }
             }
 
             // set the current vector to the best move for use in future simulations
             currentScriptData.setUnitScript(unit, bestScriptVec[unitIndex]);
         }
-    }
+
+    	//std::cout << "Completed Iteration without Improvements, iteration: " << counterIterations << " time elapsed: " << t.getElapsedTimeInMilliSec() << " time limit: " << _timeLimit << std::endl;
+
+
+        if(!hasImproved)
+        {
+        	//std::cout << "Completed Iteration without Improvements, iteration: " << counterIterations << " time elapsed: " << t.getElapsedTimeInMilliSec() << std::endl;
+            //std::cout << "Iteration: " << counterIterations << " LTD2 PGS: " << bestScore.val() << std::endl;
+        	//break;
+        	return;
+        }
+
+        counterIterations++;
+    }   
 }
 
 IDType PortfolioGreedySearchCache::calculateInitialSeed(const IDType & player, const GameState & state) {

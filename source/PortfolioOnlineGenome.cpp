@@ -307,3 +307,8 @@ const std::map<int, IDType> PortfolioOnlineGenome::getMapUnitScript(const IDType
     return _unitScriptMap[player][0];
 }
 
+const std::map<int, IDType> PortfolioOnlineGenome::getMapUnitScriptByLevel(const IDType& player, int level) const {
+    return _unitScriptMap[player][level];
+}
+
+

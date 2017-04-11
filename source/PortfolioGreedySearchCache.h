@@ -27,7 +27,7 @@ namespace SparCraft {
         std::ofstream _fileTime;
         int _qtdPlayoutIgnorar;
 
-        void doPortfolioSearch(const IDType & player, const GameState & state, UnitScriptData & currentData, Timer & t);
+        void doPortfolioSearch(const IDType & player, const GameState & state, UnitScriptData & currentData, Timer & t, StateEvalScore & bestScore);
         std::vector<Action> getMoveVec(const IDType & player, const GameState & state, const std::vector<IDType> & playerScripts);
         StateEvalScore eval(const IDType & player, const GameState & state, UnitScriptData & playerScriptsChosen);
         IDType calculateInitialSeed(const IDType & player, const GameState & state);
@@ -37,8 +37,8 @@ namespace SparCraft {
 
         PortfolioGreedySearchCache(const IDType & player, const IDType & enemyScript, const size_t & iter, const size_t & responses, const size_t & timeLimit);
         ~PortfolioGreedySearchCache();
-        std::vector<Action> search(const IDType & player, const GameState & state);
-        UnitScriptData searchForScripts(const IDType & player, const GameState & state);
+        std::vector<Action> search(const IDType & player, const GameState & state, StateEvalScore & bestScore);
+        UnitScriptData searchForScripts(const IDType & player, const GameState & state, StateEvalScore & bestScore);
     };
 
 }

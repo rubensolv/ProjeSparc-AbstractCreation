@@ -59,26 +59,7 @@ UnitScriptData PortfolioGreedySearch::searchForScripts(const IDType & player, co
     return currentScriptData;
 }
 
-std::vector<Action> PortfolioGreedySearch::search(const IDType & player, const GameState & state) {
-    std::ofstream arquivo;
-    if (player == _player) {
-        //gravando informacoes
-        
-
-        std::string nomeArq = "Monitor_PGS";
-
-        arquivo.open(nomeArq, std::ios_base::app | std::ios_base::out);
-
-        if (!arquivo.is_open()) {
-            System::FatalError("Problem Opening Output File: Arquivo PGS");
-        }
-        //std::cout << "Tempo da chamada= " << state.getTime() << std::endl;
-        arquivo << "Tempo da chamada= " << state.getTime() << std::endl;
-        //std::cout << " Qtd unidades existentes= " << state.numUnits(_playerID) << std::endl;
-        arquivo << " Qtd unidades existentes= " << state.numUnits(_player) << std::endl;
-        //gravando informacoes
-    }
-
+std::vector<Action> PortfolioGreedySearch::search(const IDType & player, const GameState & state) {    
     Timer t;
     t.start();
 
@@ -131,13 +112,6 @@ std::vector<Action> PortfolioGreedySearch::search(const IDType & player, const G
     //printf("\nMove PGS chosen in %lf ms\n", ms);
 
     _totalEvals = 0;
-
-    if (player == _player) {
-        arquivo<< "Escolhemos o PGS " << std::endl;
-        //std::cout << "LTD2=  " << eval(_player, state, currentScriptData).val() << std::endl;
-        arquivo<< "LTD2=  " << eval(_player, state, currentScriptData).val() << std::endl;
-        arquivo.close();
-    }
 
     return moveVec;
 }

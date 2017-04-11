@@ -15,6 +15,13 @@
 #include "ManagerAbstraction.h"
 #include "ManagerRandom.h"
 #include "ManagerClosest.h"
+#include "ManagerFarther.h"
+#include "ManagerLessLife.h"
+#include "ManagerMoreLife.h"
+#include "ManagerClosestEnemy.h"
+#include "ManagerFartherEnemy.h"
+#include "ManagerMoreDPS.h"
+#include "ManagerLessDPS.h"
 
 class TranspositionTable;
 

@@ -1,28 +1,25 @@
-#include "ManagerClosest.h"
+#include "ManagerLessLife.h"
 
 using namespace SparCraft;
 
-ManagerClosest::ManagerClosest(const IDType & playerID, int numUnits) {
+ManagerLessLife::ManagerLessLife(const IDType & playerID, int numUnits) {
     this->_playerID = playerID;
     this->numUnits = numUnits;
     srand(time(NULL));
 }
 
-ManagerClosest::~ManagerClosest() {
+ManagerLessLife::~ManagerLessLife() {
 }
 
-void ManagerClosest::controlUnitsForAB(GameState& state, const MoveArray& moves, std::set<Unit>& unidades) {
+void ManagerLessLife::controlUnitsForAB(GameState& state, const MoveArray& moves, std::set<Unit>& unidades) {
 
-    unitsDie(state, unidades);
+    //unitsDie(state, unidades);
+    unidades.clear();
 
     if (unidades.size() == 0) {
-        Unit & untBase(state.getUnit(_playerID, (rand() % state.numUnits(_playerID))));
+        Unit & untBase(state.getUnitByID(_playerID, getIDUnitLessLife(state)));
         unidades.insert(untBase);
     }
-    
-    printUnits(unidades);
-    
-    calcularCentroide(unidades);
     
     if (state.numUnits(_playerID) <= numUnits) {
         unidades.clear();
@@ -39,15 +36,27 @@ void ManagerClosest::controlUnitsForAB(GameState& state, const MoveArray& moves,
             }
             //unidades.insert(state.getUnit(_playerID, rand() % state.numUnits(_playerID)));
             control++;
-            printUnits(unidades);
         }
-
     }
-    
-    printUnits(unidades);
 }
 
-bool ManagerClosest::existUnitsToAdd(std::set<Unit>& unidades, GameState& state) {
+IDType ManagerLessLife::getIDUnitLessLife(GameState& state) {
+    Unit un;
+    HealthType lessHP(9999);
+    Unit t;
+    for (IDType u(0); u < state.numUnits(_playerID); ++u) {
+        t = state.getUnit(_playerID, u);
+        if(lessHP > t.currentHP()){
+            lessHP = t.currentHP();
+            un = t;
+        }
+    }
+    
+    return un.ID();
+}
+
+
+bool ManagerLessLife::existUnitsToAdd(std::set<Unit>& unidades, GameState& state) {
     Unit t;
     for (IDType u(0); u < state.numUnits(_playerID); ++u) {
         t = state.getUnit(_playerID, u);
@@ -60,7 +69,7 @@ bool ManagerClosest::existUnitsToAdd(std::set<Unit>& unidades, GameState& state)
 }
 
 
-IDType ManagerClosest::getIDUnitAdd(GameState& state, std::set<Unit>& unidades) {
+IDType ManagerLessLife::getIDUnitAdd(GameState& state, std::set<Unit>& unidades) {
     std::vector<Unit> unitOrdenar;
     Unit t;
     for (IDType u(0); u < state.numUnits(_playerID); ++u) {
@@ -75,7 +84,7 @@ IDType ManagerClosest::getIDUnitAdd(GameState& state, std::set<Unit>& unidades) 
     
 }
 
-bool ManagerClosest::unitExistInArray(Unit& unit, std::set<Unit>& unidades) {
+bool ManagerLessLife::unitExistInArray(Unit& unit, std::set<Unit>& unidades) {
     for(auto & un : unidades){
         if(un.equalsID(unit)){
             return true;
@@ -85,12 +94,11 @@ bool ManagerClosest::unitExistInArray(Unit& unit, std::set<Unit>& unidades) {
 }
 
 
-void ManagerClosest::sortUnits(std::vector<Unit>& unidades, GameState & state) {
+void ManagerLessLife::sortUnits(std::vector<Unit>& unidades, GameState & state) {
     for (int i = 1; i < unidades.size(); i++) {
         Unit key = unidades[i];
         int j = i - 1;
-        while ((j >= 0) && (getDistEuclidiana(_centroide, unidades[j].currentPosition(state.getTime()))
-                > getDistEuclidiana(_centroide, key.currentPosition(state.getTime())))
+        while ((j >= 0)             
                 && (unidades[j].currentHP() >= key.currentHP())
                 ) {
             unidades[j + 1] = unidades[j];
@@ -98,16 +106,24 @@ void ManagerClosest::sortUnits(std::vector<Unit>& unidades, GameState & state) {
         }
         unidades[j + 1] = key;
     }
+    /*
+    std::cout << " INICIO -------------Unidades ordenadas-----------" << std::endl;
+    for (auto & un : unidades) {
+        un.print();
+    }
+
+    std::cout << " FIM -------------Unidades ordenadas-----------" << std::endl;
+     */
 }
 
-const PositionType ManagerClosest::getDistEuclidiana(const Position& pInicial, const Position& pFinal) {
+const PositionType ManagerLessLife::getDistEuclidiana(const Position& pInicial, const Position& pFinal) {
     return sqrt(((pInicial.x() - pFinal.x())*(pInicial.x() - pFinal.x()) +
             (pInicial.y() - pFinal.y())*(pInicial.y() - pFinal.y())
             ));
 }
 
 
-void ManagerClosest::calcularCentroide(std::set<Unit>& unidades) {
+void ManagerLessLife::calcularCentroide(std::set<Unit>& unidades) {
     PositionType x(0), y(0);
     
     for(auto & un : unidades){
@@ -121,7 +137,7 @@ void ManagerClosest::calcularCentroide(std::set<Unit>& unidades) {
 }
 
 
-void ManagerClosest::unitsDie(GameState& state, std::set<Unit>& unidades) {
+void ManagerLessLife::unitsDie(GameState& state, std::set<Unit>& unidades) {
     //verifico se as unidades não foram mortas
     std::set<Unit> tempUnitAbsAB;
     for (auto & un : unidades) {
@@ -132,7 +148,7 @@ void ManagerClosest::unitsDie(GameState& state, std::set<Unit>& unidades) {
     unidades = tempUnitAbsAB;
 }
 
-void ManagerClosest::printUnits(std::set<Unit>& unidades) {
+void ManagerLessLife::printUnits(std::set<Unit>& unidades) {
     std::cout << " INICIO -------------Relacão de unidades controladas-----------" << std::endl;
     for (auto & un : unidades) {
         un.print();

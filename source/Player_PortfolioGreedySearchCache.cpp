@@ -22,7 +22,7 @@ Player_PortfolioGreedySearchCache::Player_PortfolioGreedySearchCache (const IDTy
 void Player_PortfolioGreedySearchCache::getMoves(GameState & state, const MoveArray & moves, std::vector<Action> & moveVec)
 {
     moveVec.clear();
-	PortfolioGreedySearchCache pgs(_playerID, _seed, _iterations, _responses, _timeLimit);
-
-	moveVec = pgs.search(_playerID, state);
+    PortfolioGreedySearchCache pgs(_playerID, _seed, _iterations, _responses, _timeLimit);
+    StateEvalScore bestScore;    
+    moveVec = pgs.search(_playerID, state, bestScore);
 }

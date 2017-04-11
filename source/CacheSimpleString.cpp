@@ -65,6 +65,9 @@ ScoreType CacheSimpleString::hitItemPOCache(PortfolioOnlineGenome& currentGenome
     //CacheKeySimple keyValue;
     //keyValue.readScriptData(playerScript, player);
     std::string buscarKey = readPOGenome(currentGenome, player);
+    
+    //std::cout << "Chave procurada = "<< buscarKey << std::endl;
+    
     if( !(cache.find(buscarKey)==cache.end()) ){
         return cache.find(buscarKey)->second;
     }

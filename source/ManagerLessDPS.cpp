@@ -1,28 +1,25 @@
-#include "ManagerClosest.h"
+#include "ManagerLessDPS.h"
 
 using namespace SparCraft;
 
-ManagerClosest::ManagerClosest(const IDType & playerID, int numUnits) {
+ManagerLessDPS::ManagerLessDPS(const IDType & playerID, int numUnits) {
     this->_playerID = playerID;
     this->numUnits = numUnits;
     srand(time(NULL));
 }
 
-ManagerClosest::~ManagerClosest() {
+ManagerLessDPS::~ManagerLessDPS() {
 }
 
-void ManagerClosest::controlUnitsForAB(GameState& state, const MoveArray& moves, std::set<Unit>& unidades) {
+void ManagerLessDPS::controlUnitsForAB(GameState& state, const MoveArray& moves, std::set<Unit>& unidades) {
 
-    unitsDie(state, unidades);
+    //unitsDie(state, unidades);
+    unidades.clear();
 
     if (unidades.size() == 0) {
-        Unit & untBase(state.getUnit(_playerID, (rand() % state.numUnits(_playerID))));
+        Unit & untBase(state.getUnitByID(_playerID, getIDUnitMoreDPS(state)));
         unidades.insert(untBase);
-    }
-    
-    printUnits(unidades);
-    
-    calcularCentroide(unidades);
+    }    
     
     if (state.numUnits(_playerID) <= numUnits) {
         unidades.clear();
@@ -39,15 +36,40 @@ void ManagerClosest::controlUnitsForAB(GameState& state, const MoveArray& moves,
             }
             //unidades.insert(state.getUnit(_playerID, rand() % state.numUnits(_playerID)));
             control++;
-            printUnits(unidades);
         }
-
     }
-    
-    printUnits(unidades);
 }
 
-bool ManagerClosest::existUnitsToAdd(std::set<Unit>& unidades, GameState& state) {
+IDType ManagerLessDPS::getIDUnitMoreDPS(GameState& state) {
+    Unit un;
+    double DPS(100000);
+    Unit t;
+    
+    for (IDType u(0); u < state.numUnits(_playerID); ++u) {
+        t = state.getUnit(_playerID, u);
+        
+        double DPSunit = ((double)t.damage()/(double)t.attackCooldown()) / t.currentHP();
+        
+        if(DPS > DPSunit){
+            DPS = DPSunit;
+            un = t;
+        }
+    }
+    
+    return un.ID();
+}
+
+bool ManagerLessDPS::hasMoreDPS(Unit& u1, Unit& u2) {
+    
+    double u1Threat = ((double)u1.damage()/(double)u1.attackCooldown()) / u1.currentHP();
+    double u2Threat = ((double)u2.damage()/(double)u2.attackCooldown()) / u2.currentHP();
+
+    return u1Threat > u2Threat;
+}
+
+
+
+bool ManagerLessDPS::existUnitsToAdd(std::set<Unit>& unidades, GameState& state) {
     Unit t;
     for (IDType u(0); u < state.numUnits(_playerID); ++u) {
         t = state.getUnit(_playerID, u);
@@ -60,7 +82,7 @@ bool ManagerClosest::existUnitsToAdd(std::set<Unit>& unidades, GameState& state)
 }
 
 
-IDType ManagerClosest::getIDUnitAdd(GameState& state, std::set<Unit>& unidades) {
+IDType ManagerLessDPS::getIDUnitAdd(GameState& state, std::set<Unit>& unidades) {
     std::vector<Unit> unitOrdenar;
     Unit t;
     for (IDType u(0); u < state.numUnits(_playerID); ++u) {
@@ -75,7 +97,7 @@ IDType ManagerClosest::getIDUnitAdd(GameState& state, std::set<Unit>& unidades) 
     
 }
 
-bool ManagerClosest::unitExistInArray(Unit& unit, std::set<Unit>& unidades) {
+bool ManagerLessDPS::unitExistInArray(Unit& unit, std::set<Unit>& unidades) {
     for(auto & un : unidades){
         if(un.equalsID(unit)){
             return true;
@@ -85,29 +107,42 @@ bool ManagerClosest::unitExistInArray(Unit& unit, std::set<Unit>& unidades) {
 }
 
 
-void ManagerClosest::sortUnits(std::vector<Unit>& unidades, GameState & state) {
+void ManagerLessDPS::sortUnits(std::vector<Unit>& unidades, GameState & state) {
+
     for (int i = 1; i < unidades.size(); i++) {
         Unit key = unidades[i];
         int j = i - 1;
-        while ((j >= 0) && (getDistEuclidiana(_centroide, unidades[j].currentPosition(state.getTime()))
-                > getDistEuclidiana(_centroide, key.currentPosition(state.getTime())))
-                && (unidades[j].currentHP() >= key.currentHP())
+        while ((j >= 0)             
+                && ( hasMoreDPS(unidades[j], key)  )
                 ) {
             unidades[j + 1] = unidades[j];
             j--;
         }
         unidades[j + 1] = key;
     }
+    
+    /*
+    std::cout << " INICIO -------------Unidades ordenadas-----------" << std::endl;
+    double DPSunit = 0;
+    for (auto & un : unidades) {
+        un.print();
+        DPSunit = ((double)un.damage()/(double)un.attackCooldown()) / un.currentHP();
+        std::cout << DPSunit << std::endl;
+    }
+
+    std::cout << " FIM -------------Unidades ordenadas-----------" << std::endl;
+    */
+    
 }
 
-const PositionType ManagerClosest::getDistEuclidiana(const Position& pInicial, const Position& pFinal) {
+const PositionType ManagerLessDPS::getDistEuclidiana(const Position& pInicial, const Position& pFinal) {
     return sqrt(((pInicial.x() - pFinal.x())*(pInicial.x() - pFinal.x()) +
             (pInicial.y() - pFinal.y())*(pInicial.y() - pFinal.y())
             ));
 }
 
 
-void ManagerClosest::calcularCentroide(std::set<Unit>& unidades) {
+void ManagerLessDPS::calcularCentroide(std::set<Unit>& unidades) {
     PositionType x(0), y(0);
     
     for(auto & un : unidades){
@@ -121,7 +156,7 @@ void ManagerClosest::calcularCentroide(std::set<Unit>& unidades) {
 }
 
 
-void ManagerClosest::unitsDie(GameState& state, std::set<Unit>& unidades) {
+void ManagerLessDPS::unitsDie(GameState& state, std::set<Unit>& unidades) {
     //verifico se as unidades não foram mortas
     std::set<Unit> tempUnitAbsAB;
     for (auto & un : unidades) {
@@ -132,7 +167,7 @@ void ManagerClosest::unitsDie(GameState& state, std::set<Unit>& unidades) {
     unidades = tempUnitAbsAB;
 }
 
-void ManagerClosest::printUnits(std::set<Unit>& unidades) {
+void ManagerLessDPS::printUnits(std::set<Unit>& unidades) {
     std::cout << " INICIO -------------Relacão de unidades controladas-----------" << std::endl;
     for (auto & un : unidades) {
         un.print();

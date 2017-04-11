@@ -21,7 +21,6 @@ GAB::GAB(const IDType& playerID, int numUnitsAB, std::string controlAbstraction)
 }
 
 void GAB::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>& moveVec) {
-    state.print();
     Timer t;
     t.start();
     moveVec.clear();
@@ -624,6 +623,27 @@ void GAB::iniciarClasseAbstracao(std::string controlAbstraction) {
     }
     if(controlAbstraction.compare("Closest") == 0){
         manager = new ManagerClosest(_playerID, numUnits);
+    }
+    if(controlAbstraction.compare("Farther") == 0){
+        manager = new ManagerFarther(_playerID, numUnits);
+    }
+    if(controlAbstraction.compare("LessLife") == 0){
+        manager = new ManagerLessLife(_playerID, numUnits);
+    }
+    if(controlAbstraction.compare("MoreLife") == 0){
+        manager = new ManagerMoreLife(_playerID, numUnits);
+    }
+    if(controlAbstraction.compare("ClosestEnemy") == 0){
+        manager = new ManagerClosestEnemy(_playerID, numUnits);
+    }
+    if(controlAbstraction.compare("FartherEnemy") == 0){
+        manager = new ManagerFartherEnemy(_playerID, numUnits);
+    }
+    if(controlAbstraction.compare("MoreDPS") == 0){
+        manager = new ManagerMoreDPS(_playerID, numUnits);
+    }
+    if(controlAbstraction.compare("LessDPS") == 0){
+        manager = new ManagerLessDPS(_playerID, numUnits);
     }
 }
 

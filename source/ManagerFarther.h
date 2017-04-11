@@ -7,11 +7,11 @@
 
 namespace SparCraft {
     
-    class ManagerClosest : public ManagerAbstraction{
+    class ManagerFarther : public ManagerAbstraction{
         Position _centroide;
     public:
-        ManagerClosest(const IDType & playerID, int numUnits);
-        virtual ~ManagerClosest();
+        ManagerFarther(const IDType & playerID, int numUnits);
+        virtual ~ManagerFarther();
         void controlUnitsForAB(GameState & state, const MoveArray & moves, std::set<Unit> & unidades);
     private:
         void unitsDie(GameState& state,std::set<Unit>& unidades);

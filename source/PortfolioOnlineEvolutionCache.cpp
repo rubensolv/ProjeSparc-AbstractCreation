@@ -91,8 +91,9 @@ void PortfolioOnlineEvolutionCache::crossover(const IDType & player, const GameS
 	population = newPopulation;
 }
 
-void PortfolioOnlineEvolutionCache::evalPopulation(const IDType & player, const GameState & state, std::vector<PortfolioOnlineGenome> & population)
+StateEvalScore PortfolioOnlineEvolutionCache::evalPopulation(const IDType & player, const GameState & state, std::vector<PortfolioOnlineGenome> & population)
 {
+    //std::cout << "Análise hit cache POE Cache"<< std::endl;
 	const IDType enemyPlayer(state.getEnemy(player));
 	for(int i = 0; i < population.size(); i++)
 	{
@@ -102,12 +103,14 @@ void PortfolioOnlineEvolutionCache::evalPopulation(const IDType & player, const 
                 ScoreType valCache = cacheLTD2->hitItemPOCache(population[i], player);
                 StateEvalScore tempStateEval;
                 if(valCache != -9999){
+                 //   std::cout << "Cache hit "<< valCache << std::endl;
                     population[i].setFitness(StateEvalScore(valCache, 0));
                 }else{
                     Game g(state, 100);
                     _totalEvals++;
                     tempStateEval = g.playoutGenome(player, population[i], _playoutLimit);
                     population[i].setFitness(tempStateEval); 
+                    //std::cout << "Cache miss "<< tempStateEval.val() << std::endl;
                     cacheLTD2->addPOItemCache(population[i], player, tempStateEval.val());
                 }
                 
@@ -120,12 +123,17 @@ void PortfolioOnlineEvolutionCache::evalPopulation(const IDType & player, const 
 	}
 
 	std::sort(population.begin(), population.end());
+        
+        //std::cout << " FIM Análise hit cache POE Cache"<< std::endl;
+        return population[0].getFitness();
 }
 
 std::vector<Action> PortfolioOnlineEvolutionCache::search(const IDType & player, const GameState & state)
 {
     Timer t;
     t.start();
+    
+    //std::cout << " Iniciando POE Cache " << std::endl;
 
     const IDType enemyPlayer(state.getEnemy(player));
 
@@ -134,19 +142,39 @@ std::vector<Action> PortfolioOnlineEvolutionCache::search(const IDType & player,
 
     std::vector<PortfolioOnlineGenome> population;
     init(player, state, population);
+    
+    ScoreType evalReturn = -9999;
+    StateEvalScore scoreFitness(evalReturn, 0);
+    int numberMutate = 0, maxChange = 0;
 
-    while(ms < this->_timeLimit)
+    while((ms < this->_timeLimit) and  (numberMutate < 4) )
     {
-    	evalPopulation(player, state, population);
+    	StateEvalScore tmpEval = evalPopulation(player, state, population);
     	select(player, state, population);
     	mutatePopulation(player, state, population);
     	//crossover(player, state, population);
 
     	ms = t.getElapsedTimeInMilliSec();
+        if(scoreFitness < tmpEval  and maxChange < 2){
+            scoreFitness = tmpEval;
+            //std::cout<<"Score Fitness Parcial = "<< (double) tmpEval.val()<<std::endl;
+            maxChange = 0;
+        }else{
+            //std::cout<<"Score Fitness Final = "<< (double) scoreFitness.val() <<std::endl;
+            if(maxChange >=1){
+                //std::cout<<"Parei o Fitness"<<std::endl;
+                break;
+            }else{
+                //std::cout<<"Incrementei MaxChange"<<std::endl;
+                maxChange++;
+            }
+            
+        }
+        numberMutate++;
     }
 
-//    ms = t.getElapsedTimeInMilliSec();
-//    printf("\nMove POE chosen in %lf ms\n", ms);
+    //ms = t.getElapsedTimeInMilliSec();
+    //printf("\nMove POE chosen in %lf ms\n", ms);
 
 	evalPopulation(player, state, population);
 
@@ -159,11 +187,12 @@ std::vector<Action> PortfolioOnlineEvolutionCache::search(const IDType & player,
 
     _totalEvals = 0;
 
+    //std::cout << " Encerrando POE Cache " << std::endl;
     return moveVec;
 }
 
 
-UnitScriptData PortfolioOnlineEvolutionCache::searchForScripts(const IDType& player, const GameState& state){
+UnitScriptData PortfolioOnlineEvolutionCache::searchForScripts(const IDType& player, const GameState& state, StateEvalScore & bestScore){
     Timer t;
     t.start();
 
@@ -174,21 +203,42 @@ UnitScriptData PortfolioOnlineEvolutionCache::searchForScripts(const IDType& pla
 
     std::vector<PortfolioOnlineGenome> population;
     init(player, state, population);
+    
+    ScoreType evalReturn = -9999;
+    StateEvalScore scoreFitness(evalReturn, 0);
+    int numberMutate = 0, maxChange = 0;
 
-    while(ms < this->_timeLimit)
+    while((ms < this->_timeLimit) and  (numberMutate < 4) )
     {
-    	evalPopulation(player, state, population);
+    	StateEvalScore tmpEval = evalPopulation(player, state, population);
     	select(player, state, population);
     	mutatePopulation(player, state, population);
     	//crossover(player, state, population);
 
     	ms = t.getElapsedTimeInMilliSec();
+        
+        if(scoreFitness < tmpEval  and maxChange < 2){
+            scoreFitness = tmpEval;
+            //std::cout<<"Score Fitness Parcial = "<< (double) tmpEval.val()<<std::endl;
+            maxChange = 0;
+        }else{
+            //std::cout<<"Score Fitness Final = "<< (double) scoreFitness.val() <<std::endl;
+            if(maxChange >=1){
+                //std::cout<<"Parei o Fitness"<<std::endl;
+                break;
+            }else{
+                //std::cout<<"Incrementei MaxChange"<<std::endl;
+                maxChange++;
+            }
+            
+        }
+        numberMutate++;
     }
 
 //    ms = t.getElapsedTimeInMilliSec();
 //    printf("\nMove POE chosen in %lf ms\n", ms);
     
-    evalPopulation(player, state, population);
+    bestScore = evalPopulation(player, state, population);
     //population[0].
     PortfolioOnlineGenome pop = population[0];
     UnitScriptData currentScriptData;
@@ -204,4 +254,54 @@ UnitScriptData PortfolioOnlineEvolutionCache::searchForScripts(const IDType& pla
     }
 
     return currentScriptData;
+}
+
+PortfolioOnlineGenome PortfolioOnlineEvolutionCache::searchForGenome(const IDType& player, const GameState& state, StateEvalScore & bestScore) {
+    Timer t;
+    t.start();
+
+    const IDType enemyPlayer(state.getEnemy(player));
+
+    double ms = t.getElapsedTimeInMilliSec();
+    //printf("\nFirst Part %lf ms\n", ms);
+
+    std::vector<PortfolioOnlineGenome> population;
+    init(player, state, population);
+    
+    ScoreType evalReturn = -9999;
+    StateEvalScore scoreFitness(evalReturn, 0);
+    int numberMutate = 0, maxChange = 0;
+
+    while((ms < this->_timeLimit) and  (numberMutate < 4) )
+    {
+    	StateEvalScore tmpEval = evalPopulation(player, state, population);
+    	select(player, state, population);
+    	mutatePopulation(player, state, population);
+    	//crossover(player, state, population);
+
+    	ms = t.getElapsedTimeInMilliSec();
+        if(scoreFitness < tmpEval  and maxChange < 2){
+            scoreFitness = tmpEval;
+            //std::cout<<"Score Fitness Parcial = "<< (double) tmpEval.val()<<std::endl;
+            maxChange = 0;
+        }else{
+            //std::cout<<"Score Fitness Final = "<< (double) scoreFitness.val() <<std::endl;
+            if(maxChange >=1){
+                //std::cout<<"Parei o Fitness"<<std::endl;
+                break;
+            }else{
+                //std::cout<<"Incrementei MaxChange"<<std::endl;
+                maxChange++;
+            }
+            
+        }
+        numberMutate++;
+    }
+
+//    ms = t.getElapsedTimeInMilliSec();
+//    printf("\nMove POE chosen in %lf ms\n", ms);
+    
+     bestScore = evalPopulation(player, state, population);    
+    
+    return population[0];
 }

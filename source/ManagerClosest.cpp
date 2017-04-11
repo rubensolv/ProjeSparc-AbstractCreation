@@ -20,8 +20,6 @@ void ManagerClosest::controlUnitsForAB(GameState& state, const MoveArray& moves,
         unidades.insert(untBase);
     }
     
-    printUnits(unidades);
-    
     calcularCentroide(unidades);
     
     if (state.numUnits(_playerID) <= numUnits) {
@@ -36,15 +34,13 @@ void ManagerClosest::controlUnitsForAB(GameState& state, const MoveArray& moves,
         while (unidades.size() < numUnits and control < 20) {
             if(existUnitsToAdd(unidades, state)){
                 unidades.insert(state.getUnitByID(_playerID, getIDUnitAdd(state, unidades)));
+                calcularCentroide(unidades);
             }
             //unidades.insert(state.getUnit(_playerID, rand() % state.numUnits(_playerID)));
             control++;
-            printUnits(unidades);
         }
 
     }
-    
-    printUnits(unidades);
 }
 
 bool ManagerClosest::existUnitsToAdd(std::set<Unit>& unidades, GameState& state) {

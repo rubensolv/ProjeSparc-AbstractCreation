@@ -1,17 +1,17 @@
-#include "ManagerClosest.h"
+#include "ManagerFarther.h"
 
 using namespace SparCraft;
 
-ManagerClosest::ManagerClosest(const IDType & playerID, int numUnits) {
+ManagerFarther::ManagerFarther(const IDType & playerID, int numUnits) {
     this->_playerID = playerID;
     this->numUnits = numUnits;
     srand(time(NULL));
 }
 
-ManagerClosest::~ManagerClosest() {
+ManagerFarther::~ManagerFarther() {
 }
 
-void ManagerClosest::controlUnitsForAB(GameState& state, const MoveArray& moves, std::set<Unit>& unidades) {
+void ManagerFarther::controlUnitsForAB(GameState& state, const MoveArray& moves, std::set<Unit>& unidades) {
 
     unitsDie(state, unidades);
 
@@ -19,8 +19,6 @@ void ManagerClosest::controlUnitsForAB(GameState& state, const MoveArray& moves,
         Unit & untBase(state.getUnit(_playerID, (rand() % state.numUnits(_playerID))));
         unidades.insert(untBase);
     }
-    
-    printUnits(unidades);
     
     calcularCentroide(unidades);
     
@@ -36,18 +34,16 @@ void ManagerClosest::controlUnitsForAB(GameState& state, const MoveArray& moves,
         while (unidades.size() < numUnits and control < 20) {
             if(existUnitsToAdd(unidades, state)){
                 unidades.insert(state.getUnitByID(_playerID, getIDUnitAdd(state, unidades)));
+                calcularCentroide(unidades);
             }
             //unidades.insert(state.getUnit(_playerID, rand() % state.numUnits(_playerID)));
             control++;
-            printUnits(unidades);
         }
 
     }
-    
-    printUnits(unidades);
 }
 
-bool ManagerClosest::existUnitsToAdd(std::set<Unit>& unidades, GameState& state) {
+bool ManagerFarther::existUnitsToAdd(std::set<Unit>& unidades, GameState& state) {
     Unit t;
     for (IDType u(0); u < state.numUnits(_playerID); ++u) {
         t = state.getUnit(_playerID, u);
@@ -60,7 +56,7 @@ bool ManagerClosest::existUnitsToAdd(std::set<Unit>& unidades, GameState& state)
 }
 
 
-IDType ManagerClosest::getIDUnitAdd(GameState& state, std::set<Unit>& unidades) {
+IDType ManagerFarther::getIDUnitAdd(GameState& state, std::set<Unit>& unidades) {
     std::vector<Unit> unitOrdenar;
     Unit t;
     for (IDType u(0); u < state.numUnits(_playerID); ++u) {
@@ -75,7 +71,7 @@ IDType ManagerClosest::getIDUnitAdd(GameState& state, std::set<Unit>& unidades) 
     
 }
 
-bool ManagerClosest::unitExistInArray(Unit& unit, std::set<Unit>& unidades) {
+bool ManagerFarther::unitExistInArray(Unit& unit, std::set<Unit>& unidades) {
     for(auto & un : unidades){
         if(un.equalsID(unit)){
             return true;
@@ -85,12 +81,12 @@ bool ManagerClosest::unitExistInArray(Unit& unit, std::set<Unit>& unidades) {
 }
 
 
-void ManagerClosest::sortUnits(std::vector<Unit>& unidades, GameState & state) {
+void ManagerFarther::sortUnits(std::vector<Unit>& unidades, GameState & state) {
     for (int i = 1; i < unidades.size(); i++) {
         Unit key = unidades[i];
         int j = i - 1;
         while ((j >= 0) && (getDistEuclidiana(_centroide, unidades[j].currentPosition(state.getTime()))
-                > getDistEuclidiana(_centroide, key.currentPosition(state.getTime())))
+                < getDistEuclidiana(_centroide, key.currentPosition(state.getTime())))
                 && (unidades[j].currentHP() >= key.currentHP())
                 ) {
             unidades[j + 1] = unidades[j];
@@ -100,14 +96,14 @@ void ManagerClosest::sortUnits(std::vector<Unit>& unidades, GameState & state) {
     }
 }
 
-const PositionType ManagerClosest::getDistEuclidiana(const Position& pInicial, const Position& pFinal) {
+const PositionType ManagerFarther::getDistEuclidiana(const Position& pInicial, const Position& pFinal) {
     return sqrt(((pInicial.x() - pFinal.x())*(pInicial.x() - pFinal.x()) +
             (pInicial.y() - pFinal.y())*(pInicial.y() - pFinal.y())
             ));
 }
 
 
-void ManagerClosest::calcularCentroide(std::set<Unit>& unidades) {
+void ManagerFarther::calcularCentroide(std::set<Unit>& unidades) {
     PositionType x(0), y(0);
     
     for(auto & un : unidades){
@@ -121,7 +117,7 @@ void ManagerClosest::calcularCentroide(std::set<Unit>& unidades) {
 }
 
 
-void ManagerClosest::unitsDie(GameState& state, std::set<Unit>& unidades) {
+void ManagerFarther::unitsDie(GameState& state, std::set<Unit>& unidades) {
     //verifico se as unidades não foram mortas
     std::set<Unit> tempUnitAbsAB;
     for (auto & un : unidades) {
@@ -132,7 +128,7 @@ void ManagerClosest::unitsDie(GameState& state, std::set<Unit>& unidades) {
     unidades = tempUnitAbsAB;
 }
 
-void ManagerClosest::printUnits(std::set<Unit>& unidades) {
+void ManagerFarther::printUnits(std::set<Unit>& unidades) {
     std::cout << " INICIO -------------Relacão de unidades controladas-----------" << std::endl;
     for (auto & un : unidades) {
         un.print();
