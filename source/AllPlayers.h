@@ -32,6 +32,7 @@
 #include "GenerationClass.h"
 #include "GAB.h"
 #include "DovePlayerAlpha.h"
+#include "DovePlayerBeta.h"
 #include "ABPOEFixo.h"
 #include "ABPOELimit.h"
 #include "ABPGSSand.h"

@@ -108,7 +108,7 @@ namespace SparCraft {
             ABPOESimetrico, GenerationClassForMetricClosest, GenerationClassForDeep, ABPGSSimetricoDeep, 
             PortfolioGreedySearchDeep, PortfolioOnlineEvolutionDeep, ABPOESimetricoDeep, ABPOELimitDeep,
             PortfolioGreedySearchCache, GenerationClassForMetricSample, PortfolioOnlineEvolutionCache, GAB, 
-            DovePlayerAlpha, None, Size
+            DovePlayerAlpha,DovePlayerBeta, None, Size
         };
 
         static void init() {
@@ -159,6 +159,7 @@ namespace SparCraft {
             //
             //For Dovetailing Cache
             setData(DovePlayerAlpha, "DovePlayerAlpha");
+            setData(DovePlayerBeta, "DovePlayerBeta");
             //
             setData(GenerationClassForMonit, "GenerationClassForMonit");
             setData(Player_PGSAA, "Player_PGSAA");

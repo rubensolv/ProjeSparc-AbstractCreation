@@ -205,34 +205,18 @@ UnitScriptData PortfolioOnlineEvolutionCache::searchForScripts(const IDType& pla
     init(player, state, population);
     
     ScoreType evalReturn = -9999;
-    StateEvalScore scoreFitness(evalReturn, 0);
-    int numberMutate = 0, maxChange = 0;
-
-    while((ms < this->_timeLimit) and  (numberMutate < 4) )
+    StateEvalScore scoreFitness(evalReturn, 0);    
+    
+    while(ms < this->_timeLimit )
     {
     	StateEvalScore tmpEval = evalPopulation(player, state, population);
     	select(player, state, population);
     	mutatePopulation(player, state, population);
     	//crossover(player, state, population);
-
-    	ms = t.getElapsedTimeInMilliSec();
         
-        if(scoreFitness < tmpEval  and maxChange < 2){
-            scoreFitness = tmpEval;
-            //std::cout<<"Score Fitness Parcial = "<< (double) tmpEval.val()<<std::endl;
-            maxChange = 0;
-        }else{
-            //std::cout<<"Score Fitness Final = "<< (double) scoreFitness.val() <<std::endl;
-            if(maxChange >=1){
-                //std::cout<<"Parei o Fitness"<<std::endl;
-                break;
-            }else{
-                //std::cout<<"Incrementei MaxChange"<<std::endl;
-                maxChange++;
-            }
-            
-        }
-        numberMutate++;
+        
+        ms = t.getElapsedTimeInMilliSec();
+    
     }
 
 //    ms = t.getElapsedTimeInMilliSec();

@@ -18,8 +18,8 @@ void Player_NOKDPS::getMoves(GameState & state, const MoveArray & moves, std::ve
 	{
 		hpRemaining[u] = state.getUnit(enemy,u).currentHP();
 	}
-
-	for (IDType u(0); u<moves.numUnits(); ++u)
+       
+        	for (IDType u(0); u<moves.numUnits(); ++u)
 	{
 		bool foundAction						(false);
 		size_t actionMoveIndex					(0);

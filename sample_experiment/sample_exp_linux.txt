@@ -64,11 +64,11 @@
 #Player 1 UCT 40 1.6 5000 20 ScriptFirst Playout NOKDPS NOKDPS Alternate NOKDPS
 
 # Sample PortfolioGreedySearch Players
-Player 1 PortfolioGreedySearch 40 NOKDPS 1 0
+#Player 1 PortfolioGreedySearch 40 NOKDPS 1 0
 #Player 1 ImprovedPortfolioGreedySearch 80 NOKDPS 3 0
 #Player 0 ImprovedPortfolioGreedySearch 40 NOKDPS 1 0
-#Player 0 PortfolioGreedySearch 0 NOKDPS 1 0
-#Player 1 PortfolioOnlineEvolution 40 NOKDPS 1 0
+#Player 0 PortfolioGreedySearch 40 NOKDPS 1 0
+Player 1 PortfolioOnlineEvolution 40 NOKDPS 1 0
 #Player 0 Player_PGSAA 40 NOKDPS 1 0
 #Player 0 PortfolioGreedySearchCache 18 NOKDPS 1 0
 #Player 0 PortfolioOnlineEvolutionCache 40 NOKDPS 1 0
@@ -81,7 +81,8 @@ Player 1 PortfolioGreedySearch 40 NOKDPS 1 0
 
 # Sample Scripted Players
 #Player 0 GenerationClass 7
-Player 0 DovePlayerAlpha
+#Player 0 DovePlayerAlpha
+Player 0 DovePlayerBeta
 #Method to select units: {Random, Closest, Farther, LessLife, MoreLife, ClosestEnemy, FartherEnemy, MoreDPS, LessDPS}
 #Player 0 GAB 7 Farther
 #Player 1 ABPGSSimetrico 7
@@ -143,9 +144,9 @@ Player 0 DovePlayerAlpha
 
 # Sample SeparatedState States
 #State SeparatedState 10 128 128 400 360 840 360 Protoss_Zealot 16
-State SeparatedState 10 128 128 400 360 840 360 Protoss_Dragoon 10 
+#State SeparatedState 50 128 128 400 360 840 360 Protoss_Dragoon 30 
 #State SeparatedState 70 128 128 400 360 840 360 Protoss_Dragoon 4 Terran_Marine 4
-#State SeparatedState 10 128 128 400 360 840 360 Protoss_Dragoon 5 Protoss_Zealot 5
+State SeparatedState 50 128 128 400 360 840 360 Protoss_Dragoon 20 Protoss_Zealot 20
 #State SeparatedState 10 128 128 400 360 840 360 Zerg_Zergling 10
 #State SeparatedState 100 128 128 400 360 840 360 Zerg_Zergling 15 Protoss_Dragoon 8
 #State SeparatedState 100 128 128 400 360 840 360 Protoss_Dragoon 4 Terran_Marine 4
