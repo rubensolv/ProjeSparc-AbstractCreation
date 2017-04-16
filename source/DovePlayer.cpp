@@ -1,16 +1,16 @@
 
 
-#include "DovePlayerBeta.h"
+#include "DovePlayer.h"
 
 using namespace SparCraft;
 
-DovePlayerBeta::DovePlayerBeta(const IDType& playerID) {
+DovePlayer::DovePlayer(const IDType& playerID) {
     _playerID = playerID;
     _costTimePlayout = 100;
 
 }
 
-void DovePlayerBeta::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>& moveVec) {
+void DovePlayer::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>& moveVec) {
     if (canApplyExaustSearch(state)) {
         //aplico a busca exaustiva
         Timer t;
@@ -23,7 +23,7 @@ void DovePlayerBeta::getMoves(GameState& state, const MoveArray& moves, std::vec
 
 }
 
-void DovePlayerBeta::executeExaustSearch(GameState& state, const MoveArray& moves, std::vector<Action>& moveVec) {
+void DovePlayer::executeExaustSearch(GameState& state, const MoveArray& moves, std::vector<Action>& moveVec) {
     std::vector<UnitScriptData> scripts = obtemSeqUnitScriptData(state, state.numUnits(_playerID), 2);
 
     UnitScriptData bestScript;
@@ -43,13 +43,13 @@ void DovePlayerBeta::executeExaustSearch(GameState& state, const MoveArray& move
     bestScript.calculateMoves(_playerID, movesT, copy, moveVec);
 }
 
-StateEvalScore DovePlayerBeta::playUnitScripts(GameState& state, UnitScriptData script) {
+StateEvalScore DovePlayer::playUnitScripts(GameState& state, UnitScriptData script) {
     Game g2(state, 100);
     g2.playIndividualScripts(script);
     return g2.getState().eval(_playerID, SparCraft::EvaluationMethods::LTD2);
 }
 
-std::vector<UnitScriptData> DovePlayerBeta::obtemSeqUnitScriptData(GameState& state, int n, int m) {
+std::vector<UnitScriptData> DovePlayer::obtemSeqUnitScriptData(GameState& state, int n, int m) {
     int seq[n];
     std::vector<UnitScriptData> scripts;
     int i;
@@ -77,7 +77,7 @@ std::vector<UnitScriptData> DovePlayerBeta::obtemSeqUnitScriptData(GameState& st
     return scripts;
 }
 
-int DovePlayerBeta::proxima(int a[], int N, int M) {
+int DovePlayer::proxima(int a[], int N, int M) {
     int t = N - 1;
     /*soma 1 ao vetor */
     while (t >= 0) {
@@ -88,10 +88,10 @@ int DovePlayerBeta::proxima(int a[], int N, int M) {
     return -1;
 }
 
-DovePlayerBeta::~DovePlayerBeta() {
+DovePlayer::~DovePlayer() {
 }
 
-bool DovePlayerBeta::canApplyExaustSearch(GameState& state) {
+bool DovePlayer::canApplyExaustSearch(GameState& state) {
     double qtdUnits = (double) state.numUnits(_playerID);
 
     double qtdPlayouts = pow(2.0, qtdUnits);
@@ -104,7 +104,7 @@ bool DovePlayerBeta::canApplyExaustSearch(GameState& state) {
 
 }
 
-void DovePlayerBeta::executeDovetailing(GameState& state, const MoveArray& moves, std::vector<Action>& moveVec) {
+void DovePlayer::executeDovetailing(GameState& state, const MoveArray& moves, std::vector<Action>& moveVec) {
     pgs = new PortfolioGreedySearchCache(_playerID, PlayerModels::NOKDPS, 1, 0, 35);
 
     Timer t;

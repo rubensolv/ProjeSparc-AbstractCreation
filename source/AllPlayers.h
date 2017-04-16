@@ -33,6 +33,7 @@
 #include "GAB.h"
 #include "DovePlayerAlpha.h"
 #include "DovePlayerBeta.h"
+#include "DovePlayer.h"
 #include "ABPOEFixo.h"
 #include "ABPOELimit.h"
 #include "ABPGSSand.h"
