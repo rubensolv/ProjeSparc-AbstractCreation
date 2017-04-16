@@ -82,7 +82,8 @@ Player 1 PortfolioOnlineEvolution 40 NOKDPS 1 0
 # Sample Scripted Players
 #Player 0 GenerationClass 7
 #Player 0 DovePlayerAlpha
-Player 0 DovePlayerBeta
+#Player 0 DovePlayerBeta
+Player 0 DovePlayer
 #Method to select units: {Random, Closest, Farther, LessLife, MoreLife, ClosestEnemy, FartherEnemy, MoreDPS, LessDPS}
 #Player 0 GAB 7 Farther
 #Player 1 ABPGSSimetrico 7
