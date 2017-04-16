@@ -143,10 +143,10 @@ Player 0 DovePlayerBeta
 #State StateDescriptionFile 70 /home/rubens/ProjeSparc/sample_experiment/sample_state_derrota.txt
 
 # Sample SeparatedState States
-#State SeparatedState 10 128 128 400 360 840 360 Protoss_Zealot 16
+State SeparatedState 10 128 128 400 360 840 360 Protoss_Zealot 12
 #State SeparatedState 50 128 128 400 360 840 360 Protoss_Dragoon 30 
 #State SeparatedState 70 128 128 400 360 840 360 Protoss_Dragoon 4 Terran_Marine 4
-State SeparatedState 50 128 128 400 360 840 360 Protoss_Dragoon 20 Protoss_Zealot 20
+#State SeparatedState 50 128 128 400 360 840 360 Protoss_Dragoon 20 Protoss_Zealot 20
 #State SeparatedState 10 128 128 400 360 840 360 Zerg_Zergling 10
 #State SeparatedState 100 128 128 400 360 840 360 Zerg_Zergling 15 Protoss_Dragoon 8
 #State SeparatedState 100 128 128 400 360 840 360 Protoss_Dragoon 4 Terran_Marine 4
