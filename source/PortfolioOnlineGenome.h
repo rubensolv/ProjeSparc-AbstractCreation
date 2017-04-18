@@ -35,6 +35,7 @@ class PortfolioOnlineGenome
 public:
 
     PortfolioOnlineGenome(const IDType & player, const GameState & state);
+    PortfolioOnlineGenome(const IDType & player, const GameState & state, std::map<int, IDType> & initScriptAlly);
     PortfolioOnlineGenome(const IDType & player, const GameState & state, const PortfolioOnlineGenome & p1, std::vector<IDType> & portfolio);
     PortfolioOnlineGenome(const IDType & player, const GameState & state, const PortfolioOnlineGenome & p1, const PortfolioOnlineGenome & p2);
 

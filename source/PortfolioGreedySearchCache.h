@@ -39,6 +39,12 @@ namespace SparCraft {
         ~PortfolioGreedySearchCache();
         std::vector<Action> search(const IDType & player, const GameState & state, StateEvalScore & bestScore);
         UnitScriptData searchForScripts(const IDType & player, const GameState & state, StateEvalScore & bestScore);
+        
+        CacheSimpleString* getCacheLTD2() const {
+            return cacheLTD2;
+        }
+
+        
     };
 
 }

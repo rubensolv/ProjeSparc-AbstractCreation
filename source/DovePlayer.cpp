@@ -4,9 +4,10 @@
 
 using namespace SparCraft;
 
-DovePlayer::DovePlayer(const IDType& playerID) {
+DovePlayer::DovePlayer(const IDType& playerID, std::string useScriptPGS) {
     _playerID = playerID;
     _costTimePlayout = 100;
+    _useScriptPGS = useScriptPGS;
 
 }
 
@@ -123,7 +124,13 @@ void DovePlayer::executeDovetailing(GameState& state, const MoveArray& moves, st
     } else {
         poe = new PortfolioOnlineEvolutionCache(_playerID, PlayerModels::NOKDPS, 1, 0, (40 - ms));
     }
-    POEScriptData = poe->searchForScripts(_playerID, state, POEScore);
+    poe->setCacheLTD2(pgs->getCacheLTD2());
+    if(_useScriptPGS.compare("True") == 0){
+        std::map<int, IDType> scripts = PGSScriptData.getMapUnitScript(_playerID);
+        POEScriptData = poe->searchForScriptsWithInitScript(_playerID, state, POEScore, scripts);
+    }else{
+        POEScriptData = poe->searchForScripts(_playerID, state, POEScore);
+    }
 
     //analise POE
     Game g2(state, 100);

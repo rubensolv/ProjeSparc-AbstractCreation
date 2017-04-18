@@ -525,7 +525,9 @@ void SearchExperiment::addPlayer(const std::string & line)
     }
     	else if (playerModelID == PlayerModels::DovePlayer)				
     { 
-        players[playerID].push_back(PlayerPtr(new DovePlayer(playerID))); 
+        std::string useScriptPGS;
+        iss >> useScriptPGS;
+        players[playerID].push_back(PlayerPtr(new DovePlayer(playerID, useScriptPGS))); 
     }
         else if (playerModelID == PlayerModels::ABPGSSimetrico)				
     { 

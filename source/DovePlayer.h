@@ -15,9 +15,10 @@ namespace SparCraft {
     class DovePlayer : public Player {
         PortfolioGreedySearchCache * pgs;
         PortfolioOnlineEvolutionCache * poe;
+        std::string _useScriptPGS;
     public:
         double _costTimePlayout;
-        DovePlayer(const IDType & playerID);
+        DovePlayer(const IDType & playerID, std::string useScriptPGS);
         virtual ~DovePlayer();
         void getMoves(GameState & state, const MoveArray & moves, std::vector<Action> & moveVec);
     private:
