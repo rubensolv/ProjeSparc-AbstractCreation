@@ -25,7 +25,8 @@ class PortfolioOnlineGenome
     StateEvalScore _fitness;
     int _iterator;
     IDType _player;
-   
+    int _level;
+            
     std::vector<Action>       _allScriptMoves[2][PlayerModels::Size];
 
     std::vector<Action> & getMoves(const IDType & player, const IDType & actualScript);

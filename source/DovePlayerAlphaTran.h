@@ -11,12 +11,12 @@ namespace SparCraft {
     class PortfolioOnlineEvolutionCache;
     class PortfolioOnlineGenome;
 
-    class DovePlayerAlpha : public Player {
+    class DovePlayerAlphaTran : public Player {
         PortfolioGreedySearchCache * pgs;
         PortfolioOnlineEvolutionCache * poe;
     public:
-        DovePlayerAlpha(const IDType & playerID);
-        virtual ~DovePlayerAlpha();
+        DovePlayerAlphaTran(const IDType & playerID);
+        virtual ~DovePlayerAlphaTran();
         void getMoves(GameState & state, const MoveArray & moves, std::vector<Action> & moveVec);
     private:
 

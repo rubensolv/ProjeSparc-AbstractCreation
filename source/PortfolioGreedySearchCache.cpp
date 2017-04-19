@@ -67,6 +67,8 @@ UnitScriptData PortfolioGreedySearchCache::searchForScripts(const IDType & playe
 std::vector<Action> PortfolioGreedySearchCache::search(const IDType & player, const GameState & state, StateEvalScore & bestScore) {
     Timer t;
     t.start();
+    
+    ///std::cout << "--------- Inicio PGSCache ---------" << std::endl;
 
     const IDType enemyPlayer(state.getEnemy(player));
 
@@ -117,7 +119,9 @@ std::vector<Action> PortfolioGreedySearchCache::search(const IDType & player, co
     //printf("\nMove PGS chosen in %lf ms\n", ms);
 
     _totalEvals = 0;
-
+    
+    //std::cout << "--------- FIM PGSCache ---------" << std::endl;
+    
     return moveVec;
 }
 
@@ -230,11 +234,12 @@ StateEvalScore PortfolioGreedySearchCache::eval(const IDType & player, const Gam
 
         if (valCache != -9999) {
             tempStateEval = StateEvalScore(valCache, 0);
+            //std::cout << "Cache hit" << std::endl;
         } else {
-
+            //std::cout << "Cache miss" << std::endl;
             const IDType enemyPlayer(state.getEnemy(player));
 
-            Game g(state, 100);
+            Game g(state, 25);
 
             _totalEvals++;
 
@@ -252,7 +257,7 @@ StateEvalScore PortfolioGreedySearchCache::eval(const IDType & player, const Gam
     } else {
         const IDType enemyPlayer(state.getEnemy(player));
 
-        Game g(state, 100);
+        Game g(state, 25);
 
         _totalEvals++;
 

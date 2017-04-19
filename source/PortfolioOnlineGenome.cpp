@@ -7,6 +7,8 @@ PortfolioOnlineGenome::PortfolioOnlineGenome(const IDType & player, const GameSt
 _fitness(StateEvalScore()),
 _iterator(0) {
     _player = player;
+    _level = 1;
+
     IDType players[2] = {Players::Player_One, Players::Player_Two};
     //initializing the script of all units for both players with NO-OVERKILL
     for (int p = 0; p < 2; p++) {
@@ -18,13 +20,17 @@ _iterator(0) {
     }
 }
 
-PortfolioOnlineGenome::PortfolioOnlineGenome(const IDType& player, const GameState& state, std::map<int, IDType>& initScriptAlly) {
+PortfolioOnlineGenome::PortfolioOnlineGenome(const IDType& player, const GameState& state, std::map<int, IDType>& initScriptAlly)
+: _mutateRate(0.2),
+_fitness(StateEvalScore()),
+_iterator(0) { 
     _player = player;
-    
+    _level = 1;
+
     IDType players[2] = {Players::Player_One, Players::Player_Two};
     //initializing the script of all units for both players with NO-OVERKILL
     for (int p = 0; p < 2; p++) {
-        for (int level = 0; level < 3; level++) {
+        for (int level = 0; level < _level; level++) {
             for (size_t unitIndex(0); unitIndex < state.numUnits(players[p]); ++unitIndex) {
                 if (rand() % 2) {
                     if (_player == Players::Player_One) {
@@ -41,9 +47,17 @@ PortfolioOnlineGenome::PortfolioOnlineGenome(const IDType& player, const GameSta
                         setUnitScript(state.getUnit(players[p], unitIndex), PlayerModels::NOKDPS, level);
                     }
                 }
-
-
-
+            }
+        }
+    }
+    
+    if (_level < 3) {
+        //initializing the script of all units for both players with NO-OVERKILL
+        for (int p = 0; p < 2; p++) {
+            for (int level = _level; level < 3; level++) {
+                for (size_t unitIndex(0); unitIndex < state.numUnits(players[p]); ++unitIndex) {
+                    setUnitScript(state.getUnit(players[p], unitIndex), PlayerModels::NOKDPS, level);
+                }
             }
         }
     }
@@ -54,12 +68,13 @@ PortfolioOnlineGenome::PortfolioOnlineGenome(const IDType & player, const GameSt
 _fitness(StateEvalScore()),
 _iterator(0) {
     _player = player;
+    _level = 1;
     //initializing the script of all units for both players with NO-OVERKILL
 
     IDType players[2] = {Players::Player_One, Players::Player_Two};
     //initializing the script of all units for both players with NO-OVERKILL
     for (int p = 0; p < 2; p++) {
-        for (int level = 0; level < 3; level++) {
+        for (int level = 0; level < _level; level++) {
             for (size_t unitIndex(0); unitIndex < state.numUnits(players[p]); ++unitIndex) {
                 //50% of chance of getting a gene from p1 or p2
                 if (rand() % 2) {
@@ -72,6 +87,17 @@ _iterator(0) {
             }
         }
     }
+    
+    if (_level < 3) {
+        //initializing the script of all units for both players with NO-OVERKILL
+        for (int p = 0; p < 2; p++) {
+            for (int level = _level; level < 3; level++) {
+                for (size_t unitIndex(0); unitIndex < state.numUnits(players[p]); ++unitIndex) {
+                    setUnitScript(state.getUnit(players[p], unitIndex), PlayerModels::NOKDPS, level);
+                }
+            }
+        }
+    }
 }
 
 PortfolioOnlineGenome::PortfolioOnlineGenome(const IDType & player, const GameState & state, const PortfolioOnlineGenome & p1, std::vector<IDType> & portfolio)
@@ -79,12 +105,13 @@ PortfolioOnlineGenome::PortfolioOnlineGenome(const IDType & player, const GameSt
 _fitness(StateEvalScore()),
 _iterator(0) {
     _player = player;
+    _level = 1;
     //initializing the script of all units for both players with NO-OVERKILL
 
     IDType players[2] = {Players::Player_One, Players::Player_Two};
     //initializing the script of all units for both players with NO-OVERKILL
     for (int p = 0; p < 2; p++) {
-        for (int level = 0; level < 3; level++) {
+        for (int level = 0; level < _level; level++) {
             for (size_t unitIndex(0); unitIndex < state.numUnits(players[p]); ++unitIndex) {
                 if (players[p] == player && rand() % 100 < (this->_mutateRate * 100)) {
                     int replace = rand() % portfolio.size();
@@ -97,11 +124,22 @@ _iterator(0) {
             }
         }
     }
+
+    if (_level < 3) {
+        //initializing the script of all units for both players with NO-OVERKILL
+        for (int p = 0; p < 2; p++) {
+            for (int level = _level; level < 3; level++) {
+                for (size_t unitIndex(0); unitIndex < state.numUnits(players[p]); ++unitIndex) {
+                    setUnitScript(state.getUnit(players[p], unitIndex), PlayerModels::NOKDPS, level);
+                }
+            }
+        }
+    }
 }
 
 void PortfolioOnlineGenome::mutate(const IDType & player, const GameState & state, std::vector<IDType> & portfolio) {
     for (size_t unitIndex(0); unitIndex < state.numUnits(player); ++unitIndex) {
-        for (int level = 0; level < 3; level++) {
+        for (int level = 0; level < _level; level++) {
             if (rand() % 100 < (this->_mutateRate * 100)) {
                 int replace = rand() % portfolio.size();
                 setUnitScript(state.getUnit(player, unitIndex), portfolio[replace], level);

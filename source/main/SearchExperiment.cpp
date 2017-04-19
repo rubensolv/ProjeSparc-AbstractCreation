@@ -519,6 +519,10 @@ void SearchExperiment::addPlayer(const std::string & line)
     { 
         players[playerID].push_back(PlayerPtr(new DovePlayerAlpha(playerID))); 
     }
+        else if (playerModelID == PlayerModels::DovePlayerAlphaTran)				
+    { 
+        players[playerID].push_back(PlayerPtr(new DovePlayerAlphaTran(playerID))); 
+    }
     	else if (playerModelID == PlayerModels::DovePlayerBeta)				
     { 
         players[playerID].push_back(PlayerPtr(new DovePlayerBeta(playerID))); 

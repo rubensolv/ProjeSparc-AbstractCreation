@@ -1,15 +1,15 @@
 
 
-#include "DovePlayerAlpha.h"
+#include "DovePlayerAlphaTran.h"
 
 using namespace SparCraft;
 
-DovePlayerAlpha::DovePlayerAlpha(const IDType& playerID) {
+DovePlayerAlphaTran::DovePlayerAlphaTran(const IDType& playerID) {
     _playerID = playerID;
     
 }
 
-void DovePlayerAlpha::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>& moveVec) {
+void DovePlayerAlphaTran::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>& moveVec) {
     
     pgs = new PortfolioGreedySearchCache(_playerID, PlayerModels::NOKDPS, 1, 0, 35);
     
@@ -30,6 +30,7 @@ void DovePlayerAlpha::getMoves(GameState& state, const MoveArray& moves, std::ve
     }else{
         poe = new PortfolioOnlineEvolutionCache(_playerID, PlayerModels::NOKDPS, 1, 0,(40 - ms) );
     }
+    poe->setCacheLTD2(pgs->getCacheLTD2());
     POEScriptData = poe->searchForScripts(_playerID, state, POEScore);
     
     //analise POE
@@ -55,6 +56,6 @@ void DovePlayerAlpha::getMoves(GameState& state, const MoveArray& moves, std::ve
     free(poe);
 }
 
-DovePlayerAlpha::~DovePlayerAlpha() {
+DovePlayerAlphaTran::~DovePlayerAlphaTran() {
 }
 

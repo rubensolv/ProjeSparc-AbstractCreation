@@ -232,6 +232,7 @@ const StateEvalScore Game::playoutGenome(const IDType & player, PortfolioOnlineG
         state.makeMoves(scriptMoves[playerToMove]);
         state.finishedMoving();
         rounds++;
+        limit--;
     }
     //StateEvalScore evalScore = state.eval(_params.maxPlayer(), _params.evalMethod(), _params.simScript(Players::Player_One), _params.simScript(Players::Player_Two));
 

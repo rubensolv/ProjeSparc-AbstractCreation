@@ -18,7 +18,6 @@ PortfolioOnlineEvolutionCache::PortfolioOnlineEvolutionCache(const IDType & play
     //_playerScriptPortfolio.push_back(PlayerModels::Cluster);
     //	_playerScriptPortfolio.push_back(PlayerModels::MoveForward);
     //	_playerScriptPortfolio.push_back(PlayerModels::MoveBackward);
-
     srand(1234);
     cacheLTD2 = new CacheSimpleString();
     _qtdPlayoutIgnorar = 0;
@@ -97,12 +96,14 @@ StateEvalScore PortfolioOnlineEvolutionCache::evalPopulation(const IDType & play
             if (valCache != -9999) {
                 //   std::cout << "Cache hit "<< valCache << std::endl;
                 population[i].setFitness(StateEvalScore(valCache, 0));
+                //std::cout << "Cache hit" << std::endl;
             } else {
                 Game g(state, 100);
                 _totalEvals++;
                 tempStateEval = g.playoutGenome(player, population[i], _playoutLimit);
                 population[i].setFitness(tempStateEval);
                 //std::cout << "Cache miss "<< tempStateEval.val() << std::endl;
+                //std::cout << "Cache miss" << std::endl;
                 cacheLTD2->addPOItemCache(population[i], player, tempStateEval.val());
             }
 
@@ -123,8 +124,7 @@ StateEvalScore PortfolioOnlineEvolutionCache::evalPopulation(const IDType & play
 std::vector<Action> PortfolioOnlineEvolutionCache::search(const IDType & player, const GameState & state) {
     Timer t;
     t.start();
-
-    //std::cout << " Iniciando POE Cache " << std::endl;
+    //std::cout << "------------ Iniciando POE Cache  ----------------" << std::endl;    
 
     const IDType enemyPlayer(state.getEnemy(player));
 
@@ -177,14 +177,14 @@ std::vector<Action> PortfolioOnlineEvolutionCache::search(const IDType & player,
 
     _totalEvals = 0;
 
-    //std::cout << " Encerrando POE Cache " << std::endl;
+    //std::cout << "------------ Encerrando POE Cache  ----------------" << std::endl;
     return moveVec;
 }
 
 UnitScriptData PortfolioOnlineEvolutionCache::searchForScripts(const IDType& player, const GameState& state, StateEvalScore & bestScore) {
     Timer t;
     t.start();
-
+    //std::cout << "------------ INICIO POE sem aproveitamento de Scripts PGS ----------------" << std::endl;
     const IDType enemyPlayer(state.getEnemy(player));
 
     double ms = t.getElapsedTimeInMilliSec();
@@ -223,13 +223,16 @@ UnitScriptData PortfolioOnlineEvolutionCache::searchForScripts(const IDType& pla
         currentScriptData.setUnitScript(state.getUnit(enemyPlayer, unitIndex), pop.getUnitScript(state.getUnit(enemyPlayer, unitIndex)));
     }
 
+    //std::cout << "------------ FIM POE sem aproveitamento de Scripts PGS ----------------" << std::endl;
+    
     return currentScriptData;
 }
 
 UnitScriptData PortfolioOnlineEvolutionCache::searchForScriptsWithInitScript(const IDType& player, const GameState& state, StateEvalScore& bestScore, std::map<int, IDType>& initScript) {
     Timer t;
     t.start();
-
+    //std::cout << "------------ INICIO POE COM aproveitamento de Scripts PGS ----------------" << std::endl;
+    
     const IDType enemyPlayer(state.getEnemy(player));
 
     double ms = t.getElapsedTimeInMilliSec();
@@ -269,12 +272,16 @@ UnitScriptData PortfolioOnlineEvolutionCache::searchForScriptsWithInitScript(con
         currentScriptData.setUnitScript(state.getUnit(enemyPlayer, unitIndex), pop.getUnitScript(state.getUnit(enemyPlayer, unitIndex)));
     }
 
+    //std::cout << "------------ FIM POE COM aproveitamento de Scripts PGS ----------------" << std::endl;
+    
     return currentScriptData;
 }
 
 PortfolioOnlineGenome PortfolioOnlineEvolutionCache::searchForGenome(const IDType& player, const GameState& state, StateEvalScore & bestScore) {
     Timer t;
     t.start();
+    
+    //std::cout << "------------ INICIO POE busca por Genoma ----------------" << std::endl;
 
     const IDType enemyPlayer(state.getEnemy(player));
 
@@ -317,6 +324,8 @@ PortfolioOnlineGenome PortfolioOnlineEvolutionCache::searchForGenome(const IDTyp
     //    printf("\nMove POE chosen in %lf ms\n", ms);
 
     bestScore = evalPopulation(player, state, population);
+    
+    //std::cout << "------------ FIM POE busca por Genoma ----------------" << std::endl;
 
     return population[0];
 }
