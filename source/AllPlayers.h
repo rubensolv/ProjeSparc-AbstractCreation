@@ -8,6 +8,7 @@
 #include "Player_AlphaBeta.h"
 #include "Player_AdaptiveBeamAlphaBeta.h"
 #include "Player_PortfolioGreedySearch.h"
+#include "Player_PortfolioGreedySearchPlus.h"
 #include "Player_PortfolioGreedySearchDeep.h"
 #include "Player_PortfolioGreedySearchCache.h"
 #include "Player_PortfolioOnlineEvolutionDeep.h"

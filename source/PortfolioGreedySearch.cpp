@@ -123,8 +123,8 @@ void PortfolioGreedySearch::doPortfolioSearch(const IDType & player, const GameS
     // the enemy of this player
     const IDType enemyPlayer(state.getEnemy(player));
 
-    while (t.getElapsedTimeInMilliSec() < _timeLimit)
-        //for (size_t i(0); i<_iterations; ++i)
+    //while (t.getElapsedTimeInMilliSec() < _timeLimit)
+    for (size_t i(0); i<_iterations; ++i)
     {
         // set up data for best scripts
         IDType bestScriptVec[Constants::Max_Units];

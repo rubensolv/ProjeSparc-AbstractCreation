@@ -715,6 +715,20 @@ else if (playerModelID == PlayerModels::ImprovedPortfolioGreedySearch)
 
         players[playerID].push_back(PlayerPtr(new Player_PortfolioGreedySearch(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit))); 
     }
+    else if (playerModelID == PlayerModels::PortfolioGreedySearchPlus)				
+    { 
+        std::string enemyPlayerModel;
+        size_t timeLimit(0);
+        int iterations(1);
+        int responses(0);
+
+        iss >> timeLimit;
+        iss >> enemyPlayerModel;
+        iss >> iterations;
+        iss >> responses;
+
+        players[playerID].push_back(PlayerPtr(new Player_PortfolioGreedySearchPlus(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit))); 
+    }
     else if (playerModelID == PlayerModels::PortfolioGreedySearchCache)				
     { 
         std::string enemyPlayerModel;

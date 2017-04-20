@@ -34,7 +34,7 @@ void DovePlayerAlphaTran::getMoves(GameState& state, const MoveArray& moves, std
     POEScriptData = poe->searchForScripts(_playerID, state, POEScore);
     
     //analise POE
-    Game g2(state, 100);
+    Game g2(state, 25);
     g2.playIndividualScripts(POEScriptData);
     POEScore = g2.getState().eval(_playerID, SparCraft::EvaluationMethods::LTD2);
     

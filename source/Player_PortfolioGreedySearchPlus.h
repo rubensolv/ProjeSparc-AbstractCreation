@@ -2,19 +2,19 @@
 
 #include "Common.h"
 #include "Player.h"
-#include "PortfolioGreedySearch.h"
+#include "PortfolioGreedySearchPlus.h"
 
 namespace SparCraft
 {
-class Player_PortfolioGreedySearch : public Player
+class Player_PortfolioGreedySearchPlus : public Player
 {
 	IDType _seed;
 	size_t _iterations;
     size_t _responses;
     size_t _timeLimit;
 public:
-	Player_PortfolioGreedySearch (const IDType & playerID);
-    Player_PortfolioGreedySearch (const IDType & playerID, const IDType & seed, const size_t & iter, const size_t & responses, const size_t & timeLimit);
+	Player_PortfolioGreedySearchPlus (const IDType & playerID);
+    Player_PortfolioGreedySearchPlus (const IDType & playerID, const IDType & seed, const size_t & iter, const size_t & responses, const size_t & timeLimit);
 	void getMoves(GameState & state, const MoveArray & moves, std::vector<Action> & moveVec);
     IDType getType() { return PlayerModels::PortfolioGreedySearch; }
 };

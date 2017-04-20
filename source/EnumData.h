@@ -108,7 +108,7 @@ namespace SparCraft {
             ABPOESimetrico, GenerationClassForMetricClosest, GenerationClassForDeep, ABPGSSimetricoDeep, 
             PortfolioGreedySearchDeep, PortfolioOnlineEvolutionDeep, ABPOESimetricoDeep, ABPOELimitDeep,
             PortfolioGreedySearchCache, GenerationClassForMetricSample, PortfolioOnlineEvolutionCache, GAB, 
-            DovePlayerAlpha, DovePlayerAlphaTran,  DovePlayerBeta, DovePlayer, None, Size
+            DovePlayerAlpha, DovePlayerAlphaTran,  DovePlayerBeta, DovePlayer, PortfolioGreedySearchPlus, None, Size
         };
 
         static void init() {
@@ -126,6 +126,7 @@ namespace SparCraft {
             setData(Kiter_NOKDPS, "Kiter_NOKDPS");
             setData(Cluster, "Cluster");
             setData(PortfolioGreedySearch, "PortfolioGreedySearch");
+            setData(PortfolioGreedySearchPlus, "PortfolioGreedySearchPlus");
             setData(PortfolioOnlineEvolution, "PortfolioOnlineEvolution");
             setData(PortfolioOnlineEvolutionCache, "PortfolioOnlineEvolutionCache");
             setData(PortfolioGreedySearchCache, "PortfolioGreedySearchCache");

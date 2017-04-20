@@ -31,9 +31,14 @@ void DovePlayerAlpha::getMoves(GameState& state, const MoveArray& moves, std::ve
         poe = new PortfolioOnlineEvolutionCache(_playerID, PlayerModels::NOKDPS, 1, 0,(40 - ms) );
     }
     POEScriptData = poe->searchForScripts(_playerID, state, POEScore);
-    
+    /*
+    //analise PGS
+    Game g(state, 100);
+    g.playIndividualScripts(PGSScriptData);
+    PGSScore = g.getState().eval(_playerID, SparCraft::EvaluationMethods::LTD2);
+    */
     //analise POE
-    Game g2(state, 100);
+    Game g2(state, 25);
     g2.playIndividualScripts(POEScriptData);
     POEScore = g2.getState().eval(_playerID, SparCraft::EvaluationMethods::LTD2);
     
