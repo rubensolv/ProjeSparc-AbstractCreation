@@ -108,7 +108,10 @@ namespace SparCraft {
             ABPOESimetrico, GenerationClassForMetricClosest, GenerationClassForDeep, ABPGSSimetricoDeep, 
             PortfolioGreedySearchDeep, PortfolioOnlineEvolutionDeep, ABPOESimetricoDeep, ABPOELimitDeep,
             PortfolioGreedySearchCache, GenerationClassForMetricSample, PortfolioOnlineEvolutionCache, GAB, 
-            DovePlayerAlpha, DovePlayerAlphaTran,  DovePlayerBeta, DovePlayer, PortfolioGreedySearchPlus, None, Size
+            DovePlayerAlpha, DovePlayerAlphaTran,  DovePlayerBeta, DovePlayer, PortfolioGreedySearchPlus,
+            AdaptablePGS, AdaptablePGSPlusCache, PortfolioGreedySearchDavePlus, PortfolioGreedySearchDavePlusShort,
+            PortfolioGreedySearchPlusShort, PortfolioGreedySearchDaveCache, PortfolioGreedySearchDaveLongCache,
+            PortfolioGreedySearchLongCache, AdaptablePGSPlusDaveCache, None, Size
         };
 
         static void init() {
@@ -127,10 +130,18 @@ namespace SparCraft {
             setData(Cluster, "Cluster");
             setData(PortfolioGreedySearch, "PortfolioGreedySearch");
             setData(PortfolioGreedySearchPlus, "PortfolioGreedySearchPlus");
+            setData(PortfolioGreedySearchDavePlus, "PortfolioGreedySearchDavePlus");
+            setData(PortfolioGreedySearchDavePlusShort, "PortfolioGreedySearchDavePlusShort");
+            setData(PortfolioGreedySearchPlusShort, "PortfolioGreedySearchPlusShort");
+            setData(AdaptablePGS, "AdaptablePGS");
+            setData(AdaptablePGSPlusCache, "AdaptablePGSPlusCache");
+            setData(AdaptablePGSPlusDaveCache, "AdaptablePGSPlusDaveCache");
             setData(PortfolioOnlineEvolution, "PortfolioOnlineEvolution");
             setData(PortfolioOnlineEvolutionCache, "PortfolioOnlineEvolutionCache");
             setData(PortfolioGreedySearchCache, "PortfolioGreedySearchCache");
-            setData(ImprovedPortfolioGreedySearch, "ImprovedPortfolioGreedySearch");
+            setData(PortfolioGreedySearchDaveCache, "PortfolioGreedySearchDaveCache");
+            setData(PortfolioGreedySearchLongCache, "PortfolioGreedySearchLongCache");
+            setData(PortfolioGreedySearchDaveLongCache, "PortfolioGreedySearchDaveLongCache");
             setData(UCT, "UCT");
             setData(StratifiedPolicySearch, "StratifiedPolicySearch");
             setData(AdaptableStratifiedPolicySearch, "AdaptableStratifiedPolicySearch");

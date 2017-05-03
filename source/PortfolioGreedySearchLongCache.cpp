@@ -1,8 +1,8 @@
-#include "PortfolioGreedySearchCache.h"
+#include "PortfolioGreedySearchLongCache.h"
 
 using namespace SparCraft;
 
-PortfolioGreedySearchCache::PortfolioGreedySearchCache(const IDType & player, const IDType & enemyScript, const size_t & iter, const size_t & responses, const size_t & timeLimit)
+PortfolioGreedySearchLongCache::PortfolioGreedySearchLongCache(const IDType & player, const IDType & enemyScript, const size_t & iter, const size_t & responses, const size_t & timeLimit)
 : _player(player)
 , _enemyScript(enemyScript)
 , _iterations(iter)
@@ -17,11 +17,11 @@ PortfolioGreedySearchCache::PortfolioGreedySearchCache(const IDType & player, co
     _qtdPlayoutIgnorar = 0;
 }
 
-PortfolioGreedySearchCache::~PortfolioGreedySearchCache() {
+PortfolioGreedySearchLongCache::~PortfolioGreedySearchLongCache() {
     delete cacheLTD2;
 }
 
-UnitScriptData PortfolioGreedySearchCache::searchForScripts(const IDType & player, const GameState & state, StateEvalScore & bestScore) {
+UnitScriptData PortfolioGreedySearchLongCache::searchForScripts(const IDType & player, const GameState & state, StateEvalScore & bestScore) {
     Timer t;
     t.start();
 
@@ -64,7 +64,7 @@ UnitScriptData PortfolioGreedySearchCache::searchForScripts(const IDType & playe
     return currentScriptData;
 }
 
-std::vector<Action> PortfolioGreedySearchCache::search(const IDType & player, const GameState & state, StateEvalScore & bestScore) {
+std::vector<Action> PortfolioGreedySearchLongCache::search(const IDType & player, const GameState & state, StateEvalScore & bestScore) {
     Timer t;
     t.start();
     
@@ -125,7 +125,7 @@ std::vector<Action> PortfolioGreedySearchCache::search(const IDType & player, co
     return moveVec;
 }
 
-void PortfolioGreedySearchCache::doPortfolioSearch(const IDType & player, const GameState & state, UnitScriptData & currentScriptData, Timer & t, StateEvalScore & bestScore) {
+void PortfolioGreedySearchLongCache::doPortfolioSearch(const IDType & player, const GameState & state, UnitScriptData & currentScriptData, Timer & t, StateEvalScore & bestScore) {
     //  Timer t;
     //   t.start();
     
@@ -196,7 +196,7 @@ void PortfolioGreedySearchCache::doPortfolioSearch(const IDType & player, const 
     }   
 }
 
-IDType PortfolioGreedySearchCache::calculateInitialSeed(const IDType & player, const GameState & state) {
+IDType PortfolioGreedySearchLongCache::calculateInitialSeed(const IDType & player, const GameState & state) {
     IDType bestScript;
     StateEvalScore bestScriptScore;
     const IDType enemyPlayer(state.getEnemy(player));
@@ -227,7 +227,7 @@ IDType PortfolioGreedySearchCache::calculateInitialSeed(const IDType & player, c
     return bestScript;
 }
 
-StateEvalScore PortfolioGreedySearchCache::eval(const IDType & player, const GameState & state, UnitScriptData & playerScriptsChosen) {
+StateEvalScore PortfolioGreedySearchLongCache::eval(const IDType & player, const GameState & state, UnitScriptData & playerScriptsChosen) {
     if (_player == player) {
         ScoreType valCache = cacheLTD2->hitItemCache(playerScriptsChosen, player);
         StateEvalScore tempStateEval;
@@ -239,13 +239,13 @@ StateEvalScore PortfolioGreedySearchCache::eval(const IDType & player, const Gam
             //std::cout << "Cache miss" << std::endl;
             const IDType enemyPlayer(state.getEnemy(player));
 
-            Game g(state, 25);
+            Game g(state, 100);
 
             _totalEvals++;
 
-            //return g.playLimitedIndividualScripts(player, playerScriptsChosen, 4);
-            g.playIndividualScripts(playerScriptsChosen);
-            tempStateEval = g.getState().eval(player, SparCraft::EvaluationMethods::LTD2);
+            return g.playLimitedIndividualScripts(player, playerScriptsChosen, 4);
+            //g.playIndividualScripts(playerScriptsChosen);
+            //tempStateEval = g.getState().eval(player, SparCraft::EvaluationMethods::LTD2);
             if (_qtdPlayoutIgnorar >= 2) {
                 cacheLTD2->addItemCache(playerScriptsChosen, player, tempStateEval.val());
             } else {
@@ -257,17 +257,17 @@ StateEvalScore PortfolioGreedySearchCache::eval(const IDType & player, const Gam
     } else {
         const IDType enemyPlayer(state.getEnemy(player));
 
-        Game g(state, 25);
+        Game g(state, 100);
 
         _totalEvals++;
 
-        //return g.playLimitedIndividualScripts(player, playerScriptsChosen, 4);
-        g.playIndividualScripts(playerScriptsChosen);
-        return g.getState().eval(player, SparCraft::EvaluationMethods::LTD2);
+        return g.playLimitedIndividualScripts(player, playerScriptsChosen, 4);
+        //g.playIndividualScripts(playerScriptsChosen);
+        //return g.getState().eval(player, SparCraft::EvaluationMethods::LTD2);
     }
 }
 
-void PortfolioGreedySearchCache::setAllScripts(const IDType & player, const GameState & state, UnitScriptData & data, const IDType & script) {
+void PortfolioGreedySearchLongCache::setAllScripts(const IDType & player, const GameState & state, UnitScriptData & data, const IDType & script) {
     for (size_t unitIndex(0); unitIndex < state.numUnits(player); ++unitIndex) {
         data.setUnitScript(state.getUnit(player, unitIndex), script);
     }

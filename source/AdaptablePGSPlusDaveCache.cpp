@@ -1,8 +1,8 @@
-#include "PortfolioGreedySearchCache.h"
+#include "AdaptablePGSPlusDaveCache.h"
 
 using namespace SparCraft;
 
-PortfolioGreedySearchCache::PortfolioGreedySearchCache(const IDType & player, const IDType & enemyScript, const size_t & iter, const size_t & responses, const size_t & timeLimit)
+AdaptablePGSPlusDaveCache::AdaptablePGSPlusDaveCache(const IDType & player, const IDType & enemyScript, const size_t & iter, const size_t & responses, const size_t & timeLimit)
 : _player(player)
 , _enemyScript(enemyScript)
 , _iterations(iter)
@@ -15,13 +15,15 @@ PortfolioGreedySearchCache::PortfolioGreedySearchCache(const IDType & player, co
 
     cacheLTD2 = new CacheSimpleString();
     _qtdPlayoutIgnorar = 0;
+    _qtStepdsPlayout = 100;
+    _timePlayout = -1.0;
 }
 
-PortfolioGreedySearchCache::~PortfolioGreedySearchCache() {
+AdaptablePGSPlusDaveCache::~AdaptablePGSPlusDaveCache() {
     delete cacheLTD2;
 }
 
-UnitScriptData PortfolioGreedySearchCache::searchForScripts(const IDType & player, const GameState & state, StateEvalScore & bestScore) {
+UnitScriptData AdaptablePGSPlusDaveCache::searchForScripts(const IDType & player, const GameState & state, StateEvalScore & bestScore) {
     Timer t;
     t.start();
 
@@ -64,12 +66,12 @@ UnitScriptData PortfolioGreedySearchCache::searchForScripts(const IDType & playe
     return currentScriptData;
 }
 
-std::vector<Action> PortfolioGreedySearchCache::search(const IDType & player, const GameState & state, StateEvalScore & bestScore) {
+std::vector<Action> AdaptablePGSPlusDaveCache::search(const IDType & player, const GameState & state, StateEvalScore & bestScore) {
     Timer t;
     t.start();
     
-    ///std::cout << "--------- Inicio PGSCache ---------" << std::endl;
-
+    //std::cout << "--------- Inicio AdaptablePGSPlus ---------" << std::endl;
+    _timePlayout = -1.0;
     const IDType enemyPlayer(state.getEnemy(player));
 
     // calculate the seed scripts for each player
@@ -88,7 +90,7 @@ std::vector<Action> PortfolioGreedySearchCache::search(const IDType & player, co
     // do the initial root portfolio search for our player
     UnitScriptData currentScriptData(originalScriptData);
     doPortfolioSearch(player, state, currentScriptData, t, bestScore);
-
+/*
     // iterate as many times as required
     for (size_t i(0); i < _responses; ++i) {
         // do the portfolio search to improve the enemy's scripts
@@ -97,8 +99,9 @@ std::vector<Action> PortfolioGreedySearchCache::search(const IDType & player, co
         // then do portfolio search again for us to improve vs. enemy's update
         doPortfolioSearch(player, state, currentScriptData, t, bestScore);
     }
-
+*/
     ms = t.getElapsedTimeInMilliSec();
+    //printf("\nSecond Part %lf ms\n", ms);
     /*
         _fileTime.open("PGS.txt", std::ostream::app);
         if (!_fileTime.is_open())
@@ -116,23 +119,24 @@ std::vector<Action> PortfolioGreedySearchCache::search(const IDType & player, co
     currentScriptData.calculateMoves(player, moves, copy, moveVec);
 
     ms = t.getElapsedTimeInMilliSec();
-    //printf("\nMove PGS chosen in %lf ms\n", ms);
+    //printf("\nMove AdaptablePGSPlus chosen in %lf ms\n", ms);
 
     _totalEvals = 0;
     
-    //std::cout << "--------- FIM PGSCache ---------" << std::endl;
+   // std::cout << "--------- FIM AdaptablePGSPlus ---------" << std::endl;
     
     return moveVec;
 }
 
-void PortfolioGreedySearchCache::doPortfolioSearch(const IDType & player, const GameState & state, UnitScriptData & currentScriptData, Timer & t, StateEvalScore & bestScore) {
-    //  Timer t;
-    //   t.start();
+void AdaptablePGSPlusDaveCache::doPortfolioSearch(const IDType & player, const GameState & state, UnitScriptData & currentScriptData, Timer & t, StateEvalScore & bestScore) {
+      //Timer t;
+      //t.start();
+      double ms; 
     
     // the enemy of this player
     const IDType enemyPlayer(state.getEnemy(player));
 
-    int counterIterations = 0;
+    _counterIterations = 0;
 
     while(t.getElapsedTimeInMilliSec() < _timeLimit)
     //for (size_t i(0); i<_iterations; ++i)
@@ -159,7 +163,12 @@ void PortfolioGreedySearchCache::doPortfolioSearch(const IDType & player, const 
                 currentScriptData.setUnitScript(unit, _playerScriptPortfolio[sIndex]);
 
                 // evaluate the current state given a playout with these unit scripts
+                ms = t.getElapsedTimeInMilliSec();
                 StateEvalScore score = eval(player, state, currentScriptData);
+                ms = t.getElapsedTimeInMilliSec() - ms;
+                if(ms > _timePlayout){
+                    _timePlayout = ms;
+                }
 
                 // if we have a better score, set it
                 if (sIndex == 0 || score > bestScoreVec[unitIndex])
@@ -170,7 +179,7 @@ void PortfolioGreedySearchCache::doPortfolioSearch(const IDType & player, const 
                     //std::cout << "Eval: " << score.val() << std::endl;
                 }
 
-                if((counterIterations == 0 && sIndex == 0) || score > bestScore)
+                if((_counterIterations == 0 && sIndex == 0) || score > bestScore)
                 {
                 	bestScore = score;
                     hasImproved = true;
@@ -192,11 +201,11 @@ void PortfolioGreedySearchCache::doPortfolioSearch(const IDType & player, const 
         	return;
         }
 
-        counterIterations++;
+        _counterIterations++;
     }   
 }
 
-IDType PortfolioGreedySearchCache::calculateInitialSeed(const IDType & player, const GameState & state) {
+IDType AdaptablePGSPlusDaveCache::calculateInitialSeed(const IDType & player, const GameState & state) {
     IDType bestScript;
     StateEvalScore bestScriptScore;
     const IDType enemyPlayer(state.getEnemy(player));
@@ -227,7 +236,8 @@ IDType PortfolioGreedySearchCache::calculateInitialSeed(const IDType & player, c
     return bestScript;
 }
 
-StateEvalScore PortfolioGreedySearchCache::eval(const IDType & player, const GameState & state, UnitScriptData & playerScriptsChosen) {
+StateEvalScore AdaptablePGSPlusDaveCache::eval(const IDType & player, const GameState & state, UnitScriptData & playerScriptsChosen) {
+    const IDType enemyPlayer(state.getEnemy(player));
     if (_player == player) {
         ScoreType valCache = cacheLTD2->hitItemCache(playerScriptsChosen, player);
         StateEvalScore tempStateEval;
@@ -237,9 +247,8 @@ StateEvalScore PortfolioGreedySearchCache::eval(const IDType & player, const Gam
             //std::cout << "Cache hit" << std::endl;
         } else {
             //std::cout << "Cache miss" << std::endl;
-            const IDType enemyPlayer(state.getEnemy(player));
 
-            Game g(state, 25);
+            Game g(state, _qtStepdsPlayout);
 
             _totalEvals++;
 
@@ -255,19 +264,19 @@ StateEvalScore PortfolioGreedySearchCache::eval(const IDType & player, const Gam
         }
         return tempStateEval;
     } else {
-        const IDType enemyPlayer(state.getEnemy(player));
 
-        Game g(state, 25);
+        Game g(state, _qtStepdsPlayout);
 
         _totalEvals++;
 
+        
         //return g.playLimitedIndividualScripts(player, playerScriptsChosen, 4);
         g.playIndividualScripts(playerScriptsChosen);
         return g.getState().eval(player, SparCraft::EvaluationMethods::LTD2);
     }
 }
 
-void PortfolioGreedySearchCache::setAllScripts(const IDType & player, const GameState & state, UnitScriptData & data, const IDType & script) {
+void AdaptablePGSPlusDaveCache::setAllScripts(const IDType & player, const GameState & state, UnitScriptData & data, const IDType & script) {
     for (size_t unitIndex(0); unitIndex < state.numUnits(player); ++unitIndex) {
         data.setUnitScript(state.getUnit(player, unitIndex), script);
     }

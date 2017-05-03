@@ -20,6 +20,11 @@ GAB::GAB(const IDType& playerID, int numUnitsAB, std::string controlAbstraction)
     iniciarClasseAbstracao(controlAbstraction);
 }
 
+GAB::~GAB() {
+    free(manager);
+}
+
+
 void GAB::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>& moveVec) {
     Timer t;
     t.start();

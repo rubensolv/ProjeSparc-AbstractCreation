@@ -12,6 +12,16 @@
 #include "AlphaBetaSearchParameters.hpp"
 #include "AlphaBetaSearchAbstract.h"
 #include "PortfolioOnlineEvolutionLimit.h"
+#include "ManagerAbstraction.h"
+#include "ManagerRandom.h"
+#include "ManagerClosest.h"
+#include "ManagerFarther.h"
+#include "ManagerLessLife.h"
+#include "ManagerMoreLife.h"
+#include "ManagerClosestEnemy.h"
+#include "ManagerFartherEnemy.h"
+#include "ManagerMoreDPS.h"
+#include "ManagerLessDPS.h"
 
 class TranspositionTable;
 
@@ -33,12 +43,14 @@ namespace SparCraft {
         PortfolioOnlineEvolutionLimit * poe;
         std::map<Unit, std::vector<Unit>> _unAttack;
         std::vector<Unit> _UnReut;
-        std::set<Unit, lex_compare_PoeL> _unitAbsAB;
+        std::set<Unit> _unitAbsAB;
         TimeType lastTime;
         int numUnits;
+        ManagerAbstraction * manager;
     public:
         ABPOELimit(const IDType & playerID);
-        ABPOELimit(const IDType & playerID, int numUnitsAB);
+        ABPOELimit(const IDType & playerID, int numUnitsAB, std::string controlAbstraction);
+        ~ABPOELimit();
         void getMoves(GameState & state, const MoveArray & moves, std::vector<Action> & moveVec);
 
         IDType getType() {
@@ -72,9 +84,11 @@ namespace SparCraft {
         //idéia da movimentação por inicialiaçao
         bool applyClosestInicialization(std::vector<Unit> & unAliadas, std::vector<Unit> & unInimigas, GameState & state);
 
-
         //ideia de analisar as ações dada à uma unidade
         void analisarAbstractForm(GameState newState, std::vector<Unit> unidadesInimigas);
+        
+        //métodos utilização das classes de gestão de unidades
+        void iniciarClasseAbstracao(std::string controlAbstraction);
     };
 }
 

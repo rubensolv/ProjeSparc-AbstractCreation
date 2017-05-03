@@ -42,6 +42,7 @@ namespace SparCraft {
     public:
         GAB(const IDType & playerID);
         GAB(const IDType & playerID, int numUnitsAB, std::string controlAbstraction);
+        ~GAB();
         void getMoves(GameState & state, const MoveArray & moves, std::vector<Action> & moveVec);
 
         IDType getType() {

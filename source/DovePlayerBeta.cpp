@@ -44,7 +44,7 @@ void DovePlayerBeta::executeExaustSearch(GameState& state, const MoveArray& move
 }
 
 StateEvalScore DovePlayerBeta::playUnitScripts(GameState& state, UnitScriptData script) {
-    Game g2(state, 100);
+    Game g2(state, 25);
     g2.playIndividualScripts(script);
     return g2.getState().eval(_playerID, SparCraft::EvaluationMethods::LTD2);
 }

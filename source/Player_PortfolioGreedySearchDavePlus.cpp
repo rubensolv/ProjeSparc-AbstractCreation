@@ -1,8 +1,8 @@
-#include "Player_PortfolioGreedySearchPlus.h"
+#include "Player_PortfolioGreedySearchDavePlusShort.h"
 
 using namespace SparCraft;
 
-Player_PortfolioGreedySearchPlus::Player_PortfolioGreedySearchPlus (const IDType & playerID) 
+Player_PortfolioGreedySearchDavePlusShort::Player_PortfolioGreedySearchDavePlusShort (const IDType & playerID) 
 {
 	_playerID = playerID;
 	_iterations = 1;
@@ -10,7 +10,7 @@ Player_PortfolioGreedySearchPlus::Player_PortfolioGreedySearchPlus (const IDType
 	_seed = PlayerModels::NOKDPS;
 }
 
-Player_PortfolioGreedySearchPlus::Player_PortfolioGreedySearchPlus (const IDType & playerID, const IDType & seed, const size_t & iter, const size_t & responses, const size_t & timeLimit)
+Player_PortfolioGreedySearchDavePlusShort::Player_PortfolioGreedySearchDavePlusShort (const IDType & playerID, const IDType & seed, const size_t & iter, const size_t & responses, const size_t & timeLimit)
 {
 	_playerID = playerID;
 	_iterations = iter;
@@ -19,10 +19,10 @@ Player_PortfolioGreedySearchPlus::Player_PortfolioGreedySearchPlus (const IDType
     _timeLimit = timeLimit;
 }
 
-void Player_PortfolioGreedySearchPlus::getMoves(GameState & state, const MoveArray & moves, std::vector<Action> & moveVec)
+void Player_PortfolioGreedySearchDavePlusShort::getMoves(GameState & state, const MoveArray & moves, std::vector<Action> & moveVec)
 {
     moveVec.clear();
-	PortfolioGreedySearchPlus pgs(_playerID, _seed, _iterations, _responses, _timeLimit);
+	PortfolioGreedySearchDavePlusShort pgs(_playerID, _seed, _iterations, _responses, _timeLimit);
 
 	moveVec = pgs.search(_playerID, state);
 }

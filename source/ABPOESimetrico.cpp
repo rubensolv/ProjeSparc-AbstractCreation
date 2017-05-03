@@ -9,14 +9,21 @@ ABPOESimetrico::ABPOESimetrico(const IDType& playerID) {
     poe = new PortfolioOnlineEvolutionLimit(_playerID, PlayerModels::NOKDPS, 1, 0, 40);
     lastTime = 0;
     numUnits = 7;
+    manager = new ManagerMoreDPS(_playerID, numUnits);
 }
 
-ABPOESimetrico::ABPOESimetrico(const IDType& playerID, int numUnitsAB) {
+ABPOESimetrico::ABPOESimetrico(const IDType& playerID, int numUnitsAB, std::string controlAbstraction) {
     _playerID = playerID;
     iniciarAlphaBeta();
     poe = new PortfolioOnlineEvolutionLimit(_playerID, PlayerModels::NOKDPS, 1, 0, 40);
     lastTime = 0;
     numUnits = numUnitsAB;
+    iniciarClasseAbstracao(controlAbstraction);
+    std::cout << " Player ABPOESimetrico "<< controlAbstraction << std::endl;
+}
+
+ABPOESimetrico::~ABPOESimetrico() {
+    free(manager);
 }
 
 
@@ -76,7 +83,8 @@ void ABPOESimetrico::getMoves(GameState& state, const MoveArray& moves, std::vec
         currentScriptData = poe->searchForScripts(_playerID, state);
         ms = t.getElapsedTimeInMilliSec() - ms;
         
-        controlUnitsForAB(state, moves);
+        //controlUnitsForAB(state, moves);
+        manager->controlUnitsForAB(state, moves, _unitAbsAB);
         
         std::vector<Action> moveVecPgs, movecAB;
 
@@ -139,7 +147,7 @@ void ABPOESimetrico::getMoves(GameState& state, const MoveArray& moves, std::vec
             if (gABPGS.getState().eval(_playerID, SparCraft::EvaluationMethods::LTD2) >
                     gPGS.getState().eval(_playerID, SparCraft::EvaluationMethods::LTD2)) {
                 moveVec.assign(alphaBeta->getResults().bestMoves.begin(), alphaBeta->getResults().bestMoves.end());
-                std::cout<<"POE - Escolhemos o ABPOESimetrico"<<std::endl;
+                //std::cout<<"POE - Escolhemos o ABPOESimetrico"<<std::endl;
             } else {
                 moveVec = moveVecPgs;
             }
@@ -197,10 +205,9 @@ bool ABPOESimetrico::unitsInMoves(GameState& state, const MoveArray& moves) {
 //separo as unidades que serão utilizadas para compor a abstração que será utilizada no AB
 //e faço controle e manutenção destas
 
-void ABPOESimetrico::controlUnitsForAB(GameState & state, const MoveArray & moves) {
-    int numUnits = 4;
+void ABPOESimetrico::controlUnitsForAB(GameState & state, const MoveArray & moves) {    
     //verifico se as unidades não foram mortas
-    std::set<Unit, lex_ps> tempUnitAbsAB;
+    std::set<Unit> tempUnitAbsAB;
     for (auto & un : _unitAbsAB) {
         if (state.unitExist(_playerID, un.ID()))  {
             tempUnitAbsAB.insert(un);
@@ -657,6 +664,38 @@ void ABPOESimetrico::removeAttackInUnAttack(Unit enemy, Unit Attacker) {
         }
     }
     _unAttack.find(enemy)->second = cleanUnit;
+}
+
+//responsável por instanciar a classe que fará o controle das unidades 
+//existentes na abstração.
+void ABPOESimetrico::iniciarClasseAbstracao(std::string controlAbstraction) {
+    if(controlAbstraction.compare("Random") == 0){
+        manager = new ManagerRandom(_playerID, numUnits);
+    }
+    if(controlAbstraction.compare("Closest") == 0){
+        manager = new ManagerClosest(_playerID, numUnits);
+    }
+    if(controlAbstraction.compare("Farther") == 0){
+        manager = new ManagerFarther(_playerID, numUnits);
+    }
+    if(controlAbstraction.compare("LessLife") == 0){
+        manager = new ManagerLessLife(_playerID, numUnits);
+    }
+    if(controlAbstraction.compare("MoreLife") == 0){
+        manager = new ManagerMoreLife(_playerID, numUnits);
+    }
+    if(controlAbstraction.compare("ClosestEnemy") == 0){
+        manager = new ManagerClosestEnemy(_playerID, numUnits);
+    }
+    if(controlAbstraction.compare("FartherEnemy") == 0){
+        manager = new ManagerFartherEnemy(_playerID, numUnits);
+    }
+    if(controlAbstraction.compare("MoreDPS") == 0){
+        manager = new ManagerMoreDPS(_playerID, numUnits);
+    }
+    if(controlAbstraction.compare("LessDPS") == 0){
+        manager = new ManagerLessDPS(_playerID, numUnits);
+    }
 }
 
 

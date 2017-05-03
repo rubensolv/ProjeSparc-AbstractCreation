@@ -1,8 +1,8 @@
-#include "Player_PortfolioGreedySearchCache.h"
+#include "Player_PortfolioGreedySearchDaveLongCache.h"
 
 using namespace SparCraft;
 
-Player_PortfolioGreedySearchCache::Player_PortfolioGreedySearchCache (const IDType & playerID) 
+Player_PortfolioGreedySearchDaveLongCache::Player_PortfolioGreedySearchDaveLongCache (const IDType & playerID) 
 {
 	_playerID = playerID;
 	_iterations = 1;
@@ -10,7 +10,7 @@ Player_PortfolioGreedySearchCache::Player_PortfolioGreedySearchCache (const IDTy
 	_seed = PlayerModels::NOKDPS;
 }
 
-Player_PortfolioGreedySearchCache::Player_PortfolioGreedySearchCache (const IDType & playerID, const IDType & seed, const size_t & iter, const size_t & responses, const size_t & timeLimit)
+Player_PortfolioGreedySearchDaveLongCache::Player_PortfolioGreedySearchDaveLongCache (const IDType & playerID, const IDType & seed, const size_t & iter, const size_t & responses, const size_t & timeLimit)
 {
 	_playerID = playerID;
 	_iterations = iter;
@@ -19,10 +19,10 @@ Player_PortfolioGreedySearchCache::Player_PortfolioGreedySearchCache (const IDTy
     _timeLimit = timeLimit;
 }
 
-void Player_PortfolioGreedySearchCache::getMoves(GameState & state, const MoveArray & moves, std::vector<Action> & moveVec)
+void Player_PortfolioGreedySearchDaveLongCache::getMoves(GameState & state, const MoveArray & moves, std::vector<Action> & moveVec)
 {
     moveVec.clear();
-    PortfolioGreedySearchCache pgs(_playerID, _seed, _iterations, _responses, _timeLimit);
+    PortfolioGreedySearchDaveLongCache pgs(_playerID, _seed, _iterations, _responses, _timeLimit);
     StateEvalScore bestScore;    
     moveVec = pgs.search(_playerID, state, bestScore);
 }

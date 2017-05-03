@@ -9,32 +9,40 @@ ABPGSSimetrico::ABPGSSimetrico(const IDType& playerID) {
     pgs = new PortfolioGreedySearchNoTime(_playerID, PlayerModels::NOKDPS, 1, 0, 40);
     lastTime = 0;
     numUnits = 7;
+    manager = new ManagerMoreDPS(_playerID, numUnits);
 }
 
-ABPGSSimetrico::ABPGSSimetrico(const IDType& playerID, int numUnitsAB) {
+ABPGSSimetrico::ABPGSSimetrico(const IDType& playerID, int numUnitsAB , std::string controlAbstraction) {
     _playerID = playerID;
     iniciarAlphaBeta();
     pgs = new PortfolioGreedySearchNoTime(_playerID, PlayerModels::NOKDPS, 1, 0, 40);
     lastTime = 0;
     numUnits = numUnitsAB;
+    iniciarClasseAbstracao(controlAbstraction);
+    std::cout << " Player ABPGSSimetrico "<< controlAbstraction << std::endl;
 }
+
+ABPGSSimetrico::~ABPGSSimetrico() {
+    free(manager);
+}
+
 
 void ABPGSSimetrico::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>& moveVec) {
 
     //gravando informacoes
-    std::ofstream arquivo;
+    //std::ofstream arquivo;
 
-    std::string nomeArq = "Monitor_GABSSigma";
+    //std::string nomeArq = "Monitor_GABSSigma";
 
-    arquivo.open(nomeArq, std::ios_base::app | std::ios_base::out);
+    //arquivo.open(nomeArq, std::ios_base::app | std::ios_base::out);
 
-    if (!arquivo.is_open()) {
-        System::FatalError("Problem Opening Output File: Arquivo GABSSigma");
-    }
+    //if (!arquivo.is_open()) {
+    //    System::FatalError("Problem Opening Output File: Arquivo GABSSigma");
+    //}
     //std::cout << "Tempo da chamada= " << state.getTime() << std::endl;
-    arquivo << "Tempo da chamada= " << state.getTime() << std::endl;
+    //arquivo << "Tempo da chamada= " << state.getTime() << std::endl;
     //std::cout << " Qtd unidades existentes= " << state.numUnits(_playerID) << std::endl;
-    arquivo << " Qtd unidades existentes= " << state.numUnits(_playerID) << std::endl;
+    //arquivo << " Qtd unidades existentes= " << state.numUnits(_playerID) << std::endl;
     //gravando informacoes
 
     Timer t;
@@ -82,9 +90,9 @@ void ABPGSSimetrico::getMoves(GameState& state, const MoveArray& moves, std::vec
 
         //gravando informacoes
         //std::cout << "Escolhemos o AB" << std::endl;
-        arquivo<< "Escolhemos o AB" << std::endl;
+        //arquivo<< "Escolhemos o AB" << std::endl;
         //std::cout << "LTD2=  " << newState.eval(_playerID, SparCraft::EvaluationMethods::LTD2).val() << std::endl;
-        arquivo<< "LTD2=  " << newState.eval(_playerID, SparCraft::EvaluationMethods::LTD2).val() << std::endl;
+        //arquivo<< "LTD2=  " << newState.eval(_playerID, SparCraft::EvaluationMethods::LTD2).val() << std::endl;
         //gravando informacoes
 
         //limpo o state por segurança
@@ -100,7 +108,8 @@ void ABPGSSimetrico::getMoves(GameState& state, const MoveArray& moves, std::vec
         ms = t.getElapsedTimeInMilliSec() - ms;
         //std::cout << " Tempo total do PGS "<< ms << std::endl;
 
-        controlUnitsForAB(state, moves);
+        //controlUnitsForAB(state, moves);
+        manager->controlUnitsForAB(state, moves, _unitAbsAB);
         //std::vector<Action> moveVecPgs, movecAB;
 
         MoveArray movesPGS;
@@ -125,8 +134,8 @@ void ABPGSSimetrico::getMoves(GameState& state, const MoveArray& moves, std::vec
                 //gravando informacoes
                 //std::cout << "Escolhemos o AB" << std::endl;
                 //std::cout << "LTD2= " << ABScore.val() << std::endl;
-                arquivo<< "Escolhemos o AB" << std::endl;
-                arquivo<< "LTD2=  " << ABScore.val() << std::endl;
+                //arquivo<< "Escolhemos o AB" << std::endl;
+                //arquivo<< "LTD2=  " << ABScore.val() << std::endl;
                 //gravando informacoes
                 moveVec.clear();
                 moveVec.assign(alphaBeta->getResults().bestMoves.begin(), alphaBeta->getResults().bestMoves.end());
@@ -134,8 +143,8 @@ void ABPGSSimetrico::getMoves(GameState& state, const MoveArray& moves, std::vec
                 //gravando informacoes
                 //std::cout << "Escolhemos o PGS " << std::endl;
                 //std::cout << "LTD2=  " << PGSScore.val() << std::endl;
-                arquivo<< "Escolhemos o PGS " << std::endl;
-                arquivo<< "LTD2=  " << PGSScore.val() << std::endl;
+                //arquivo<< "Escolhemos o PGS " << std::endl;
+                //arquivo<< "LTD2=  " << PGSScore.val() << std::endl;
                 //gravando informacoes
             }
 
@@ -144,13 +153,13 @@ void ABPGSSimetrico::getMoves(GameState& state, const MoveArray& moves, std::vec
             //gravando informacoes
             //std::cout << "Escolhemos o PGS " << std::endl;
             //std::cout << "LTD2=  " << PGSScore.val() << std::endl;
-            arquivo<< "Escolhemos o PGS " << std::endl;
-            arquivo<< "LTD2=  " << PGSScore.val() << std::endl;
+            //arquivo<< "Escolhemos o PGS " << std::endl;
+            //arquivo<< "LTD2=  " << PGSScore.val() << std::endl;
             //gravando informacoes
         }
 
     }
-    arquivo.close();
+    //arquivo.close();
 
     /*
 std::cout << "************* INICIO GenerationClass  **************" << std::endl;
@@ -198,7 +207,7 @@ bool ABPGSSimetrico::unitsInMoves(GameState& state, const MoveArray& moves) {
 
 void ABPGSSimetrico::controlUnitsForAB(GameState & state, const MoveArray & moves) {
     //verifico se as unidades não foram mortas
-    std::set<Unit, lex_sim> tempUnitAbsAB;
+    std::set<Unit> tempUnitAbsAB;
     for (auto & un : _unitAbsAB) {
         if (state.unitExist(_playerID, un.ID())) {
             tempUnitAbsAB.insert(un);
@@ -657,6 +666,37 @@ void ABPGSSimetrico::removeAttackInUnAttack(Unit enemy, Unit Attacker) {
     _unAttack.find(enemy)->second = cleanUnit;
 }
 
+//responsável por instanciar a classe que fará o controle das unidades 
+//existentes na abstração.
+void ABPGSSimetrico::iniciarClasseAbstracao(std::string controlAbstraction) {
+    if(controlAbstraction.compare("Random") == 0){
+        manager = new ManagerRandom(_playerID, numUnits);
+    }
+    if(controlAbstraction.compare("Closest") == 0){
+        manager = new ManagerClosest(_playerID, numUnits);
+    }
+    if(controlAbstraction.compare("Farther") == 0){
+        manager = new ManagerFarther(_playerID, numUnits);
+    }
+    if(controlAbstraction.compare("LessLife") == 0){
+        manager = new ManagerLessLife(_playerID, numUnits);
+    }
+    if(controlAbstraction.compare("MoreLife") == 0){
+        manager = new ManagerMoreLife(_playerID, numUnits);
+    }
+    if(controlAbstraction.compare("ClosestEnemy") == 0){
+        manager = new ManagerClosestEnemy(_playerID, numUnits);
+    }
+    if(controlAbstraction.compare("FartherEnemy") == 0){
+        manager = new ManagerFartherEnemy(_playerID, numUnits);
+    }
+    if(controlAbstraction.compare("MoreDPS") == 0){
+        manager = new ManagerMoreDPS(_playerID, numUnits);
+    }
+    if(controlAbstraction.compare("LessDPS") == 0){
+        manager = new ManagerLessDPS(_playerID, numUnits);
+    }
+}
 
 
 

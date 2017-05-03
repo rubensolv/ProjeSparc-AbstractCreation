@@ -536,9 +536,11 @@ void SearchExperiment::addPlayer(const std::string & line)
         else if (playerModelID == PlayerModels::ABPGSSimetrico)				
     { 
         int numUnits(0);
+        std::string controlAbstractionID;
         iss >> numUnits;
+        iss >> controlAbstractionID;
         
-        players[playerID].push_back(PlayerPtr(new ABPGSSimetrico(playerID, numUnits))); 
+        players[playerID].push_back(PlayerPtr(new ABPGSSimetrico(playerID, numUnits, controlAbstractionID))); 
     }
         else if (playerModelID == PlayerModels::GenerationClass)				
     { 
@@ -559,9 +561,11 @@ void SearchExperiment::addPlayer(const std::string & line)
         else if (playerModelID == PlayerModels::ABPOESimetrico)				
     { 
         int numUnits(0);
+        std::string controlAbstractionID;
         iss >> numUnits;
+        iss >> controlAbstractionID;
                 
-        players[playerID].push_back(PlayerPtr(new ABPOESimetrico(playerID, numUnits))); 
+        players[playerID].push_back(PlayerPtr(new ABPOESimetrico(playerID, numUnits, controlAbstractionID))); 
     }
     else if (playerModelID == PlayerModels::ABPOESimetricoDeep)				
     { 
@@ -585,9 +589,11 @@ void SearchExperiment::addPlayer(const std::string & line)
         else if (playerModelID == PlayerModels::ABPOELimit)				
     { 
         int numUnits(0);
+        std::string controlAbstractionID;
         iss >> numUnits;
+        iss >> controlAbstractionID;
         
-        players[playerID].push_back(PlayerPtr(new ABPOELimit(playerID, numUnits)));
+        players[playerID].push_back(PlayerPtr(new ABPOELimit(playerID, numUnits, controlAbstractionID)));
     }
         else if (playerModelID == PlayerModels::ABPOELimitDeep)				
     { 
@@ -729,6 +735,133 @@ else if (playerModelID == PlayerModels::ImprovedPortfolioGreedySearch)
 
         players[playerID].push_back(PlayerPtr(new Player_PortfolioGreedySearchPlus(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit))); 
     }
+    else if (playerModelID == PlayerModels::PortfolioGreedySearchDavePlus)				
+    { 
+        std::string enemyPlayerModel;
+        size_t timeLimit(0);
+        int iterations(1);
+        int responses(0);
+
+        iss >> timeLimit;
+        iss >> enemyPlayerModel;
+        iss >> iterations;
+        iss >> responses;
+
+        players[playerID].push_back(PlayerPtr(new Player_PortfolioGreedySearchDavePlus(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit))); 
+    }
+    else if (playerModelID == PlayerModels::PortfolioGreedySearchDavePlusShort)				
+    { 
+        std::string enemyPlayerModel;
+        size_t timeLimit(0);
+        int iterations(1);
+        int responses(0);
+
+        iss >> timeLimit;
+        iss >> enemyPlayerModel;
+        iss >> iterations;
+        iss >> responses;
+
+        players[playerID].push_back(PlayerPtr(new Player_PortfolioGreedySearchDavePlusShort(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit))); 
+    }
+    else if (playerModelID == PlayerModels::PortfolioGreedySearchPlusShort)				
+    { 
+        std::string enemyPlayerModel;
+        size_t timeLimit(0);
+        int iterations(1);
+        int responses(0);
+
+        iss >> timeLimit;
+        iss >> enemyPlayerModel;
+        iss >> iterations;
+        iss >> responses;
+
+        players[playerID].push_back(PlayerPtr(new Player_PortfolioGreedySearchPlusShort(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit))); 
+    }
+    else if (playerModelID == PlayerModels::PortfolioGreedySearchDaveCache)				
+    { 
+        std::string enemyPlayerModel;
+        size_t timeLimit(0);
+        int iterations(1);
+        int responses(0);
+
+        iss >> timeLimit;
+        iss >> enemyPlayerModel;
+        iss >> iterations;
+        iss >> responses;
+
+        players[playerID].push_back(PlayerPtr(new Player_PortfolioGreedySearchDaveCache(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit))); 
+    }
+    else if (playerModelID == PlayerModels::PortfolioGreedySearchDaveLongCache)				
+    { 
+        std::string enemyPlayerModel;
+        size_t timeLimit(0);
+        int iterations(1);
+        int responses(0);
+
+        iss >> timeLimit;
+        iss >> enemyPlayerModel;
+        iss >> iterations;
+        iss >> responses;
+
+        players[playerID].push_back(PlayerPtr(new Player_PortfolioGreedySearchDaveLongCache(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit))); 
+    }
+    else if (playerModelID == PlayerModels::PortfolioGreedySearchLongCache)				
+    { 
+        std::string enemyPlayerModel;
+        size_t timeLimit(0);
+        int iterations(1);
+        int responses(0);
+
+        iss >> timeLimit;
+        iss >> enemyPlayerModel;
+        iss >> iterations;
+        iss >> responses;
+
+        players[playerID].push_back(PlayerPtr(new Player_PortfolioGreedySearchLongCache(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit))); 
+    }
+    else if (playerModelID == PlayerModels::AdaptablePGS)				
+    { 
+        std::string enemyPlayerModel;
+        size_t timeLimit(0);
+        int iterations(1);
+        int responses(0);
+
+        iss >> timeLimit;
+        iss >> enemyPlayerModel;
+        iss >> iterations;
+        iss >> responses;
+
+        players[playerID].push_back(PlayerPtr(new Player_AdaptablePGS(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit))); 
+    }
+    else if (playerModelID == PlayerModels::AdaptablePGSPlusCache)				
+    { 
+        std::string enemyPlayerModel;
+        size_t timeLimit(0);
+        int iterations(1);
+        int responses(0);
+
+        iss >> timeLimit;
+        iss >> enemyPlayerModel;
+        iss >> iterations;
+        iss >> responses;
+
+        players[playerID].push_back(PlayerPtr(new Player_AdaptablePGSCache(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit))); 
+    }
+    else if (playerModelID == PlayerModels::AdaptablePGSPlusDaveCache)				
+    { 
+        std::string enemyPlayerModel;
+        size_t timeLimit(0);
+        int iterations(1);
+        int responses(0);
+
+        iss >> timeLimit;
+        iss >> enemyPlayerModel;
+        iss >> iterations;
+        iss >> responses;
+
+        players[playerID].push_back(PlayerPtr(new Player_AdaptablePGSDaveCache(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit))); 
+    }
+    
     else if (playerModelID == PlayerModels::PortfolioGreedySearchCache)				
     { 
         std::string enemyPlayerModel;
