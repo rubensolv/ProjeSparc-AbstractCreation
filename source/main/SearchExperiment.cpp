@@ -475,7 +475,6 @@ void SearchExperiment::addPlayer(const std::string & line)
     playerStrings[playerID].push_back(playerModelString);
 
     playerModelID = PlayerModels::getID(playerModelString);
-    
 
     //std::cout << "Player " << playerID << " adding type " << playerModelString << " (" << playerModelID << ")" << std::endl;
 
@@ -936,6 +935,7 @@ else if (playerModelID == PlayerModels::ImprovedPortfolioGreedySearch)
     {
         std::string enemyPlayerModel;
         size_t timeLimit(0);
+        size_t hpLevelDiv(1);
         int iterations(1);
         int responses(0);
 
@@ -943,8 +943,9 @@ else if (playerModelID == PlayerModels::ImprovedPortfolioGreedySearch)
         iss >> enemyPlayerModel;
         iss >> iterations;
         iss >> responses;
+        iss >> hpLevelDiv;
 
-        players[playerID].push_back(PlayerPtr(new Player_StratifiedPolicySearch(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit)));
+        players[playerID].push_back(PlayerPtr(new Player_StratifiedPolicySearch(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit, hpLevelDiv)));
     }
     else if (playerModelID == PlayerModels::AdaptiveBeamAlphaBeta)
     {

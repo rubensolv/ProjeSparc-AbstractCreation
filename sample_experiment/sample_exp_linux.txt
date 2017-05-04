@@ -160,7 +160,7 @@ Player 0 ABPGSSimetrico 7 LessLife
 #State SeparatedState 2 128 128 400 360 840 360 Protoss_Dragoon 12
 #State SeparatedState 10 128 128 400 360 840 360 Protoss_Zealot 12
 #State SeparatedState 70 128 128 400 360 840 360 Protoss_Dragoon 4 Terran_Marine 4
-State SeparatedState 10 128 128 400 360 840 360 Protoss_Dragoon 25 Protoss_Zealot 25
+#State SeparatedState 10 128 128 400 360 840 360 Protoss_Dragoon 25 Protoss_Zealot 25
 #State SeparatedState 10 128 128 400 360 840 360 Zerg_Zergling 10
 #State SeparatedState 100 128 128 400 360 840 360 Zerg_Zergling 15 Protoss_Dragoon 8
 #State SeparatedState 100 128 128 400 360 840 360 Protoss_Dragoon 4 Terran_Marine 4
@@ -181,6 +181,11 @@ State SeparatedState 10 128 128 400 360 840 360 Protoss_Dragoon 25 Protoss_Zealo
 #State StateSymmetric 2 128 128 Protoss_Dragoon 16 Protoss_Zealot 16
 #State StateSymmetric 10 128 128 Protoss_Dragoon 16 Terran_Marine 16
 #State StateSymmetric 10 128 128 Terran_Marine 16 Zerg_Zergling 16
+
+# Sample Symmetric Vertical Line States
+State StateSymmetricVerticalLine 10 128 128 Protoss_Dragoon 16 Protoss_Zealot 16
+#State StateSymmetricVerticalLine 10 128 128 Protoss_Dragoon 2 Protoss_Zealot 2
+#State StateSymmetricVerticalLine 100 128 128 Protoss_Dragoon 8 Protoss_Zealot 8
 
 ##################################################
 #

@@ -2,10 +2,12 @@
 
 #include "Common.h"
 
-namespace SparCraft {
+namespace SparCraft 
+{
 
     template <class T>
-    class EnumData {
+    class EnumData 
+    {
     protected:
 
         static std::string name;
@@ -14,7 +16,8 @@ namespace SparCraft {
 
     public:
 
-        static const int size() {
+        static const int size() 
+	{
             return T::Size;
         }
 
@@ -26,8 +29,10 @@ namespace SparCraft {
             return name;
         }
 
-        static void setData(const int & ID, const std::string & s) {
-            if (ID > size()) {
+        static void setData(const int & ID, const std::string & s) 
+	{
+            if (ID > size()) 
+	    {
                 std::stringstream ss;
                 ss << ID;
                 System::FatalError("Unknown " + getType() + " ID: " + ss.str());
