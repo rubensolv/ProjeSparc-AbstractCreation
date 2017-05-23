@@ -64,7 +64,8 @@
 #Player 1 UCT 40 1.6 5000 20 ScriptFirst Playout NOKDPS NOKDPS Alternate NOKDPS
 
 # Sample PortfolioGreedySearch Players
-#Player 1 PortfolioGreedySearch 40 NOKDPS 1 0
+#Player 0 PortfolioGreedySearch 40 NOKDPS 1 0
+#Player 1 PortfolioGreedySearchDavePlus 40 NOKDPS 1 0
 #Player 1 PortfolioGreedySearchPlus 40 NOKDPS 1 0
 #Player 1 PortfolioGreedySearchDavePlus 40 NOKDPS 1 0
 #Player 1 PortfolioGreedySearchDavePlusShort 40 NOKDPS 1 0
@@ -75,18 +76,20 @@
 #Player 1 ImprovedPortfolioGreedySearch 80 NOKDPS 3 0
 #Player 0 ImprovedPortfolioGreedySearch 40 NOKDPS 1 0
 #Player 0 PortfolioGreedySearch 40 NOKDPS 1 0
-#Player 1 PortfolioOnlineEvolution 40 NOKDPS 1 0
+Player 0 PortfolioOnlineEvolution 40 NOKDPS 1 0
 #Player 0 Player_PGSAA 40 NOKDPS 1 0
-Player 1 PortfolioGreedySearchCache 40 NOKDPS 1 0
+#Player 1 PortfolioGreedySearchCache 40 NOKDPS 1 0
 #Player 1 PortfolioGreedySearchDaveCache 40 NOKDPS 1 0
 #Player 1 PortfolioGreedySearchDaveLongCache 40 NOKDPS 1 0
 #Player 1 PortfolioGreedySearchLongCache 40 NOKDPS 1 0
-#Player 0 PortfolioOnlineEvolutionCache 40 NOKDPS 1 0
+#Player 1 PortfolioOnlineEvolutionCache 40 NOKDPS 1 0
 
 #Sample StratifiedPolicySearch Players
 #Player 0 StratifiedPolicySearch 40 NOKDPS 1 0
 #Player 1 StratifiedPolicySearch 40 NOKDPS 1 0
-#Player 1 AdaptableStratifiedPolicySearch 40 NOKDPS 1 0
+#Player 1 StratifiedPolicySearch 40 NOKDPS 1 0 1
+Player 1 StratifiedPolicySearchCache 40 NOKDPS 1 0 1
+#Player 1 AdaptableStratifiedPolicySearch 40 NOKDPS 1 0 1
 #Player 1 IRStratifiedPolicySearch 40 NOKDPS 1 0
 
 # Sample Scripted Players
@@ -98,7 +101,7 @@ Player 1 PortfolioGreedySearchCache 40 NOKDPS 1 0
 #Player 0 DovePlayer False
 #Method to select units: {Random, Closest, Farther, LessLife, MoreLife, ClosestEnemy, FartherEnemy, MoreDPS, LessDPS}
 #Player 0 GAB 7 MoreDPS
-Player 0 ABPGSSimetrico 7 LessLife
+#Player 0 ABPGSSimetrico 7 LessLife
 #Player 0 ABPOESimetrico 7 Closest
 #Player 0 ABPOESimetricoDeep 7
 #Player 0 ABPOELimitDeep 7
@@ -120,6 +123,8 @@ Player 0 ABPGSSimetrico 7 LessLife
 #Player 0 ABPGSwithRepeatAction
 #Player 0 ABPOELimitWithRepeatAction
 #Player 0 GenerationClassWithClosest
+
+#Teste especiais
 
 
 ####################################################
@@ -155,12 +160,21 @@ Player 0 ABPGSSimetrico 7 LessLife
 #State StateDescriptionFile 70 /home/rubens/ProjeSparc/sample_experiment/sample_state_teste.txt
 #State StateDescriptionFile 70 /home/rubens/ProjeSparc/sample_experiment/sample_state_vitoria.txt
 #State StateDescriptionFile 70 /home/rubens/ProjeSparc/sample_experiment/sample_state_derrota.txt
+#State StateDescriptionFile 100 /home/rubens/ProjeSparc-AbstractCreation/sample_experiment/Terran_Zealots.txt
+#State StateDescriptionFile 100 /home/rubens/ProjeSparc-AbstractCreation/sample_experiment/Terran_Zergs.txt
+#State StateDescriptionFile 100 /home/rubens/ProjeSparc-AbstractCreation/sample_experiment/Zealots_Zergs.txt
+
+# Sample SeparatedState States heterogeneos
+#State SeparatedState 2 128 128 400 360 840 360 Terran_Marine 24 Terran_Vulture 10 Terran_Goliath 12 Terran_Siege_Tank_Tank_Mode 6 Terran_Firebat 20
+#State SeparatedState 2 128 128 400 360 840 360 Protoss_Zealot 12 Protoss_Dragoon 12 Protoss_Dark_Templar 10 Protoss_Archon 8 
+#State SeparatedState 2 128 128 400 360 840 360 Zerg_Zergling 30 Zerg_Hydralisk 20 Zerg_Mutalisk 13 Zerg_Ultralisk 6 
+
 
 # Sample SeparatedState States
-#State SeparatedState 2 128 128 400 360 840 360 Protoss_Dragoon 12
-#State SeparatedState 10 128 128 400 360 840 360 Protoss_Zealot 12
+#State SeparatedState 100 128 128 400 360 840 360 Protoss_Dragoon 16
+State SeparatedState 10 128 128 400 360 840 360 Protoss_Zealot 16
 #State SeparatedState 70 128 128 400 360 840 360 Protoss_Dragoon 4 Terran_Marine 4
-#State SeparatedState 10 128 128 400 360 840 360 Protoss_Dragoon 25 Protoss_Zealot 25
+#State SeparatedState 200 128 128 400 360 840 360 Protoss_Dragoon 25 Protoss_Zealot 25
 #State SeparatedState 10 128 128 400 360 840 360 Zerg_Zergling 10
 #State SeparatedState 100 128 128 400 360 840 360 Zerg_Zergling 15 Protoss_Dragoon 8
 #State SeparatedState 100 128 128 400 360 840 360 Protoss_Dragoon 4 Terran_Marine 4
@@ -183,9 +197,10 @@ Player 0 ABPGSSimetrico 7 LessLife
 #State StateSymmetric 10 128 128 Terran_Marine 16 Zerg_Zergling 16
 
 # Sample Symmetric Vertical Line States
-State StateSymmetricVerticalLine 10 128 128 Protoss_Dragoon 16 Protoss_Zealot 16
+#State StateSymmetricVerticalLine 10 128 128 Protoss_Dragoon 16 Protoss_Zealot 16
 #State StateSymmetricVerticalLine 10 128 128 Protoss_Dragoon 2 Protoss_Zealot 2
 #State StateSymmetricVerticalLine 100 128 128 Protoss_Dragoon 8 Protoss_Zealot 8
+#State StateSymmetricVerticalLine 3 128 128 Protoss_Dragoon 17 Protoss_Zealot 17
 
 ##################################################
 #

@@ -1,8 +1,8 @@
-#include "Player_StratifiedPolicySearch.h"
+#include "Player_StratifiedPolicySearchCache.h"
 
 using namespace SparCraft;
 
-Player_StratifiedPolicySearch::Player_StratifiedPolicySearch (const IDType & playerID)
+Player_StratifiedPolicySearchCache::Player_StratifiedPolicySearchCache (const IDType & playerID)
 {
 	_playerID = playerID;
 	_iterations = 1;
@@ -10,7 +10,7 @@ Player_StratifiedPolicySearch::Player_StratifiedPolicySearch (const IDType & pla
 	_seed = PlayerModels::NOKDPS;
 }
 
-Player_StratifiedPolicySearch::Player_StratifiedPolicySearch (const IDType & playerID, const IDType & seed, const size_t & iter, const size_t & responses, const size_t & timeLimit, const size_t & hpLevelDiv)
+Player_StratifiedPolicySearchCache::Player_StratifiedPolicySearchCache (const IDType & playerID, const IDType & seed, const size_t & iter, const size_t & responses, const size_t & timeLimit, const size_t & hpLevelDiv)
 {
 	_playerID = playerID;
 	_iterations = iter;
@@ -20,10 +20,10 @@ Player_StratifiedPolicySearch::Player_StratifiedPolicySearch (const IDType & pla
     _hpLevelDiv = hpLevelDiv;
 }
 
-void Player_StratifiedPolicySearch::getMoves(GameState & state, const MoveArray & moves, std::vector<Action> & moveVec)
+void Player_StratifiedPolicySearchCache::getMoves(GameState & state, const MoveArray & moves, std::vector<Action> & moveVec)
 {
     moveVec.clear();
-	StratifiedPolicySearch pgs(_playerID, _seed, _iterations, _responses, _timeLimit, _hpLevelDiv);
+	StratifiedPolicySearchCache pgs(_playerID, _seed, _iterations, _responses, _timeLimit, _hpLevelDiv);
 
 	moveVec = pgs.search(_playerID, state);
 }

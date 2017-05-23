@@ -62,9 +62,13 @@ UnitScriptData PortfolioGreedySearchDavePlus::searchForScripts(const IDType & pl
 std::vector<Action> PortfolioGreedySearchDavePlus::search(const IDType & player, const GameState & state) {    
     Timer t;
     t.start();
+    std::cout << " Iniciando PGS " << std::endl;
 
     const IDType enemyPlayer(state.getEnemy(player));
 
+    std::cout << "Unidades aliadas = "<< state.numUnits(player)<< std::endl;
+    std::cout << "Unidades inimigas = "<< state.numUnits(enemyPlayer)<< std::endl;
+    
     // calculate the seed scripts for each player
     // they will be used to seed the initial root search
     IDType seedScript = calculateInitialSeed(player, state);
@@ -112,7 +116,7 @@ std::vector<Action> PortfolioGreedySearchDavePlus::search(const IDType & player,
     //printf("\nMove PGS chosen in %lf ms\n", ms);
 
     _totalEvals = 0;
-
+    std::cout << " Encerrando PGS " << std::endl;
     return moveVec;
 }
 
@@ -191,14 +195,21 @@ IDType PortfolioGreedySearchDavePlus::calculateInitialSeed(const IDType & player
 }
 
 StateEvalScore PortfolioGreedySearchDavePlus::eval(const IDType & player, const GameState & state, UnitScriptData & playerScriptsChosen) {
+    //
+    Timer t;
+    t.start();
+    //
+    
     const IDType enemyPlayer(state.getEnemy(player));
+    
 
-    Game g(state, 100);
+    Game g(state, 25);
 
     _totalEvals++;
 
     //return g.playLimitedIndividualScripts(player, playerScriptsChosen, 4);
     g.playIndividualScripts(playerScriptsChosen);
+    std::cout << "Tempo playout = "<< t.getElapsedTimeInMilliSec() << std::endl;
     return g.getState().eval(player, SparCraft::EvaluationMethods::LTD2);
 }
 

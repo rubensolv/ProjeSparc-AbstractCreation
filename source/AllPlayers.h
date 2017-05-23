@@ -23,6 +23,7 @@
 #include "Player_PortfolioOnlineEvolutionDeep.h"
 #include "Player_PortfolioOnlineEvolutionCache.h"
 #include "Player_StratifiedPolicySearch.h"
+#include "Player_StratifiedPolicySearchCache.h"
 #include "Player_IRStratifiedPolicySearch.h"
 #include "Player_ImprovedPortfolioGreedySearch.h"
 #include "Player_PortfolioOnlineEvolution.h"

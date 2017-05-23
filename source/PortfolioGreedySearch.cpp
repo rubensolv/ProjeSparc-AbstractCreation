@@ -11,7 +11,7 @@ PortfolioGreedySearch::PortfolioGreedySearch(const IDType & player, const IDType
 , _timeLimit(timeLimit) {
     _playerScriptPortfolio.push_back(PlayerModels::NOKDPS);
     _playerScriptPortfolio.push_back(PlayerModels::KiterDPS);
-    //_playerScriptPortfolio.push_back(PlayerModels::Cluster);
+    _playerScriptPortfolio.push_back(PlayerModels::Cluster);
 }
 
 UnitScriptData PortfolioGreedySearch::searchForScripts(const IDType & player, const GameState & state) {
@@ -61,10 +61,10 @@ UnitScriptData PortfolioGreedySearch::searchForScripts(const IDType & player, co
 
 std::vector<Action> PortfolioGreedySearch::search(const IDType & player, const GameState & state) {    
     Timer t;
-    t.start();
-
+    t.start();    
+    
     const IDType enemyPlayer(state.getEnemy(player));
-
+    
     // calculate the seed scripts for each player
     // they will be used to seed the initial root search
     IDType seedScript = calculateInitialSeed(player, state);
@@ -112,7 +112,8 @@ std::vector<Action> PortfolioGreedySearch::search(const IDType & player, const G
     //printf("\nMove PGS chosen in %lf ms\n", ms);
 
     _totalEvals = 0;
-
+    
+    
     return moveVec;
 }
 
@@ -191,12 +192,12 @@ IDType PortfolioGreedySearch::calculateInitialSeed(const IDType & player, const 
 }
 
 StateEvalScore PortfolioGreedySearch::eval(const IDType & player, const GameState & state, UnitScriptData & playerScriptsChosen) {
+    
     const IDType enemyPlayer(state.getEnemy(player));
 
     Game g(state, 100);
 
     _totalEvals++;
-
     //return g.playLimitedIndividualScripts(player, playerScriptsChosen, 4);
     g.playIndividualScripts(playerScriptsChosen);
     return g.getState().eval(player, SparCraft::EvaluationMethods::LTD2);

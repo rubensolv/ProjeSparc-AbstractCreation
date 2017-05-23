@@ -15,7 +15,7 @@ PortfolioOnlineEvolutionCache::PortfolioOnlineEvolutionCache(const IDType & play
 , _offspringPerSelected(3) {
     _playerScriptPortfolio.push_back(PlayerModels::NOKDPS);
     _playerScriptPortfolio.push_back(PlayerModels::KiterDPS);
-    //_playerScriptPortfolio.push_back(PlayerModels::Cluster);
+    _playerScriptPortfolio.push_back(PlayerModels::Cluster);
     //	_playerScriptPortfolio.push_back(PlayerModels::MoveForward);
     //	_playerScriptPortfolio.push_back(PlayerModels::MoveBackward);
     srand(1234);
@@ -141,8 +141,8 @@ std::vector<Action> PortfolioOnlineEvolutionCache::search(const IDType & player,
     while ((ms < this->_timeLimit) and (numberMutate < 4)) {
         StateEvalScore tmpEval = evalPopulation(player, state, population);
         select(player, state, population);
-        mutatePopulation(player, state, population);
-        //crossover(player, state, population);
+        //mutatePopulation(player, state, population);
+        crossover(player, state, population);
 
         ms = t.getElapsedTimeInMilliSec();
         if (scoreFitness < tmpEval and maxChange < 2) {

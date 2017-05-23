@@ -11,7 +11,7 @@ PortfolioGreedySearchDavePlusShort::PortfolioGreedySearchDavePlusShort(const IDT
 , _timeLimit(timeLimit) {
     _playerScriptPortfolio.push_back(PlayerModels::NOKDPS);
     _playerScriptPortfolio.push_back(PlayerModels::KiterDPS);
-    //_playerScriptPortfolio.push_back(PlayerModels::Cluster);
+    _playerScriptPortfolio.push_back(PlayerModels::Cluster);
 }
 
 UnitScriptData PortfolioGreedySearchDavePlusShort::searchForScripts(const IDType & player, const GameState & state) {

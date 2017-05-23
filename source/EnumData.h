@@ -116,7 +116,7 @@ namespace SparCraft
             DovePlayerAlpha, DovePlayerAlphaTran,  DovePlayerBeta, DovePlayer, PortfolioGreedySearchPlus,
             AdaptablePGS, AdaptablePGSPlusCache, PortfolioGreedySearchDavePlus, PortfolioGreedySearchDavePlusShort,
             PortfolioGreedySearchPlusShort, PortfolioGreedySearchDaveCache, PortfolioGreedySearchDaveLongCache,
-            PortfolioGreedySearchLongCache, AdaptablePGSPlusDaveCache, None, Size
+            PortfolioGreedySearchLongCache, AdaptablePGSPlusDaveCache, StratifiedPolicySearchCache, None, Size
         };
 
         static void init() {
@@ -149,6 +149,7 @@ namespace SparCraft
             setData(PortfolioGreedySearchDaveLongCache, "PortfolioGreedySearchDaveLongCache");
             setData(UCT, "UCT");
             setData(StratifiedPolicySearch, "StratifiedPolicySearch");
+            setData(StratifiedPolicySearchCache, "StratifiedPolicySearchCache");
             setData(AdaptableStratifiedPolicySearch, "AdaptableStratifiedPolicySearch");
             setData(IRStratifiedPolicySearch, "IRStratifiedPolicySearch");
             setData(MoveForward, "MoveForward");

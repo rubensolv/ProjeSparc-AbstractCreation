@@ -947,6 +947,22 @@ else if (playerModelID == PlayerModels::ImprovedPortfolioGreedySearch)
 
         players[playerID].push_back(PlayerPtr(new Player_StratifiedPolicySearch(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit, hpLevelDiv)));
     }
+    else if (playerModelID == PlayerModels::StratifiedPolicySearchCache)
+    {
+        std::string enemyPlayerModel;
+        size_t timeLimit(0);
+        size_t hpLevelDiv(1);
+        int iterations(1);
+        int responses(0);
+
+        iss >> timeLimit;
+        iss >> enemyPlayerModel;
+        iss >> iterations;
+        iss >> responses;
+        iss >> hpLevelDiv;
+
+        players[playerID].push_back(PlayerPtr(new Player_StratifiedPolicySearchCache(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit, hpLevelDiv)));
+    }
     else if (playerModelID == PlayerModels::AdaptiveBeamAlphaBeta)
     {
         int             timeLimitMS;

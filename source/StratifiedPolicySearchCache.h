@@ -6,6 +6,7 @@
 #include "Game.h"
 #include "Action.h"
 #include "UnitScriptData.h"
+#include "CacheSimpleString.h"
 #include <memory>
 #include "StratType.h"
 #include <fstream>
@@ -15,8 +16,11 @@ namespace SparCraft
 	
 typedef	std::shared_ptr<Player> PlayerPtr;
 
-class StratifiedPolicySearch
+class CacheSimpleString;
+
+class StratifiedPolicySearchCache
 {
+    CacheSimpleString * cacheLTD2;
 protected:
 	
     const IDType				_player;
@@ -28,6 +32,7 @@ protected:
     size_t                      _timeLimit;
     size_t						_hpLevelDiv;
     std::ofstream				_fileTime;
+    int _qtdPlayoutIgnorar;
 
     void                        doStratifiedSearch(const IDType & player,const GameState & state,UnitScriptData & currentData, Timer & timer);
     std::vector<Action>     	getMoveVec(const IDType & player,const GameState & state,const std::vector<IDType> & playerScripts);
@@ -37,8 +42,13 @@ protected:
 
 public:
 
-    StratifiedPolicySearch(const IDType & player, const IDType & enemyScript, const size_t & iter, const size_t & responses, const size_t & timeLimit, const size_t & hpLevelDiv);
+    StratifiedPolicySearchCache(const IDType & player, const IDType & enemyScript, const size_t & iter, const size_t & responses, const size_t & timeLimit, const size_t & hpLevelDiv);
     std::vector<Action> search(const IDType & player, const GameState & state);
+    ~StratifiedPolicySearchCache();
+    
+    CacheSimpleString* getCacheLTD2() const {
+            return cacheLTD2;
+        }
 };
 
 }
