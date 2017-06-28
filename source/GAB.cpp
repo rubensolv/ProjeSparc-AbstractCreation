@@ -24,7 +24,6 @@ GAB::~GAB() {
     free(manager);
 }
 
-
 void GAB::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>& moveVec) {
     Timer t;
     t.start();
@@ -84,7 +83,7 @@ void GAB::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>
 
         //controlUnitsForAB(state, moves);
         manager->controlUnitsForAB(state, moves, _unitAbsAB);
-        
+
         //std::vector<Action> moveVecPgs, movecAB;
 
         MoveArray movesPGS;
@@ -103,16 +102,28 @@ void GAB::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>
             alphaBeta->doSearchWithMoves(state, currentScriptData, unitAbsAB, _playerID, ABScore);
             //movecAB.assign(alphaBeta->getResults().bestMoves.begin(), alphaBeta->getResults().bestMoves.end());
 
-            //std::cout << "AB: " << ABScore.val() << " PGS: " << PGSScore.val() << std::endl;
-
+            
             if (ABScore.val() > PGSScore.val()) {
                 moveVec.clear();
                 moveVec.assign(alphaBeta->getResults().bestMoves.begin(), alphaBeta->getResults().bestMoves.end());
             } 
+             
+            /*
+            //std::cout << "SAB AB: " << ABScore.val() << " SSS+: " << PGSScore.val() << std::endl;
+            if (ABScore.val() > PGSScore.val()) {
+                moveVec.clear();
+                moveVec.assign(alphaBeta->getResults().bestMoves.begin(), alphaBeta->getResults().bestMoves.end());
+            } else {
+                moveVec.clear();
+                state.generateMoves(movesPGS, _playerID);
+                GameState copy2(state);
+                currentScriptData.calculateMoves(_playerID, movesPGS, copy2, moveVec);
+            }
+             * */
 
 
-        } 
-    }    
+        }
+    }
 
     /*
 std::cout << "************* INICIO GenerationClass  **************" << std::endl;
@@ -140,6 +151,41 @@ std::cout<<"************* FIM GenerationClass PGS **************"<<std::endl;
 std::cout<<"##################################################"<<std::endl;
      */
 
+}
+
+StateEvalScore GAB::eval(std::vector<Action> moveVec, GameState& state) {
+    //tentativa de utilizar o playout para julgar qual seria a melhor execução Ab-PGS ou PGS.
+    UnitScriptData baseScriptData;
+    const IDType enemyPlayer(state.getEnemy(_playerID));
+    //inicializar o baseScriptData com NO-KDPS
+    //Player
+    for (size_t unitIndex(0); unitIndex < state.numUnits(_playerID); ++unitIndex) {
+        baseScriptData.setUnitScript(state.getUnit(_playerID, unitIndex), SparCraft::PlayerModels::NOKDPS);
+    }
+    //Enemy
+    for (size_t unitIndex(0); unitIndex < state.numUnits(enemyPlayer); ++unitIndex) {
+        baseScriptData.setUnitScript(state.getUnit(enemyPlayer, unitIndex), SparCraft::PlayerModels::NOKDPS);
+    }
+
+    std::vector<Action> moveVecPgsEnemy;
+    if (state.bothCanMove()) {
+        //gero os movimentos inimigos
+        MoveArray movesPGSEnemy;
+        state.generateMoves(movesPGSEnemy, enemyPlayer);
+        GameState copy2(state);
+        baseScriptData.calculateMoves(enemyPlayer, movesPGSEnemy, copy2, moveVecPgsEnemy);
+    }
+
+    //Execução AB-PGS
+    Game gABPGS(state, 25);
+    gABPGS.getState().makeMoves(moveVec);
+    if (gABPGS.getState().bothCanMove()) {
+        gABPGS.getState().makeMoves(moveVecPgsEnemy);
+    }
+    gABPGS.getState().finishedMoving();
+    gABPGS.playIndividualScripts(baseScriptData);
+
+    return gABPGS.getState().eval(_playerID, SparCraft::EvaluationMethods::LTD2);
 }
 
 bool GAB::unitsInMoves(GameState& state, const MoveArray& moves) {
@@ -442,7 +488,6 @@ Unit GAB::getEnemyClosestvalid(GameState& state, std::vector<Unit> unidadesInimi
     }
 }
 
-
 /*
  * Retorna todas as unidades de um player ordenados pela distância da unidade
  * passada como referência (inclusive a unidade passada como ponto de referencia)
@@ -534,6 +579,7 @@ void GAB::iniciarAlphaBeta() {
     int playoutScriptID2 = 7;
     int playerToMoveID = 1;
     int opponentModelID = 7; //ultima opção oponente model script
+    
 
     // construct the parameter object
     AlphaBetaSearchParameters params;
@@ -622,32 +668,33 @@ void GAB::removeAttackInUnAttack(Unit enemy, Unit Attacker) {
 
 //responsável por instanciar a classe que fará o controle das unidades 
 //existentes na abstração.
+
 void GAB::iniciarClasseAbstracao(std::string controlAbstraction) {
-    if(controlAbstraction.compare("Random") == 0){
+    if (controlAbstraction.compare("Random") == 0) {
         manager = new ManagerRandom(_playerID, numUnits);
     }
-    if(controlAbstraction.compare("Closest") == 0){
+    if (controlAbstraction.compare("Closest") == 0) {
         manager = new ManagerClosest(_playerID, numUnits);
     }
-    if(controlAbstraction.compare("Farther") == 0){
+    if (controlAbstraction.compare("Farther") == 0) {
         manager = new ManagerFarther(_playerID, numUnits);
     }
-    if(controlAbstraction.compare("LessLife") == 0){
+    if (controlAbstraction.compare("LessLife") == 0) {
         manager = new ManagerLessLife(_playerID, numUnits);
     }
-    if(controlAbstraction.compare("MoreLife") == 0){
+    if (controlAbstraction.compare("MoreLife") == 0) {
         manager = new ManagerMoreLife(_playerID, numUnits);
     }
-    if(controlAbstraction.compare("ClosestEnemy") == 0){
+    if (controlAbstraction.compare("ClosestEnemy") == 0) {
         manager = new ManagerClosestEnemy(_playerID, numUnits);
     }
-    if(controlAbstraction.compare("FartherEnemy") == 0){
+    if (controlAbstraction.compare("FartherEnemy") == 0) {
         manager = new ManagerFartherEnemy(_playerID, numUnits);
     }
-    if(controlAbstraction.compare("MoreDPS") == 0){
+    if (controlAbstraction.compare("MoreDPS") == 0) {
         manager = new ManagerMoreDPS(_playerID, numUnits);
     }
-    if(controlAbstraction.compare("LessDPS") == 0){
+    if (controlAbstraction.compare("LessDPS") == 0) {
         manager = new ManagerLessDPS(_playerID, numUnits);
     }
 }

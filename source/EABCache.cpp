@@ -1,9 +1,9 @@
 
-#include "ABPOELimit.h"
+#include "EABCache.h"
 
 using namespace SparCraft;
 
-ABPOELimit::ABPOELimit(const IDType& playerID) {
+EABCache::EABCache(const IDType& playerID) {
     _playerID = playerID;
     iniciarAlphaBeta();
     poe = new PortfolioOnlineEvolutionLimit(_playerID, PlayerModels::NOKDPS, 1, 0, 40);
@@ -12,23 +12,23 @@ ABPOELimit::ABPOELimit(const IDType& playerID) {
     manager = new ManagerMoreDPS(_playerID, numUnits);
 }
 
-ABPOELimit::ABPOELimit(const IDType& playerID, int numUnitsAB, std::string controlAbstraction) {
+EABCache::EABCache(const IDType& playerID, int numUnitsAB, std::string controlAbstraction) {
     _playerID = playerID;
     iniciarAlphaBeta();
     poe = new PortfolioOnlineEvolutionLimit(_playerID, PlayerModels::NOKDPS, 1, 0, 40);
     lastTime = 0;
     numUnits = numUnitsAB;
     iniciarClasseAbstracao(controlAbstraction);
-    std::cout << " Player ABPOELimit "<< controlAbstraction << std::endl;
+    std::cout << " Player EABCache "<< controlAbstraction << std::endl;
 }
 
-ABPOELimit::~ABPOELimit() {
+EABCache::~EABCache() {
     free(manager);
 }
 
 
 
-void ABPOELimit::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>& moveVec) {
+void EABCache::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>& moveVec) {
     
     Timer t;
     t.start();
@@ -83,7 +83,7 @@ void ABPOELimit::getMoves(GameState& state, const MoveArray& moves, std::vector<
         ms = t.getElapsedTimeInMilliSec();
         currentScriptData = poe->searchForScripts(_playerID, state);
         ms = t.getElapsedTimeInMilliSec() - ms;
-        
+        //std::cout << "Tempo total de execução do POE " << t.getElapsedTimeInMilliSec()<< " "<< ms << std::endl;
         //controlUnitsForAB(state, moves);
         manager->controlUnitsForAB(state, moves, _unitAbsAB);
         
@@ -190,7 +190,7 @@ void ABPOELimit::getMoves(GameState& state, const MoveArray& moves, std::vector<
      */
 }
 
-bool ABPOELimit::unitsInMoves(GameState& state, const MoveArray& moves) {
+bool EABCache::unitsInMoves(GameState& state, const MoveArray& moves) {
     for (size_t unitIndex(0); unitIndex < moves.numUnits(); ++unitIndex) {
         const Unit & unit = state.getUnit(_playerID, unitIndex);
         for (auto & un : _unitAbsAB) {
@@ -206,7 +206,7 @@ bool ABPOELimit::unitsInMoves(GameState& state, const MoveArray& moves) {
 //separo as unidades que serão utilizadas para compor a abstração que será utilizada no AB
 //e faço controle e manutenção destas
 
-void ABPOELimit::controlUnitsForAB(GameState & state, const MoveArray & moves) {
+void EABCache::controlUnitsForAB(GameState & state, const MoveArray & moves) {
     //verifico se as unidades não foram mortas
     std::set<Unit> tempUnitAbsAB;
     for (auto & un : _unitAbsAB) {
@@ -238,7 +238,7 @@ void ABPOELimit::controlUnitsForAB(GameState & state, const MoveArray & moves) {
 
 }
 
-void ABPOELimit::analisarAbstractForm(GameState newState, std::vector<Unit> unidadesInimigas) {
+void EABCache::analisarAbstractForm(GameState newState, std::vector<Unit> unidadesInimigas) {
     //obtenho a unidade inimiga contida na abstração
     Unit & enemy = newState.getUnit(newState.getEnemy(_playerID), 0);
 
@@ -257,7 +257,7 @@ void ABPOELimit::analisarAbstractForm(GameState newState, std::vector<Unit> unid
  *  Função que consiste do processo de analisar se exitem outras unidades inimigas que podem
  * ser atacadas pelas unidades contidas na abstração e adicionar estas unidades inimigas ao estado.
  */
-void ABPOELimit::addMoreEnemy(GameState& newState, std::vector<Unit>& unInimigas) {
+void EABCache::addMoreEnemy(GameState& newState, std::vector<Unit>& unInimigas) {
     if (unInimigas.size() > 0) {
         //obter unidades aliadas da abstração
         std::vector<Unit> unAl;
@@ -290,7 +290,7 @@ void ABPOELimit::addMoreEnemy(GameState& newState, std::vector<Unit>& unInimigas
  *  & unInimigas    - Vetor com todas as unidades inimigas
  *  & state         - Estado real do jogo
  */
-bool ABPOELimit::applyClosestInicialization(std::vector<Unit> & unAliadas, std::vector<Unit> & unInimigas, GameState & state) {
+bool EABCache::applyClosestInicialization(std::vector<Unit> & unAliadas, std::vector<Unit> & unInimigas, GameState & state) {
     if (unAliadas.size() != state.numUnits(_playerID)) {
         return false;
     }
@@ -309,7 +309,7 @@ bool ABPOELimit::applyClosestInicialization(std::vector<Unit> & unAliadas, std::
 //função que analisa os movimentos sugeridos pelo AB e busca encontrar ataques perdidos
 //funciona apenas com 1 unidade inimiga
 
-void ABPOELimit::removeLoseAttacks(GameState& newState, std::vector<Action>& moveVec, GameState & state) {
+void EABCache::removeLoseAttacks(GameState& newState, std::vector<Action>& moveVec, GameState & state) {
     _UnReut.clear();
     Unit unAval;
 
@@ -351,7 +351,7 @@ void ABPOELimit::removeLoseAttacks(GameState& newState, std::vector<Action>& mov
 
 //função utilizada para remoção das ações de dentro do vetor moveVec
 
-void ABPOELimit::removeActionInVector(Action& action, std::vector<Action>& moveVec) {
+void EABCache::removeActionInVector(Action& action, std::vector<Action>& moveVec) {
     std::vector<Action> newMoveVec;
     for (auto & mov : moveVec) {
         if (!(mov == action)) {
@@ -367,7 +367,7 @@ void ABPOELimit::removeActionInVector(Action& action, std::vector<Action>& moveV
 //Comportamento inicial: Será criada a média da distância Euclidiana de todas as unidades aliadas em relação
 //às unidades inimigas. Será escolhida a unidade inimiga que tiver a menor distância.
 
-Unit& ABPOELimit::getCalculateEnemy(GameState& state, std::vector<Unit> unidadesInimigas) {
+Unit& EABCache::getCalculateEnemy(GameState& state, std::vector<Unit> unidadesInimigas) {
     std::map<Unit, PositionType> unDistance;
     std::map<Unit, PositionType>::iterator myIt;
     PositionType sum;
@@ -422,7 +422,7 @@ Unit& ABPOELimit::getCalculateEnemy(GameState& state, std::vector<Unit> unidades
 //função para rodar a abstração que será testada.
 //entrada: Novo GameState com as unidades testadas. Vetor de ações que será retornado. GameState original.
 
-void ABPOELimit::doAlphaBeta(GameState & newState, std::vector<Action> & moveVec, GameState & state) {
+void EABCache::doAlphaBeta(GameState & newState, std::vector<Action> & moveVec, GameState & state) {
     //executa a busca
     alphaBeta->doSearch(newState);
     for (auto & mov : alphaBeta->getResults().bestMoves) {
@@ -449,7 +449,7 @@ void ABPOELimit::doAlphaBeta(GameState & newState, std::vector<Action> & moveVec
 
 //adicionar uma unidade no vetor de controle de ataque de unidades.
 
-void ABPOELimit::addAttack(const Unit& unitEnemy, const Unit& unitAttack) {
+void EABCache::addAttack(const Unit& unitEnemy, const Unit& unitAttack) {
     if (_unAttack.find(unitEnemy) == _unAttack.end()) {
         //não foi encontrado. Insere no map
         std::vector<Unit> unitsAttack;
@@ -463,7 +463,7 @@ void ABPOELimit::addAttack(const Unit& unitEnemy, const Unit& unitAttack) {
 
 //utilizada para debug e verificação do map de controle de ataques.
 
-void ABPOELimit::printMapAttack() {
+void EABCache::printMapAttack() {
     std::cout << " ********************************** " << std::endl;
     std::cout << " Relatório de unidades atacadas " << std::endl;
     for (std::map<Unit, std::vector<Unit> >::const_iterator it = _unAttack.begin(); it != _unAttack.end(); ++it) {
@@ -480,7 +480,7 @@ void ABPOELimit::printMapAttack() {
 
 //Verifica qual a unidade válida para inclusão 
 
-Unit ABPOELimit::getEnemyClosestvalid(GameState& state, std::vector<Unit> unidadesInimigas) {
+Unit EABCache::getEnemyClosestvalid(GameState& state, std::vector<Unit> unidadesInimigas) {
     for (auto & un : unidadesInimigas) {
         if (!state.unitExist(un.player(), un.ID())) {
             if (unitNeedMoreAttackForKilled(un)) {
@@ -495,7 +495,7 @@ Unit ABPOELimit::getEnemyClosestvalid(GameState& state, std::vector<Unit> unidad
  * passada como referência (inclusive a unidade passada como ponto de referencia)
  * levando em consideração as unidades que tem movimento válido
  */
-void ABPOELimit::listaOrdenadaForMoves(const IDType& playerID, const Unit& unidade, GameState& state, std::vector<Unit>& unidades, const MoveArray& moves) {
+void EABCache::listaOrdenadaForMoves(const IDType& playerID, const Unit& unidade, GameState& state, std::vector<Unit>& unidades, const MoveArray& moves) {
     unidades.clear();
     //declaração
     Unit t;
@@ -517,7 +517,7 @@ void ABPOELimit::listaOrdenadaForMoves(const IDType& playerID, const Unit& unida
     sortUnit(unidades, unidade, state);
 }
 
-void ABPOELimit::sortUnit(std::vector<Unit>& unidades, const Unit& base, GameState & state) {
+void EABCache::sortUnit(std::vector<Unit>& unidades, const Unit& base, GameState & state) {
     for (int i = 1; i < unidades.size(); i++) {
         Unit key = unidades[i];
         int j = i - 1;
@@ -536,7 +536,7 @@ void ABPOELimit::sortUnit(std::vector<Unit>& unidades, const Unit& base, GameSta
  * Retorna todas as unidades de um player ordenados pela distância da unidade
  * passada como referência (inclusive a unidade passada como ponto de referencia)
  */
-void ABPOELimit::listaOrdenada(const IDType& playerID, const Unit & unidade, GameState& state, std::vector<Unit> & unidades) {
+void EABCache::listaOrdenada(const IDType& playerID, const Unit & unidade, GameState& state, std::vector<Unit> & unidades) {
     unidades.clear();
     //declaração
     Unit t;
@@ -564,7 +564,7 @@ void ABPOELimit::listaOrdenada(const IDType& playerID, const Unit & unidade, Gam
  * com as unidades zeradas, mantando assim as outras informações 
  * necessárias.
  */
-void ABPOELimit::copiarStateCleanUnit(GameState& origState, GameState& copState) {
+void EABCache::copiarStateCleanUnit(GameState& origState, GameState& copState) {
     copState = origState;
     copState.cleanUpStateUnits();
 }
@@ -572,7 +572,7 @@ void ABPOELimit::copiarStateCleanUnit(GameState& origState, GameState& copState)
 //inicializa o player alpha beta com as configurações necessárias para executar
 //os testes relacionados à classe
 
-void ABPOELimit::iniciarAlphaBeta() {
+void EABCache::iniciarAlphaBeta() {
 
     // convert them to the proper enum types
     int moveOrderingID = 1;
@@ -625,13 +625,13 @@ void ABPOELimit::iniciarAlphaBeta() {
 
 //função para cálculo da distância baseada na fórmula de cálculo da Distância Manhantan
 
-const PositionType ABPOELimit::getDistManhantan(const Position& pInicial, const Position& pFinal) {
+const PositionType EABCache::getDistManhantan(const Position& pInicial, const Position& pFinal) {
     return abs(pInicial.x() - pFinal.x()) + abs(pInicial.y() - pFinal.y());
 }
 
 //função para cálculo da distância baseada na fórmua de cálculo utilizando a Distância Euclidiana
 
-const PositionType ABPOELimit::getDistEuclidiana(const Position& pInicial, const Position& pFinal) {
+const PositionType EABCache::getDistEuclidiana(const Position& pInicial, const Position& pFinal) {
     return sqrt(((pInicial.x() - pFinal.x())*(pInicial.x() - pFinal.x()) +
             (pInicial.y() - pFinal.y())*(pInicial.y() - pFinal.y())
             ));
@@ -640,7 +640,7 @@ const PositionType ABPOELimit::getDistEuclidiana(const Position& pInicial, const
 //função utilizada para validar se existe a necessidade de mais um ataque para
 //uma unidade inimiga ou se ela já irá morrer com os ataques existentes.
 
-const bool ABPOELimit::unitNeedMoreAttackForKilled(Unit un) {
+const bool EABCache::unitNeedMoreAttackForKilled(Unit un) {
     if (_unAttack.find(un) == _unAttack.end()) {
         return true;
     }
@@ -657,7 +657,7 @@ const bool ABPOELimit::unitNeedMoreAttackForKilled(Unit un) {
 
 //utilizada para remover um ataque da lista de atacantes de um determinado inimigo
 
-void ABPOELimit::removeAttackInUnAttack(Unit enemy, Unit Attacker) {
+void EABCache::removeAttackInUnAttack(Unit enemy, Unit Attacker) {
     std::vector<Unit> cleanUnit;
     for (auto & unAttack : _unAttack.find(enemy)->second) {
         if (!(unAttack.ID() == Attacker.ID())) {
@@ -670,7 +670,7 @@ void ABPOELimit::removeAttackInUnAttack(Unit enemy, Unit Attacker) {
 
 //responsável por instanciar a classe que fará o controle das unidades 
 //existentes na abstração.
-void ABPOELimit::iniciarClasseAbstracao(std::string controlAbstraction) {
+void EABCache::iniciarClasseAbstracao(std::string controlAbstraction) {
     if(controlAbstraction.compare("Random") == 0){
         manager = new ManagerRandom(_playerID, numUnits);
     }

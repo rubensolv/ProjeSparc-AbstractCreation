@@ -1,8 +1,8 @@
-#include "AlphaBetaSearchAbstract.h"
+#include "AlphaBetaSearchAbstractSAB.h"
 
 using namespace SparCraft;
 
-AlphaBetaSearchAbstract::AlphaBetaSearchAbstract(const AlphaBetaSearchParameters & params, TTPtr TT)
+AlphaBetaSearchAbstractSAB::AlphaBetaSearchAbstractSAB(const AlphaBetaSearchParameters & params, TTPtr TT)
 : _params(params)
 , _currentRootDepth(0)
 , _TT(TT ? TT : TTPtr(new TranspositionTable())) {
@@ -17,9 +17,11 @@ AlphaBetaSearchAbstract::AlphaBetaSearchAbstract(const AlphaBetaSearchParameters
             _playerModels[p] = AllPlayers::getPlayerPtr(p, _params.playerModel(p));
         }
     }
+    
+    std::cout << "************* AlphaBetaSearchAbstractSAB  **************" << std::endl;
 }
 
-void AlphaBetaSearchAbstract::doSearch(GameState & initialState) {
+void AlphaBetaSearchAbstractSAB::doSearch(GameState & initialState) {
     _searchTimer.start();
 
     StateEvalScore alpha(-10000000, 1000000);
@@ -36,9 +38,9 @@ void AlphaBetaSearchAbstract::doSearch(GameState & initialState) {
     _results.timeElapsed = _searchTimer.getElapsedTimeInMilliSec();
 }
 
-void AlphaBetaSearchAbstract::doSearchWithMoves(GameState& initialState, UnitScriptData & UnitScriptData, std::set<IDType> & unitsAB, IDType _playerID, StateEvalScore & bestScore) {
+void AlphaBetaSearchAbstractSAB::doSearchWithMoves(GameState& initialState, UnitScriptData & UnitScriptData, std::set<IDType> & unitsAB, IDType _playerID, StateEvalScore & bestScore) {
     _searchTimer.start();
-
+    
     StateEvalScore alpha(-10000000, 1000000);
     StateEvalScore beta(10000000, 1000000);
 
@@ -56,11 +58,11 @@ void AlphaBetaSearchAbstract::doSearchWithMoves(GameState& initialState, UnitScr
     _results.timeElapsed = _searchTimer.getElapsedTimeInMilliSec();
 }
 
-AlphaBetaValue AlphaBetaSearchAbstract::IDAlphaBetaWithPGS(GameState & initialState, const size_t & maxDepth, UnitScriptData & UnitScriptData, std::set<IDType> & unitsAB, IDType _playerID) {
+AlphaBetaValue AlphaBetaSearchAbstractSAB::IDAlphaBetaWithPGS(GameState & initialState, const size_t & maxDepth, UnitScriptData & UnitScriptData, std::set<IDType> & unitsAB, IDType _playerID) {
     AlphaBetaValue val;
     _results.nodesExpanded = 0;
     _results.maxDepthReached = 0;
-
+    
     for (size_t d(1); d < maxDepth; ++d) {
 
         StateEvalScore alpha(-10000000, 999999);
@@ -72,7 +74,7 @@ AlphaBetaValue AlphaBetaSearchAbstract::IDAlphaBetaWithPGS(GameState & initialSt
         // perform ID-AB until time-out
         try {
             val = alphaBetaWithPGS(initialState, d, Players::Player_None, NULL, alpha, beta, UnitScriptData, unitsAB, _playerID);
-
+            
             _results.bestMoves = val.abMove().moveVec();
             _results.abValue = val.score().val();
         }        // if we do time-out
@@ -93,7 +95,6 @@ AlphaBetaValue AlphaBetaSearchAbstract::IDAlphaBetaWithPGS(GameState & initialSt
 
         long long unsigned nodes = _results.nodesExpanded;
         double ms = _searchTimer.getElapsedTimeInMilliSec();
-
         //printTTResults();
         //fprintf(stdout, "%s %8d %9d %9d %13.4lf %14llu %12d %12llu %15.2lf\n", "IDA", d, val.score().val(), (int)val.abMove().moveTuple(), ms, nodes, (int)_TT->numFound(), getResults().ttcuts, 1000*nodes/ms);
     }
@@ -101,7 +102,7 @@ AlphaBetaValue AlphaBetaSearchAbstract::IDAlphaBetaWithPGS(GameState & initialSt
     return val;
 }
 
-AlphaBetaValue AlphaBetaSearchAbstract::IDAlphaBeta(GameState & initialState, const size_t & maxDepth) {
+AlphaBetaValue AlphaBetaSearchAbstractSAB::IDAlphaBeta(GameState & initialState, const size_t & maxDepth) {
     AlphaBetaValue val;
     _results.nodesExpanded = 0;
     _results.maxDepthReached = 0;
@@ -148,7 +149,7 @@ AlphaBetaValue AlphaBetaSearchAbstract::IDAlphaBeta(GameState & initialState, co
 
 // Transposition Table save 
 
-void AlphaBetaSearchAbstract::TTsave(GameState & state, const StateEvalScore & value, const StateEvalScore & alpha, const StateEvalScore & beta, const size_t & depth,
+void AlphaBetaSearchAbstractSAB::TTsave(GameState & state, const StateEvalScore & value, const StateEvalScore & alpha, const StateEvalScore & beta, const size_t & depth,
         const IDType & firstPlayer, const AlphaBetaMove & bestFirstMove, const AlphaBetaMove & bestSecondMove) {
     // IF THE DEPTH OF THE ENTRY IS BIGGER THAN CURRENT DEPTH, DO NOTHING
     TTEntry * entry = _TT->lookupScan(state.calculateHash(0), state.calculateHash(1));
@@ -173,7 +174,7 @@ void AlphaBetaSearchAbstract::TTsave(GameState & state, const StateEvalScore & v
 
 // Transposition Table look up + alpha/beta update
 
-TTLookupValue AlphaBetaSearchAbstract::TTlookup(const GameState & state, StateEvalScore & alpha, StateEvalScore & beta, const size_t & depth) {
+TTLookupValue AlphaBetaSearchAbstractSAB::TTlookup(const GameState & state, StateEvalScore & alpha, StateEvalScore & beta, const size_t & depth) {
     TTEntry * entry = _TT->lookupScan(state.calculateHash(0), state.calculateHash(1));
     if (entry && (entry->getDepth() == depth)) {
         // get the value and type of the entry
@@ -212,15 +213,15 @@ TTLookupValue AlphaBetaSearchAbstract::TTlookup(const GameState & state, StateEv
     return TTLookupValue(false, false, entry);
 }
 
-const bool AlphaBetaSearchAbstract::searchTimeOut() {
+const bool AlphaBetaSearchAbstractSAB::searchTimeOut() {
     return (_params.timeLimit() && (_results.nodesExpanded % 50 == 0) && (_searchTimer.getElapsedTimeInMilliSec() >= _params.timeLimit()));
 }
 
-const bool AlphaBetaSearchAbstract::terminalState(GameState & state, const size_t & depth) const {
+const bool AlphaBetaSearchAbstractSAB::terminalState(GameState & state, const size_t & depth) const {
     return (depth <= 0 || state.isTerminal());
 }
 
-const AlphaBetaMove & AlphaBetaSearchAbstract::getAlphaBetaMove(const TTLookupValue & TTval, const IDType & playerToMove) const {
+const AlphaBetaMove & AlphaBetaSearchAbstractSAB::getAlphaBetaMove(const TTLookupValue & TTval, const IDType & playerToMove) const {
     const IDType enemyPlayer(getEnemy(playerToMove));
 
     // if we have a valid first move for this player, use it
@@ -232,7 +233,7 @@ const AlphaBetaMove & AlphaBetaSearchAbstract::getAlphaBetaMove(const TTLookupVa
     }
 }
 
-void AlphaBetaSearchAbstract::generateOrderedMoves(GameState & state, MoveArray & moves, const TTLookupValue & TTval, const IDType & playerToMove, const size_t & depth) {
+void AlphaBetaSearchAbstractSAB::generateOrderedMoves(GameState & state, MoveArray & moves, const TTLookupValue & TTval, const IDType & playerToMove, const size_t & depth) {
     // get the array where we will store the moves and clear it
     Array<std::vector<Action>, Constants::Max_Ordered_Moves> & orderedMoves(_orderedMoves[depth]);
     orderedMoves.clear();
@@ -290,7 +291,7 @@ void AlphaBetaSearchAbstract::generateOrderedMoves(GameState & state, MoveArray 
     }
 }
 
-bool AlphaBetaSearchAbstract::getNextMoveVec(IDType playerToMove, MoveArray & moves, const size_t & moveNumber, const TTLookupValue & TTval, const size_t & depth, std::vector<Action> & moveVec) const {
+bool AlphaBetaSearchAbstractSAB::getNextMoveVec(IDType playerToMove, MoveArray & moves, const size_t & moveNumber, const TTLookupValue & TTval, const size_t & depth, std::vector<Action> & moveVec) const {
     if (_params.maxChildren() && (moveNumber >= _params.maxChildren())) {
         return false;
     }
@@ -332,7 +333,7 @@ bool AlphaBetaSearchAbstract::getNextMoveVec(IDType playerToMove, MoveArray & mo
     }
 }
 
-const IDType AlphaBetaSearchAbstract::getPlayerToMove(GameState & state, const size_t & depth, const IDType & lastPlayerToMove, const bool isFirstSimMove) const {
+const IDType AlphaBetaSearchAbstractSAB::getPlayerToMove(GameState & state, const size_t & depth, const IDType & lastPlayerToMove, const bool isFirstSimMove) const {
     const IDType whoCanMove(state.whoCanMove());
 
     // if both players can move
@@ -363,25 +364,25 @@ const IDType AlphaBetaSearchAbstract::getPlayerToMove(GameState & state, const s
     }
 }
 
-const bool AlphaBetaSearchAbstract::isTranspositionLookupState(GameState & state, const std::vector<Action> * firstSimMove) const {
+const bool AlphaBetaSearchAbstractSAB::isTranspositionLookupState(GameState & state, const std::vector<Action> * firstSimMove) const {
     return !state.bothCanMove() || (state.bothCanMove() && !firstSimMove);
 }
 
-AlphaBetaValue AlphaBetaSearchAbstract::alphaBetaWithPGS(GameState & state, size_t depth, const IDType lastPlayerToMove, std::vector<Action> * prevSimMove, StateEvalScore alpha, StateEvalScore beta, UnitScriptData & unitScriptData, std::set<IDType> & unitsAB, IDType _playerID) {
+AlphaBetaValue AlphaBetaSearchAbstractSAB::alphaBetaWithPGS(GameState & state, size_t depth, const IDType lastPlayerToMove, std::vector<Action> * prevSimMove, StateEvalScore alpha, StateEvalScore beta, UnitScriptData & unitScriptData, std::set<IDType> & unitsAB, IDType _playerID) {
     // update statistics
     _results.nodesExpanded++;
 
-    if (searchTimeOut()) {
+    if ( ((_searchTimer.getElapsedTimeInMilliSec() >= _params.timeLimit())) || searchTimeOut()) {
         throw 1;
-    }
-
+    }    
+    
     if (terminalState(state, depth)) {
         // return the value, but the move will not be valid since none was performed
         StateEvalScore evalScore = state.eval(_params.maxPlayer(), _params.evalMethod(), _params.simScript(Players::Player_One), _params.simScript(Players::Player_Two));
 
         return AlphaBetaValue(StateEvalScore(evalScore.val(), state.getNumMovements(_params.maxPlayer()) + evalScore.numMoves()), AlphaBetaMove());
     }
-
+    
     // figure out which player is to move
     const IDType playerToMove(getPlayerToMove(state, depth, lastPlayerToMove, !prevSimMove));
 
@@ -410,7 +411,8 @@ AlphaBetaValue AlphaBetaSearchAbstract::alphaBetaWithPGS(GameState & state, size
     // while we have more simultaneous moves
     AlphaBetaMove bestMove, bestSimResponse;
 
-    //obtenho os movimentos sugeridos pelo PGS
+    //obtenho os movimentos sugeridos pelo PGS  
+    
     MoveArray movesPgs;
     std::vector<Action> moveVecPgs;
     if (playerToMove == _playerID) {
@@ -427,8 +429,7 @@ AlphaBetaValue AlphaBetaSearchAbstract::alphaBetaWithPGS(GameState & state, size
         } else {
             scriptTemp = unitScriptData;
         }
-        state.generateMoves(movesPgs, playerToMove);
-        std::vector<Action> moveVecPgs;
+        state.generateMoves(movesPgs, playerToMove);        
         GameState copy(state);
         scriptTemp.calculateMoves(playerToMove, movesPgs, copy, moveVecPgs);
         //efetuo a troca dentro do MoveArray
@@ -446,7 +447,6 @@ AlphaBetaValue AlphaBetaSearchAbstract::alphaBetaWithPGS(GameState & state, size
     
     size_t moveNumber(0);
     std::vector<Action> moveVec;
-
 
     // for each child
     while (getNextMoveVec(playerToMove, moves, moveNumber, TTval, depth, moveVec)) {
@@ -516,11 +516,10 @@ AlphaBetaValue AlphaBetaSearchAbstract::alphaBetaWithPGS(GameState & state, size
     if (isTranspositionLookupState(state, prevSimMove)) {
         TTsave(state, maxPlayer ? alpha : beta, alpha, beta, depth, playerToMove, bestMove, bestSimResponse);
     }
-
     return maxPlayer ? AlphaBetaValue(alpha, bestMove) : AlphaBetaValue(beta, bestMove);
 }
 
-AlphaBetaValue AlphaBetaSearchAbstract::alphaBeta(GameState & state, size_t depth, const IDType lastPlayerToMove, std::vector<Action> * prevSimMove, StateEvalScore alpha, StateEvalScore beta) {
+AlphaBetaValue AlphaBetaSearchAbstractSAB::alphaBeta(GameState & state, size_t depth, const IDType lastPlayerToMove, std::vector<Action> * prevSimMove, StateEvalScore alpha, StateEvalScore beta) {
     // update statistics
     _results.nodesExpanded++;
 
@@ -638,19 +637,19 @@ AlphaBetaValue AlphaBetaSearchAbstract::alphaBeta(GameState & state, size_t dept
     return maxPlayer ? AlphaBetaValue(alpha, bestMove) : AlphaBetaValue(beta, bestMove);
 }
 
-AlphaBetaSearchResults & AlphaBetaSearchAbstract::getResults() {
+AlphaBetaSearchResults & AlphaBetaSearchAbstractSAB::getResults() {
     return _results;
 }
 
-const IDType AlphaBetaSearchAbstract::getEnemy(const IDType & player) const {
+const IDType AlphaBetaSearchAbstractSAB::getEnemy(const IDType & player) const {
     return (player + 1) % 2;
 }
 
-const bool AlphaBetaSearchAbstract::isRoot(const size_t & depth) const {
+const bool AlphaBetaSearchAbstractSAB::isRoot(const size_t & depth) const {
     return depth == _currentRootDepth;
 }
 
-void AlphaBetaSearchAbstract::printTTResults() const {
+void AlphaBetaSearchAbstractSAB::printTTResults() const {
     printf("\n");
     printf("Total Usage            %9d\n", (int) _TT->getUsage());
     printf("Save Attempt           %9d\n", (int) _results.ttSaveAttempts);
@@ -670,6 +669,6 @@ void AlphaBetaSearchAbstract::printTTResults() const {
     printf("\n");
 }
 
-void AlphaBetaSearchAbstract::setLimitTime(size_t timeLimit) {
+void AlphaBetaSearchAbstractSAB::setLimitTime(size_t timeLimit) {
     _params.setTimeLimit(timeLimit);
 }

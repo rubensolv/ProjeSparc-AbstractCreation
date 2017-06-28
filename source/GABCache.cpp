@@ -1,31 +1,31 @@
 
-#include "GAB.h"
+#include "GABCache.h"
 
 using namespace SparCraft;
 
-GAB::GAB(const IDType& playerID) {
+GABCache::GABCache(const IDType& playerID) {
     _playerID = playerID;
     iniciarAlphaBeta();
-    pgs = new PortfolioGreedySearchNoTime(_playerID, PlayerModels::NOKDPS, 1, 0, 40);
+    pgs = new PortfolioGreedySearchNoTimeCache(_playerID, PlayerModels::NOKDPS, 1, 0, 40);
     lastTime = 0;
     numUnits = 7;
 }
 
-GAB::GAB(const IDType& playerID, int numUnitsAB, std::string controlAbstraction) {
+GABCache::GABCache(const IDType& playerID, int numUnitsAB, std::string controlAbstraction) {
     _playerID = playerID;
     iniciarAlphaBeta();
-    pgs = new PortfolioGreedySearchNoTime(_playerID, PlayerModels::NOKDPS, 1, 0, 40);
+    pgs = new PortfolioGreedySearchNoTimeCache(_playerID, PlayerModels::NOKDPS, 1, 0, 40);
     lastTime = 0;
     numUnits = numUnitsAB;
     iniciarClasseAbstracao(controlAbstraction);
 }
 
-GAB::~GAB() {
+GABCache::~GABCache() {
     free(manager);
 }
 
 
-void GAB::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>& moveVec) {
+void GABCache::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>& moveVec) {
     Timer t;
     t.start();
     moveVec.clear();
@@ -142,7 +142,7 @@ std::cout<<"##################################################"<<std::endl;
 
 }
 
-bool GAB::unitsInMoves(GameState& state, const MoveArray& moves) {
+bool GABCache::unitsInMoves(GameState& state, const MoveArray& moves) {
     for (size_t unitIndex(0); unitIndex < moves.numUnits(); ++unitIndex) {
         const Unit & unit = state.getUnit(_playerID, unitIndex);
         for (auto & un : _unitAbsAB) {
@@ -158,7 +158,7 @@ bool GAB::unitsInMoves(GameState& state, const MoveArray& moves) {
 //separo as unidades que serão utilizadas para compor a abstração que será utilizada no AB
 //e faço controle e manutenção destas
 
-void GAB::controlUnitsForAB(GameState & state, const MoveArray & moves) {
+void GABCache::controlUnitsForAB(GameState & state, const MoveArray & moves) {
     //verifico se as unidades não foram mortas
     std::set<Unit> tempUnitAbsAB;
     for (auto & un : _unitAbsAB) {
@@ -190,7 +190,7 @@ void GAB::controlUnitsForAB(GameState & state, const MoveArray & moves) {
 
 }
 
-void GAB::analisarAbstractForm(GameState newState, std::vector<Unit> unidadesInimigas) {
+void GABCache::analisarAbstractForm(GameState newState, std::vector<Unit> unidadesInimigas) {
     //obtenho a unidade inimiga contida na abstração
     Unit & enemy = newState.getUnit(newState.getEnemy(_playerID), 0);
 
@@ -209,7 +209,7 @@ void GAB::analisarAbstractForm(GameState newState, std::vector<Unit> unidadesIni
  *  Função que consiste do processo de analisar se exitem outras unidades inimigas que podem
  * ser atacadas pelas unidades contidas na abstração e adicionar estas unidades inimigas ao estado.
  */
-void GAB::addMoreEnemy(GameState& newState, std::vector<Unit>& unInimigas) {
+void GABCache::addMoreEnemy(GameState& newState, std::vector<Unit>& unInimigas) {
     if (unInimigas.size() > 0) {
         //obter unidades aliadas da abstração
         std::vector<Unit> unAl;
@@ -242,7 +242,7 @@ void GAB::addMoreEnemy(GameState& newState, std::vector<Unit>& unInimigas) {
  *  & unInimigas    - Vetor com todas as unidades inimigas
  *  & state         - Estado real do jogo
  */
-bool GAB::applyClosestInicialization(std::vector<Unit> & unAliadas, std::vector<Unit> & unInimigas, GameState & state) {
+bool GABCache::applyClosestInicialization(std::vector<Unit> & unAliadas, std::vector<Unit> & unInimigas, GameState & state) {
     if (unAliadas.size() != state.numUnits(_playerID)) {
         return false;
     }
@@ -261,7 +261,7 @@ bool GAB::applyClosestInicialization(std::vector<Unit> & unAliadas, std::vector<
 //função que analisa os movimentos sugeridos pelo AB e busca encontrar ataques perdidos
 //funciona apenas com 1 unidade inimiga
 
-void GAB::removeLoseAttacks(GameState& newState, std::vector<Action>& moveVec, GameState & state) {
+void GABCache::removeLoseAttacks(GameState& newState, std::vector<Action>& moveVec, GameState & state) {
     _UnReut.clear();
     Unit unAval;
 
@@ -303,7 +303,7 @@ void GAB::removeLoseAttacks(GameState& newState, std::vector<Action>& moveVec, G
 
 //função utilizada para remoção das ações de dentro do vetor moveVec
 
-void GAB::removeActionInVector(Action& action, std::vector<Action>& moveVec) {
+void GABCache::removeActionInVector(Action& action, std::vector<Action>& moveVec) {
     std::vector<Action> newMoveVec;
     for (auto & mov : moveVec) {
         if (!(mov == action)) {
@@ -319,7 +319,7 @@ void GAB::removeActionInVector(Action& action, std::vector<Action>& moveVec) {
 //Comportamento inicial: Será criada a média da distância Euclidiana de todas as unidades aliadas em relação
 //às unidades inimigas. Será escolhida a unidade inimiga que tiver a menor distância.
 
-Unit& GAB::getCalculateEnemy(GameState& state, std::vector<Unit> unidadesInimigas) {
+Unit& GABCache::getCalculateEnemy(GameState& state, std::vector<Unit> unidadesInimigas) {
     std::map<Unit, PositionType> unDistance;
     std::map<Unit, PositionType>::iterator myIt;
     PositionType sum;
@@ -374,7 +374,7 @@ Unit& GAB::getCalculateEnemy(GameState& state, std::vector<Unit> unidadesInimiga
 //função para rodar a abstração que será testada.
 //entrada: Novo GameState com as unidades testadas. Vetor de ações que será retornado. GameState original.
 
-void GAB::doAlphaBeta(GameState & newState, std::vector<Action> & moveVec, GameState & state) {
+void GABCache::doAlphaBeta(GameState & newState, std::vector<Action> & moveVec, GameState & state) {
     //executa a busca
     alphaBeta->doSearch(newState);
     for (auto & mov : alphaBeta->getResults().bestMoves) {
@@ -401,7 +401,7 @@ void GAB::doAlphaBeta(GameState & newState, std::vector<Action> & moveVec, GameS
 
 //adicionar uma unidade no vetor de controle de ataque de unidades.
 
-void GAB::addAttack(const Unit& unitEnemy, const Unit& unitAttack) {
+void GABCache::addAttack(const Unit& unitEnemy, const Unit& unitAttack) {
     if (_unAttack.find(unitEnemy) == _unAttack.end()) {
         //não foi encontrado. Insere no map
         std::vector<Unit> unitsAttack;
@@ -415,7 +415,7 @@ void GAB::addAttack(const Unit& unitEnemy, const Unit& unitAttack) {
 
 //utilizada para debug e verificação do map de controle de ataques.
 
-void GAB::printMapAttack() {
+void GABCache::printMapAttack() {
     std::cout << " ********************************** " << std::endl;
     std::cout << " Relatório de unidades atacadas " << std::endl;
     for (std::map<Unit, std::vector<Unit> >::const_iterator it = _unAttack.begin(); it != _unAttack.end(); ++it) {
@@ -432,7 +432,7 @@ void GAB::printMapAttack() {
 
 //Verifica qual a unidade válida para inclusão 
 
-Unit GAB::getEnemyClosestvalid(GameState& state, std::vector<Unit> unidadesInimigas) {
+Unit GABCache::getEnemyClosestvalid(GameState& state, std::vector<Unit> unidadesInimigas) {
     for (auto & un : unidadesInimigas) {
         if (!state.unitExist(un.player(), un.ID())) {
             if (unitNeedMoreAttackForKilled(un)) {
@@ -448,7 +448,7 @@ Unit GAB::getEnemyClosestvalid(GameState& state, std::vector<Unit> unidadesInimi
  * passada como referência (inclusive a unidade passada como ponto de referencia)
  * levando em consideração as unidades que tem movimento válido
  */
-void GAB::listaOrdenadaForMoves(const IDType& playerID, const Unit& unidade, GameState& state, std::vector<Unit>& unidades, const MoveArray& moves) {
+void GABCache::listaOrdenadaForMoves(const IDType& playerID, const Unit& unidade, GameState& state, std::vector<Unit>& unidades, const MoveArray& moves) {
     unidades.clear();
     //declaração
     Unit t;
@@ -470,7 +470,7 @@ void GAB::listaOrdenadaForMoves(const IDType& playerID, const Unit& unidade, Gam
     sortUnit(unidades, unidade, state);
 }
 
-void GAB::sortUnit(std::vector<Unit>& unidades, const Unit& base, GameState & state) {
+void GABCache::sortUnit(std::vector<Unit>& unidades, const Unit& base, GameState & state) {
     for (int i = 1; i < unidades.size(); i++) {
         Unit key = unidades[i];
         int j = i - 1;
@@ -489,7 +489,7 @@ void GAB::sortUnit(std::vector<Unit>& unidades, const Unit& base, GameState & st
  * Retorna todas as unidades de um player ordenados pela distância da unidade
  * passada como referência (inclusive a unidade passada como ponto de referencia)
  */
-void GAB::listaOrdenada(const IDType& playerID, const Unit & unidade, GameState& state, std::vector<Unit> & unidades) {
+void GABCache::listaOrdenada(const IDType& playerID, const Unit & unidade, GameState& state, std::vector<Unit> & unidades) {
     unidades.clear();
     //declaração
     Unit t;
@@ -517,7 +517,7 @@ void GAB::listaOrdenada(const IDType& playerID, const Unit & unidade, GameState&
  * com as unidades zeradas, mantando assim as outras informações 
  * necessárias.
  */
-void GAB::copiarStateCleanUnit(GameState& origState, GameState& copState) {
+void GABCache::copiarStateCleanUnit(GameState& origState, GameState& copState) {
     copState = origState;
     copState.cleanUpStateUnits();
 }
@@ -525,7 +525,7 @@ void GAB::copiarStateCleanUnit(GameState& origState, GameState& copState) {
 //inicializa o player alpha beta com as configurações necessárias para executar
 //os testes relacionados à classe
 
-void GAB::iniciarAlphaBeta() {
+void GABCache::iniciarAlphaBeta() {
 
     // convert them to the proper enum types
     int moveOrderingID = 1;
@@ -578,13 +578,13 @@ void GAB::iniciarAlphaBeta() {
 
 //função para cálculo da distância baseada na fórmula de cálculo da Distância Manhantan
 
-const PositionType GAB::getDistManhantan(const Position& pInicial, const Position& pFinal) {
+const PositionType GABCache::getDistManhantan(const Position& pInicial, const Position& pFinal) {
     return abs(pInicial.x() - pFinal.x()) + abs(pInicial.y() - pFinal.y());
 }
 
 //função para cálculo da distância baseada na fórmua de cálculo utilizando a Distância Euclidiana
 
-const PositionType GAB::getDistEuclidiana(const Position& pInicial, const Position& pFinal) {
+const PositionType GABCache::getDistEuclidiana(const Position& pInicial, const Position& pFinal) {
     return sqrt(((pInicial.x() - pFinal.x())*(pInicial.x() - pFinal.x()) +
             (pInicial.y() - pFinal.y())*(pInicial.y() - pFinal.y())
             ));
@@ -593,7 +593,7 @@ const PositionType GAB::getDistEuclidiana(const Position& pInicial, const Positi
 //função utilizada para validar se existe a necessidade de mais um ataque para
 //uma unidade inimiga ou se ela já irá morrer com os ataques existentes.
 
-const bool GAB::unitNeedMoreAttackForKilled(Unit un) {
+const bool GABCache::unitNeedMoreAttackForKilled(Unit un) {
     if (_unAttack.find(un) == _unAttack.end()) {
         return true;
     }
@@ -610,7 +610,7 @@ const bool GAB::unitNeedMoreAttackForKilled(Unit un) {
 
 //utilizada para remover um ataque da lista de atacantes de um determinado inimigo
 
-void GAB::removeAttackInUnAttack(Unit enemy, Unit Attacker) {
+void GABCache::removeAttackInUnAttack(Unit enemy, Unit Attacker) {
     std::vector<Unit> cleanUnit;
     for (auto & unAttack : _unAttack.find(enemy)->second) {
         if (!(unAttack.ID() == Attacker.ID())) {
@@ -622,7 +622,7 @@ void GAB::removeAttackInUnAttack(Unit enemy, Unit Attacker) {
 
 //responsável por instanciar a classe que fará o controle das unidades 
 //existentes na abstração.
-void GAB::iniciarClasseAbstracao(std::string controlAbstraction) {
+void GABCache::iniciarClasseAbstracao(std::string controlAbstraction) {
     if(controlAbstraction.compare("Random") == 0){
         manager = new ManagerRandom(_playerID, numUnits);
     }

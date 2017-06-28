@@ -89,6 +89,7 @@ namespace SparCraft {
         
         //métodos utilização das classes de gestão de unidades
         void iniciarClasseAbstracao(std::string controlAbstraction);
+        
     };
 }
 

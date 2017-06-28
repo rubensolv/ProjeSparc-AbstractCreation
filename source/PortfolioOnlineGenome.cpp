@@ -7,7 +7,7 @@ PortfolioOnlineGenome::PortfolioOnlineGenome(const IDType & player, const GameSt
 _fitness(StateEvalScore()),
 _iterator(0) {
     _player = player;
-    _level = 1;
+    _level = 3;
 
     IDType players[2] = {Players::Player_One, Players::Player_Two};
     //initializing the script of all units for both players with NO-OVERKILL
@@ -25,7 +25,7 @@ PortfolioOnlineGenome::PortfolioOnlineGenome(const IDType& player, const GameSta
 _fitness(StateEvalScore()),
 _iterator(0) { 
     _player = player;
-    _level = 1;
+    _level = 3;
 
     IDType players[2] = {Players::Player_One, Players::Player_Two};
     //initializing the script of all units for both players with NO-OVERKILL
@@ -68,7 +68,7 @@ PortfolioOnlineGenome::PortfolioOnlineGenome(const IDType & player, const GameSt
 _fitness(StateEvalScore()),
 _iterator(0) {
     _player = player;
-    _level = 1;
+    _level = 3;
     //initializing the script of all units for both players with NO-OVERKILL
 
     IDType players[2] = {Players::Player_One, Players::Player_Two};
@@ -105,7 +105,7 @@ PortfolioOnlineGenome::PortfolioOnlineGenome(const IDType & player, const GameSt
 _fitness(StateEvalScore()),
 _iterator(0) {
     _player = player;
-    _level = 1;
+    _level = 3;
     //initializing the script of all units for both players with NO-OVERKILL
 
     IDType players[2] = {Players::Player_One, Players::Player_Two};

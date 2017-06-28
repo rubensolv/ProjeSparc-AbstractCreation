@@ -9,14 +9,17 @@
 #include <memory>
 #include "AdaptableStratType.h"
 #include <fstream>
+#include "CacheSimpleString.h"
 
 namespace SparCraft
 {
 	
 typedef	std::shared_ptr<Player> PlayerPtr;
+class CacheSimpleString;
 
-class AdaptableStratifiedPolicySearch
+class SSSCache
 {
+    CacheSimpleString * cacheLTD2;
 protected:
 	
     const IDType				_player;
@@ -36,7 +39,7 @@ protected:
 
 public:
 
-    AdaptableStratifiedPolicySearch(const IDType & player, const IDType & enemyScript, const size_t & iter, const size_t & responses, const size_t & timeLimit);
+    SSSCache(const IDType & player, const IDType & enemyScript, const size_t & iter, const size_t & responses, const size_t & timeLimit);
     std::vector<Action> search(const IDType & player, const GameState & state);
 };
 

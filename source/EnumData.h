@@ -116,7 +116,8 @@ namespace SparCraft
             DovePlayerAlpha, DovePlayerAlphaTran,  DovePlayerBeta, DovePlayer, PortfolioGreedySearchPlus,
             AdaptablePGS, AdaptablePGSPlusCache, PortfolioGreedySearchDavePlus, PortfolioGreedySearchDavePlusShort,
             PortfolioGreedySearchPlusShort, PortfolioGreedySearchDaveCache, PortfolioGreedySearchDaveLongCache,
-            PortfolioGreedySearchLongCache, AdaptablePGSPlusDaveCache, StratifiedPolicySearchCache, None, Size
+            PortfolioGreedySearchLongCache, AdaptablePGSPlusDaveCache, StratifiedPolicySearchCache, GABCache, EABCache,
+            SSSCache, AdaptableStratifiedPolicySearchLimit, SSSLimitCache, SAB, SABCache, None, Size
         };
 
         static void init() {
@@ -151,12 +152,19 @@ namespace SparCraft
             setData(StratifiedPolicySearch, "StratifiedPolicySearch");
             setData(StratifiedPolicySearchCache, "StratifiedPolicySearchCache");
             setData(AdaptableStratifiedPolicySearch, "AdaptableStratifiedPolicySearch");
+            setData(AdaptableStratifiedPolicySearchLimit, "AdaptableStratifiedPolicySearchLimit");
             setData(IRStratifiedPolicySearch, "IRStratifiedPolicySearch");
             setData(MoveForward, "MoveForward");
             setData(MoveBackward, "MoveBackward");
             //incluída para teste
             setData(GenerationClass, "GenerationClass");
             setData(GAB, "GAB");
+            setData(GABCache, "GABCache");
+            setData(EABCache, "EABCache");
+            setData(SABCache, "SABCache");
+            setData(SAB, "SAB");
+            setData(SSSCache, "SSSCache");
+            setData(SSSLimitCache, "SSSLimitCache");
             setData(ABPOEFixo, "ABPOEFixo");
             setData(ABPOELimit, "ABPOELimit");
             setData(ABPGSSand, "ABPGSSand");

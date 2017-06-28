@@ -28,6 +28,9 @@
 #include "Player_ImprovedPortfolioGreedySearch.h"
 #include "Player_PortfolioOnlineEvolution.h"
 #include "Player_AdaptableStratifiedPolicySearch.h"
+#include "Player_AdaptableStratifiedPolicySearchLimit.h"
+#include "Player_SSSLimitCache.h"
+#include "Player_SSSCache.h"
 #include "Player_UCT.h"
 
 // script-based players
@@ -42,6 +45,10 @@
 #include "Player_Random.h"
 #include "GenerationClass.h"
 #include "GAB.h"
+#include "GABCache.h"
+#include "EABCache.h"
+#include "SABCache.h"
+#include "SAB.h"
 #include "DovePlayerAlpha.h"
 #include "DovePlayerAlphaTran.h"
 #include "DovePlayerBeta.h"

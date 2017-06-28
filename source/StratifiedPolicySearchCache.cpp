@@ -246,7 +246,7 @@ StateEvalScore StratifiedPolicySearchCache::eval(const IDType & player, const Ga
             //return g.playLimitedIndividualScripts(player, playerScriptsChosen, 4);
             
             tempStateEval = g.playLimitedIndividualScripts(player, playerScriptsChosen, 4);
-            if (_qtdPlayoutIgnorar >= 0) {
+            if (_qtdPlayoutIgnorar >= 2) {
                 cacheLTD2->addItemCache(playerScriptsChosen, player, tempStateEval.val());
             } else {
                 _qtdPlayoutIgnorar++;

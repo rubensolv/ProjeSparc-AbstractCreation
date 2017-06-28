@@ -1,8 +1,8 @@
-#include "PortfolioGreedySearchNoTime.h"
+#include "PortfolioGreedySearchNoTimeCache.h"
 
 using namespace SparCraft;
 
-PortfolioGreedySearchNoTime::PortfolioGreedySearchNoTime(const IDType & player, const IDType & enemyScript, const size_t & iter, const size_t & responses, const size_t & timeLimit)
+PortfolioGreedySearchNoTimeCache::PortfolioGreedySearchNoTimeCache(const IDType & player, const IDType & enemyScript, const size_t & iter, const size_t & responses, const size_t & timeLimit)
 	: _player(player)
 	, _enemyScript(enemyScript)
 	, _iterations(iter)
@@ -13,11 +13,19 @@ PortfolioGreedySearchNoTime::PortfolioGreedySearchNoTime(const IDType & player, 
 	_playerScriptPortfolio.push_back(PlayerModels::NOKDPS);
 	_playerScriptPortfolio.push_back(PlayerModels::KiterDPS);
 	//_playerScriptPortfolio.push_back(PlayerModels::Cluster);
+        
+}
+
+PortfolioGreedySearchNoTimeCache::~PortfolioGreedySearchNoTimeCache() {
+    
 }
 
 
-UnitScriptData PortfolioGreedySearchNoTime::searchForScripts(const IDType & player, const GameState & state, StateEvalScore & bestScore)
+UnitScriptData PortfolioGreedySearchNoTimeCache::searchForScripts(const IDType & player, const GameState & state, StateEvalScore & bestScore)
 {
+    cacheLTD2 = new CacheSimpleString();
+    _qtdPlayoutIgnorar = 0;
+    
     Timer t;
     t.start();
 
@@ -58,10 +66,12 @@ UnitScriptData PortfolioGreedySearchNoTime::searchForScripts(const IDType & play
     //currentScriptData.calculateMoves(player, moves, copy, moveVec);
     
     _totalEvals = 0;
+    free(cacheLTD2);
+    
     return  currentScriptData;
 }
 
-std::vector<Action> PortfolioGreedySearchNoTime::search(const IDType & player, const GameState & state, StateEvalScore & bestScore)
+std::vector<Action> PortfolioGreedySearchNoTimeCache::search(const IDType & player, const GameState & state, StateEvalScore & bestScore)
 {
     Timer t;
     t.start();
@@ -120,7 +130,7 @@ std::vector<Action> PortfolioGreedySearchNoTime::search(const IDType & player, c
     return moveVec;
 }
 
-void PortfolioGreedySearchNoTime::doPortfolioSearch(const IDType & player, const GameState & state, UnitScriptData & currentScriptData, Timer & t, StateEvalScore & bestScore)
+void PortfolioGreedySearchNoTimeCache::doPortfolioSearch(const IDType & player, const GameState & state, UnitScriptData & currentScriptData, Timer & t, StateEvalScore & bestScore)
 {
   //  Timer t;
  //   t.start();
@@ -192,7 +202,7 @@ void PortfolioGreedySearchNoTime::doPortfolioSearch(const IDType & player, const
     }   
 }
 
-IDType PortfolioGreedySearchNoTime::calculateInitialSeed(const IDType & player, const GameState & state)
+IDType PortfolioGreedySearchNoTimeCache::calculateInitialSeed(const IDType & player, const GameState & state)
 {
     IDType bestScript;
     StateEvalScore bestScriptScore;
@@ -228,19 +238,47 @@ IDType PortfolioGreedySearchNoTime::calculateInitialSeed(const IDType & player, 
     return bestScript;
 }
 
-StateEvalScore PortfolioGreedySearchNoTime::eval(const IDType & player, const GameState & state, UnitScriptData & playerScriptsChosen)
+StateEvalScore PortfolioGreedySearchNoTimeCache::eval(const IDType & player, const GameState & state, UnitScriptData & playerScriptsChosen)
 {
     const IDType enemyPlayer(state.getEnemy(player));
+    
+    if (_player == player) {
+        ScoreType valCache = cacheLTD2->hitItemCache(playerScriptsChosen, player);
+        StateEvalScore tempStateEval;
 
-	Game g(state, 100);
+        if (valCache != -9999) {
+            tempStateEval = StateEvalScore(valCache, 0);
+            //std::cout << "Cache hit" << std::endl;
+        } else {
+            //std::cout << "Cache miss" << std::endl;
+            
 
-	_totalEvals++;
-     //return g.playLimitedIndividualScripts(player, playerScriptsChosen, 4);
-    g.playIndividualScripts(playerScriptsChosen);
-    return g.getState().eval(player, SparCraft::EvaluationMethods::LTD2);
+            Game g(state, 100);
+
+            _totalEvals++;
+
+            //return g.playLimitedIndividualScripts(player, playerScriptsChosen, 4);
+            g.playIndividualScripts(playerScriptsChosen);
+            tempStateEval = g.getState().eval(player, SparCraft::EvaluationMethods::LTD2);
+            if (_qtdPlayoutIgnorar >= 2) {
+                cacheLTD2->addItemCache(playerScriptsChosen, player, tempStateEval.val());
+            } else {
+                _qtdPlayoutIgnorar++;
+            }
+
+        }
+        return tempStateEval;
+    } else {       
+            Game g(state, 100);
+
+            _totalEvals++;
+        //return g.playLimitedIndividualScripts(player, playerScriptsChosen, 4);
+        g.playIndividualScripts(playerScriptsChosen);
+        return g.getState().eval(player, SparCraft::EvaluationMethods::LTD2);
+    }
 }
 
-void  PortfolioGreedySearchNoTime::setAllScripts(const IDType & player, const GameState & state, UnitScriptData & data, const IDType & script)
+void  PortfolioGreedySearchNoTimeCache::setAllScripts(const IDType & player, const GameState & state, UnitScriptData & data, const IDType & script)
 {
     for (size_t unitIndex(0); unitIndex < state.numUnits(player); ++unitIndex)
     {

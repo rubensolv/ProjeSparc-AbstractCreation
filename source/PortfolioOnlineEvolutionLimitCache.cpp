@@ -1,8 +1,8 @@
-#include "PortfolioOnlineEvolutionLimit.h"
+#include "PortfolioOnlineEvolutionLimitCache.h"
 
 using namespace SparCraft;
 
-PortfolioOnlineEvolutionLimit::PortfolioOnlineEvolutionLimit(const IDType & player, const IDType & enemyScript, const size_t & iter, const size_t & responses, const size_t & timeLimit)
+PortfolioOnlineEvolutionLimitCache::PortfolioOnlineEvolutionLimitCache(const IDType & player, const IDType & enemyScript, const size_t & iter, const size_t & responses, const size_t & timeLimit)
 	: _player(player)
 	, _enemyScript(enemyScript)
 	, _iterations(iter)
@@ -23,7 +23,7 @@ PortfolioOnlineEvolutionLimit::PortfolioOnlineEvolutionLimit(const IDType & play
 	srand(1234);
 }
 
-void PortfolioOnlineEvolutionLimit::init(const IDType & player, const GameState & state, std::vector<PortfolioOnlineGenome> & population)
+void PortfolioOnlineEvolutionLimitCache::init(const IDType & player, const GameState & state, std::vector<PortfolioOnlineGenome> & population)
 {
 	for(int i = 0; i < this->_populationSize; i++)
 	{
@@ -32,7 +32,7 @@ void PortfolioOnlineEvolutionLimit::init(const IDType & player, const GameState 
 	}
 }
 
-void PortfolioOnlineEvolutionLimit::mutatePopulation(const IDType & player, const GameState & state, std::vector<PortfolioOnlineGenome> & population)
+void PortfolioOnlineEvolutionLimitCache::mutatePopulation(const IDType & player, const GameState & state, std::vector<PortfolioOnlineGenome> & population)
 {
 	std::vector<PortfolioOnlineGenome>  newPopulation;
 	//std::cout << "Population size before mutation: " << population.size() << " selected: " << _selectedMembers << std::endl;
@@ -52,7 +52,7 @@ void PortfolioOnlineEvolutionLimit::mutatePopulation(const IDType & player, cons
 //	std::cout << "Population size after mutation: " << population.size() << std::endl << std::endl;
 }
 
-void PortfolioOnlineEvolutionLimit::select(const IDType & player, const GameState & state, std::vector<PortfolioOnlineGenome> & population)
+void PortfolioOnlineEvolutionLimitCache::select(const IDType & player, const GameState & state, std::vector<PortfolioOnlineGenome> & population)
 {
 	std::vector<PortfolioOnlineGenome> newPopulation;
 	for(int i = 0; i < _selectedMembers; i++)
@@ -63,7 +63,7 @@ void PortfolioOnlineEvolutionLimit::select(const IDType & player, const GameStat
 	population = newPopulation;
 }
 
-void PortfolioOnlineEvolutionLimit::crossover(const IDType & player, const GameState & state, std::vector<PortfolioOnlineGenome> & population)
+void PortfolioOnlineEvolutionLimitCache::crossover(const IDType & player, const GameState & state, std::vector<PortfolioOnlineGenome> & population)
 {
 	std::vector<PortfolioOnlineGenome> newPopulation;
 	for(int i = 0; i < _selectedMembers; i++)
@@ -89,21 +89,45 @@ void PortfolioOnlineEvolutionLimit::crossover(const IDType & player, const GameS
 	population = newPopulation;
 }
 
-StateEvalScore PortfolioOnlineEvolutionLimit::evalPopulation(const IDType & player, const GameState & state, std::vector<PortfolioOnlineGenome> & population)
+StateEvalScore PortfolioOnlineEvolutionLimitCache::evalPopulation(const IDType & player, const GameState & state, std::vector<PortfolioOnlineGenome> & population)
 {
-	const IDType enemyPlayer(state.getEnemy(player));
-	for(int i = 0; i < population.size(); i++)
-	{
-		Game g(state, 100);
-		_totalEvals++;
-		population[i].setFitness(g.playoutGenome(player, population[i], _playoutLimit));
-	}
+	//std::cout << "Análise hit cache POE Cache"<< std::endl;
+    const IDType enemyPlayer(state.getEnemy(player));
+    for (int i = 0; i < population.size(); i++) {
 
-	std::sort(population.begin(), population.end());
-        return population[0].getFitness();
+        //se o jogador for igual ao nosso jogador
+        if ((player == _player)) {
+            ScoreType valCache = cacheLTD2->hitItemPOCache(population[i], player);
+            StateEvalScore tempStateEval;
+            if (valCache != -9999) {
+                //   std::cout << "Cache hit "<< valCache << std::endl;
+                population[i].setFitness(StateEvalScore(valCache, 0));
+                //std::cout << "Cache hit" << std::endl;
+            } else {
+                Game g(state, 100);
+                _totalEvals++;
+                tempStateEval = g.playoutGenome(player, population[i], _playoutLimit);
+                population[i].setFitness(tempStateEval);
+                //std::cout << "Cache miss "<< tempStateEval.val() << std::endl;
+                //std::cout << "Cache miss" << std::endl;
+                cacheLTD2->addPOItemCache(population[i], player, tempStateEval.val());
+            }
+
+
+        } else {
+            Game g(state, 100);
+            _totalEvals++;
+            population[i].setFitness(g.playoutGenome(player, population[i], _playoutLimit));
+        }
+    }
+
+    std::sort(population.begin(), population.end());
+
+    //std::cout << " FIM Análise hit cache POE Cache"<< std::endl;
+    return population[0].getFitness();
 }
 
-std::vector<Action> PortfolioOnlineEvolutionLimit::search(const IDType & player, const GameState & state)
+std::vector<Action> PortfolioOnlineEvolutionLimitCache::search(const IDType & player, const GameState & state)
 {
     Timer t;
     t.start();
@@ -144,7 +168,8 @@ std::vector<Action> PortfolioOnlineEvolutionLimit::search(const IDType & player,
 }
 
 
-UnitScriptData PortfolioOnlineEvolutionLimit::searchForScripts(const IDType& player, const GameState& state){
+UnitScriptData PortfolioOnlineEvolutionLimitCache::searchForScripts(const IDType& player, const GameState& state){
+    cacheLTD2 = new CacheSimpleString();
     Timer t;
     t.start();
     //std::cout<<"Search For Scripts POELimit "<<std::endl;
@@ -204,5 +229,6 @@ UnitScriptData PortfolioOnlineEvolutionLimit::searchForScripts(const IDType& pla
         currentScriptData.setUnitScript(state.getUnit(enemyPlayer, unitIndex), pop.getUnitScript(state.getUnit(enemyPlayer, unitIndex)));
     }
 
+    free(cacheLTD2);
     return currentScriptData;
 }

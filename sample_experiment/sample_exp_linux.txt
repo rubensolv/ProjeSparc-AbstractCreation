@@ -53,7 +53,9 @@
 
 # Sample AlphaBeta Players
 #Player 0 AlphaBeta 40 20 ScriptFirst Playout NOKDPS NOKDPS Alternate None
-#Player 1 AlphaBeta 40 20 ScriptFirst Playout NOKDPS NOKDPS Alternate NOKDPS
+#Player 0 AlphaBeta 40 20 ScriptFirst Playout NOKDPS NOKDPS Alternate NOKDPS
+#Player 0 AlphaBeta 40 20 ScriptFirst Playout NOKDPS NOKDPS Alternate NOKDPS
+#Player 0 AlphaBeta 40 0 ScriptFirst Playout Cluster Cluster Alternate Cluster
 #Player 1 AdaptiveBeamAlphaBeta 10 20 ScriptFirst Playout NOKDPS NOKDPS Alternate None 5 1 filename_test
 #Player 0 AlphaBeta 10 5 ScriptFirst Playout NOKDPS NOKDPS Alternate None
 #Player 0 AlphaBeta 10 20 ScriptFirst Playout NOKDPS NOKDPS Alternate NOKDPS
@@ -64,7 +66,7 @@
 #Player 1 UCT 40 1.6 5000 20 ScriptFirst Playout NOKDPS NOKDPS Alternate NOKDPS
 
 # Sample PortfolioGreedySearch Players
-#Player 0 PortfolioGreedySearch 40 NOKDPS 1 0
+Player 1 PortfolioGreedySearch 40 NOKDPS 1 0
 #Player 1 PortfolioGreedySearchDavePlus 40 NOKDPS 1 0
 #Player 1 PortfolioGreedySearchPlus 40 NOKDPS 1 0
 #Player 1 PortfolioGreedySearchDavePlus 40 NOKDPS 1 0
@@ -76,7 +78,7 @@
 #Player 1 ImprovedPortfolioGreedySearch 80 NOKDPS 3 0
 #Player 0 ImprovedPortfolioGreedySearch 40 NOKDPS 1 0
 #Player 0 PortfolioGreedySearch 40 NOKDPS 1 0
-Player 0 PortfolioOnlineEvolution 40 NOKDPS 1 0
+#Player 0 PortfolioOnlineEvolution 40 NOKDPS 1 0
 #Player 0 Player_PGSAA 40 NOKDPS 1 0
 #Player 1 PortfolioGreedySearchCache 40 NOKDPS 1 0
 #Player 1 PortfolioGreedySearchDaveCache 40 NOKDPS 1 0
@@ -87,20 +89,38 @@ Player 0 PortfolioOnlineEvolution 40 NOKDPS 1 0
 #Sample StratifiedPolicySearch Players
 #Player 0 StratifiedPolicySearch 40 NOKDPS 1 0
 #Player 1 StratifiedPolicySearch 40 NOKDPS 1 0
-#Player 1 StratifiedPolicySearch 40 NOKDPS 1 0 1
-Player 1 StratifiedPolicySearchCache 40 NOKDPS 1 0 1
+#Player 0 StratifiedPolicySearch 40 NOKDPS 1 0 1
+#Player 1 StratifiedPolicySearchCache 40 NOKDPS 1 0 1
 #Player 1 AdaptableStratifiedPolicySearch 40 NOKDPS 1 0 1
 #Player 1 IRStratifiedPolicySearch 40 NOKDPS 1 0
 
 # Sample Scripted Players
+#best config for SSS+
+#Player 0 AlphaBeta 40 0 ScriptFirst Playout NOKDPS NOKDPS Alternate NOKDPS
+
+#Method to select units: {Random, Closest, Farther, LessLife, MoreLife, ClosestEnemy, FartherEnemy, MoreDPS, LessDPS}
+Player 0 GAB 7 MoreDPS
+#Player 0 ABPOELimit 4 MoreLife
+#Player 1 GABCache 7 MoreDPS
+#Player 1 EABCache 4 MoreLife
+
+#Player 1 AdaptableStratifiedPolicySearch 40 NOKDPS 1 0 1
+#Player 0 AdaptableStratifiedPolicySearchLimit 40 NOKDPS 1 0 1
+
+#Player 1 SSSLimitCache 40 NOKDPS 1 0 1
+#Player 1 SSSCache 40 NOKDPS 1 0 1
+
+#Player 0 SABCache 7 MoreDPS
+#Player 0 SAB 7 MoreDPS
+#Player 0 SAB 4 MoreLife
+
+
 #Player 0 GenerationClass 7
 #Player 0 DovePlayerAlpha
 #Player 0 DovePlayerAlphaTran
 #Player 0 DovePlayerBeta
 # 1 param - define if  POE will use the best script PGS {True, False}
 #Player 0 DovePlayer False
-#Method to select units: {Random, Closest, Farther, LessLife, MoreLife, ClosestEnemy, FartherEnemy, MoreDPS, LessDPS}
-#Player 0 GAB 7 MoreDPS
 #Player 0 ABPGSSimetrico 7 LessLife
 #Player 0 ABPOESimetrico 7 Closest
 #Player 0 ABPOESimetricoDeep 7
@@ -108,15 +128,12 @@ Player 1 StratifiedPolicySearchCache 40 NOKDPS 1 0 1
 #Player 0 ABPGSSimetricoDeep 7
 #Player 0 PortfolioGreedySearchDeep 0 NOKDPS 1 0
 #Player 0 PortfolioOnlineEvolutionDeep 0 NOKDPS 1 0
-#Method to select units: {Random, Closest, Farther, LessLife, MoreLife, ClosestEnemy, FartherEnemy, MoreDPS, LessDPS}
-#Player 0 ABPOELimit 7 MoreLife
 #Player 0 GenerationClassForMetric 7
 #Player 0 GenerationClassForMetricSample 7
 #Player 0 GenerationClassForMetricClosest 7
 #Player 0 GenerationClassForDeep 7
 #Player 1 GenerationClassForMonit
 #Player 0 ABPOEFixo
-#Player 0 ABPOELimit 7
 #Player 0 ABPGSPlus
 #Player 1 Kiter
 #Player 0 ABPGSSand
@@ -125,6 +142,7 @@ Player 1 StratifiedPolicySearchCache 40 NOKDPS 1 0 1
 #Player 0 GenerationClassWithClosest
 
 #Teste especiais
+
 
 
 ####################################################
@@ -166,15 +184,15 @@ Player 1 StratifiedPolicySearchCache 40 NOKDPS 1 0 1
 
 # Sample SeparatedState States heterogeneos
 #State SeparatedState 2 128 128 400 360 840 360 Terran_Marine 24 Terran_Vulture 10 Terran_Goliath 12 Terran_Siege_Tank_Tank_Mode 6 Terran_Firebat 20
-#State SeparatedState 2 128 128 400 360 840 360 Protoss_Zealot 12 Protoss_Dragoon 12 Protoss_Dark_Templar 10 Protoss_Archon 8 
+#State SeparatedState 2 128 128 400 360 840 360 Protoss_Zealot 8 Protoss_Dragoon 8 Protoss_Archon 8 
 #State SeparatedState 2 128 128 400 360 840 360 Zerg_Zergling 30 Zerg_Hydralisk 20 Zerg_Mutalisk 13 Zerg_Ultralisk 6 
 
 
 # Sample SeparatedState States
-#State SeparatedState 100 128 128 400 360 840 360 Protoss_Dragoon 16
-State SeparatedState 10 128 128 400 360 840 360 Protoss_Zealot 16
+#State SeparatedState 50 128 128 400 360 840 360 Protoss_Dragoon 16
+#State SeparatedState 20 128 128 400 360 840 360 Protoss_Zealot 50
 #State SeparatedState 70 128 128 400 360 840 360 Protoss_Dragoon 4 Terran_Marine 4
-#State SeparatedState 200 128 128 400 360 840 360 Protoss_Dragoon 25 Protoss_Zealot 25
+State SeparatedState 50 128 128 400 360 840 360 Protoss_Dragoon 25 Protoss_Zealot 25
 #State SeparatedState 10 128 128 400 360 840 360 Zerg_Zergling 10
 #State SeparatedState 100 128 128 400 360 840 360 Zerg_Zergling 15 Protoss_Dragoon 8
 #State SeparatedState 100 128 128 400 360 840 360 Protoss_Dragoon 4 Terran_Marine 4
@@ -201,7 +219,9 @@ State SeparatedState 10 128 128 400 360 840 360 Protoss_Zealot 16
 #State StateSymmetricVerticalLine 10 128 128 Protoss_Dragoon 2 Protoss_Zealot 2
 #State StateSymmetricVerticalLine 100 128 128 Protoss_Dragoon 8 Protoss_Zealot 8
 #State StateSymmetricVerticalLine 3 128 128 Protoss_Dragoon 17 Protoss_Zealot 17
-
+#State StateSymmetricVerticalLine 3 128 128 Protoss_Dragoon 25 Protoss_Zealot 25
+#State StateSymmetricVerticalLine 3 128 128 Protoss_Dragoon 50
+ 
 ##################################################
 #
 #  File where results will be stored

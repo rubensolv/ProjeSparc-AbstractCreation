@@ -557,6 +557,33 @@ void SearchExperiment::addPlayer(const std::string & line)
         
         players[playerID].push_back(PlayerPtr(new GAB(playerID, numUnits, controlAbstractionID))); 
     }
+        else if (playerModelID == PlayerModels::GABCache)				
+    { 
+        int numUnits(0);
+        std::string controlAbstractionID;
+        iss >> numUnits;
+        iss >> controlAbstractionID;
+        
+        players[playerID].push_back(PlayerPtr(new GABCache(playerID, numUnits, controlAbstractionID))); 
+    }
+        else if (playerModelID == PlayerModels::SAB)				
+    { 
+        int numUnits(0);
+        std::string controlAbstractionID;
+        iss >> numUnits;
+        iss >> controlAbstractionID;
+        
+        players[playerID].push_back(PlayerPtr(new SAB(playerID, numUnits, controlAbstractionID))); 
+    }
+        else if (playerModelID == PlayerModels::SABCache)				
+    { 
+        int numUnits(0);
+        std::string controlAbstractionID;
+        iss >> numUnits;
+        iss >> controlAbstractionID;
+        
+        players[playerID].push_back(PlayerPtr(new SABCache(playerID, numUnits, controlAbstractionID))); 
+    }
         else if (playerModelID == PlayerModels::ABPOESimetrico)				
     { 
         int numUnits(0);
@@ -593,6 +620,15 @@ void SearchExperiment::addPlayer(const std::string & line)
         iss >> controlAbstractionID;
         
         players[playerID].push_back(PlayerPtr(new ABPOELimit(playerID, numUnits, controlAbstractionID)));
+    }
+        else if (playerModelID == PlayerModels::EABCache)				
+    { 
+        int numUnits(0);
+        std::string controlAbstractionID;
+        iss >> numUnits;
+        iss >> controlAbstractionID;
+        
+        players[playerID].push_back(PlayerPtr(new EABCache(playerID, numUnits, controlAbstractionID)));
     }
         else if (playerModelID == PlayerModels::ABPOELimitDeep)				
     { 
@@ -931,6 +967,48 @@ else if (playerModelID == PlayerModels::ImprovedPortfolioGreedySearch)
 
         players[playerID].push_back(PlayerPtr(new Player_AdaptableStratifiedPolicySearch(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit)));
     }
+    else if (playerModelID == PlayerModels::AdaptableStratifiedPolicySearchLimit)
+    {
+        std::string enemyPlayerModel;
+        size_t timeLimit(0);
+        int iterations(1);
+        int responses(0);
+
+        iss >> timeLimit;
+        iss >> enemyPlayerModel;
+        iss >> iterations;
+        iss >> responses;
+
+        players[playerID].push_back(PlayerPtr(new Player_AdaptableStratifiedPolicySearchLimit(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit)));
+    }
+    else if (playerModelID == PlayerModels::SSSCache)
+    {
+        std::string enemyPlayerModel;
+        size_t timeLimit(0);
+        int iterations(1);
+        int responses(0);
+
+        iss >> timeLimit;
+        iss >> enemyPlayerModel;
+        iss >> iterations;
+        iss >> responses;
+
+        players[playerID].push_back(PlayerPtr(new Player_SSSCache(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit)));
+    }
+    else if (playerModelID == PlayerModels::SSSLimitCache)
+    {
+        std::string enemyPlayerModel;
+        size_t timeLimit(0);
+        int iterations(1);
+        int responses(0);
+
+        iss >> timeLimit;
+        iss >> enemyPlayerModel;
+        iss >> iterations;
+        iss >> responses;
+
+        players[playerID].push_back(PlayerPtr(new Player_SSSLimitCache(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit)));
+    }
     else if (playerModelID == PlayerModels::StratifiedPolicySearch)
     {
         std::string enemyPlayerModel;
@@ -1088,14 +1166,35 @@ else if (playerModelID == PlayerModels::ImprovedPortfolioGreedySearch)
         params.setEvalMethod(evalMethodID);
         params.setSimScripts(playoutScriptID1, playoutScriptID2);
         params.setPlayerToMoveMethod(playerToMoveID);
+        
+        /*
+        //remover utilizado apenas para configuração
+        std::cout << "************* Config AB **************" << std::endl;
+        std::cout << "Max player " << playerID << std::endl;
+        std::cout << "timeLimitMS " << timeLimitMS << std::endl;
+        std::cout << "maxChildren " << maxChildren << std::endl;
+        std::cout << "moveOrderingID " << moveOrderingID << std::endl;
+        std::cout << "evalMethodID " << evalMethodID << std::endl;
+        std::cout << "playoutScriptID1 " << playoutScriptID1 << std::endl;
+        std::cout << "playoutScriptID2 " << playoutScriptID1 << std::endl;
+        
+        std::cout << "playerToMoveID " << playerToMoveID << std::endl;
+        
+        std::cout << "opponentModelID " << opponentModelID << std::endl;
+        
+        
+        
+        
+        std::cout << "************* Config AB  **************" << std::endl;
+        */
 	
         // add scripts for move ordering
         if (moveOrderingID == MoveOrderMethod::ScriptFirst)
         {
             params.addOrderedMoveScript(PlayerModels::NOKDPS);
             params.addOrderedMoveScript(PlayerModels::KiterDPS);
-          //  params.addOrderedMoveScript(PlayerModels::Cluster);
-            params.addOrderedMoveScript(PlayerModels::AttackWeakest);
+            //params.addOrderedMoveScript(PlayerModels::Cluster);
+            //params.addOrderedMoveScript(PlayerModels::AttackWeakest);
         }
 
         // set opponent modeling if it's not none
@@ -1230,11 +1329,21 @@ GameState SearchExperiment::getSymmetricVerticalLineState( std::vector<std::stri
         for (int u(0); u<numUnits[i]; ++u)
 	    {
             Position r(rand.nextInt() % 20, rand.nextInt() % 20);
-            Position u1(mid.x() + 212 + r.x(), mid.y() + u*20 + r.y());
-            Position u2(mid.x() - 212 + r.x(), mid.y() + u*20 + r.y());
+            if((mid.y() + u*20 + r.y()) >= 700){
+                Position u1(mid.x() + 212 + r.x(), 600 + r.y());
+                Position u2(mid.x() - 212 + r.x(), 600 + r.y());
 
-            state.addUnit(type, Players::Player_One, u1);
-            state.addUnit(type, Players::Player_Two, u2);
+                state.addUnit(type, Players::Player_One, u1);
+                state.addUnit(type, Players::Player_Two, u2);
+            }else{
+                Position u1(mid.x() + 212 + r.x(), mid.y() + u*20 + r.y());
+                Position u2(mid.x() - 212 + r.x(), mid.y() + u*20 + r.y());
+
+                state.addUnit(type, Players::Player_One, u1);
+                state.addUnit(type, Players::Player_Two, u2);
+            }
+            
+
 	    }
     }
 

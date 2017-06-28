@@ -11,7 +11,7 @@
 #include "Player.h"
 #include "AlphaBetaSearchParameters.hpp"
 #include "AlphaBetaSearchAbstract.h"
-#include "PortfolioGreedySearchNoTime.h"
+#include "PortfolioGreedySearchNoTimeCache.h"
 #include "ManagerAbstraction.h"
 #include "ManagerRandom.h"
 #include "ManagerClosest.h"
@@ -28,11 +28,12 @@ class TranspositionTable;
 namespace SparCraft {
 
     class AlphaBetaSearchAbstract;
-    class PortfolioGreedySearchNoTime;   
+    class PortfolioGreedySearchNoTimeCache;   
+    class CacheSimpleString;
 
-    class GAB : public Player {
+    class GABCache : public Player {
         AlphaBetaSearchAbstract * alphaBeta;
-        PortfolioGreedySearchNoTime * pgs;
+        PortfolioGreedySearchNoTimeCache * pgs;
         std::map<Unit, std::vector<Unit>> _unAttack;
         std::vector<Unit> _UnReut;
         std::set<Unit> _unitAbsAB;
@@ -40,13 +41,13 @@ namespace SparCraft {
         int numUnits;
         ManagerAbstraction * manager;
     public:
-        GAB(const IDType & playerID);
-        GAB(const IDType & playerID, int numUnitsAB, std::string controlAbstraction);
-        ~GAB();
+        GABCache(const IDType & playerID);
+        GABCache(const IDType & playerID, int numUnitsAB, std::string controlAbstraction);
+        ~GABCache();
         void getMoves(GameState & state, const MoveArray & moves, std::vector<Action> & moveVec);
 
         IDType getType() {
-            return PlayerModels::GAB;
+            return PlayerModels::GABCache;
         }
         void listaOrdenada(const IDType & playerID, const Unit & unidade, GameState & state, std::vector<Unit> & unidades);
         void listaOrdenadaForMoves(const IDType & playerID, const Unit & unidade, GameState & state, std::vector<Unit> & unidades, const MoveArray & moves);

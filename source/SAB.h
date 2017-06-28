@@ -10,8 +10,8 @@
 #include <stdlib.h>
 #include "Player.h"
 #include "AlphaBetaSearchParameters.hpp"
-#include "AlphaBetaSearchAbstract.h"
-#include "PortfolioGreedySearchNoTime.h"
+#include "AlphaBetaSearchAbstractSAB.h"
+#include "AdaptableStratifiedPolicySearchLimit.h"
 #include "ManagerAbstraction.h"
 #include "ManagerRandom.h"
 #include "ManagerClosest.h"
@@ -27,12 +27,13 @@ class TranspositionTable;
 
 namespace SparCraft {
 
-    class AlphaBetaSearchAbstract;
-    class PortfolioGreedySearchNoTime;   
+    class AlphaBetaSearchAbstractSAB;
+    class AdaptableStratifiedPolicySearchLimit;   
+    class CacheSimpleString;    
 
-    class GAB : public Player {
-        AlphaBetaSearchAbstract * alphaBeta;
-        PortfolioGreedySearchNoTime * pgs;
+    class SAB : public Player {
+        AlphaBetaSearchAbstractSAB * alphaBeta;
+        AdaptableStratifiedPolicySearchLimit * pgs;
         std::map<Unit, std::vector<Unit>> _unAttack;
         std::vector<Unit> _UnReut;
         std::set<Unit> _unitAbsAB;
@@ -40,13 +41,13 @@ namespace SparCraft {
         int numUnits;
         ManagerAbstraction * manager;
     public:
-        GAB(const IDType & playerID);
-        GAB(const IDType & playerID, int numUnitsAB, std::string controlAbstraction);
-        ~GAB();
+        SAB(const IDType & playerID);
+        SAB(const IDType & playerID, int numUnitsAB, std::string controlAbstraction);
+        ~SAB();
         void getMoves(GameState & state, const MoveArray & moves, std::vector<Action> & moveVec);
 
         IDType getType() {
-            return PlayerModels::GAB;
+            return PlayerModels::SAB;
         }
         void listaOrdenada(const IDType & playerID, const Unit & unidade, GameState & state, std::vector<Unit> & unidades);
         void listaOrdenadaForMoves(const IDType & playerID, const Unit & unidade, GameState & state, std::vector<Unit> & unidades, const MoveArray & moves);
@@ -81,6 +82,10 @@ namespace SparCraft {
         
         //métodos utilização das classes de gestão de unidades
         void iniciarClasseAbstracao(std::string controlAbstraction);
+        
+        //método temp para comparar jogadas
+        StateEvalScore eval(std::vector<Action> moveVec, GameState& state);
+        
     };
 }
 

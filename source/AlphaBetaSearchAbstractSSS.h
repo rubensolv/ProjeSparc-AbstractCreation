@@ -24,7 +24,7 @@ class AlphaBetaSearchParameters;
 class Player;
 
 
-class AlphaBetaSearchAbstract
+class AlphaBetaSearchAbstractSSS
 {
 	AlphaBetaSearchParameters               _params;
 	AlphaBetaSearchResults                  _results;
@@ -46,7 +46,7 @@ class AlphaBetaSearchAbstract
 
 public:
 
-	AlphaBetaSearchAbstract(const AlphaBetaSearchParameters & params, TTPtr TT = TTPtr((TranspositionTable *)NULL));
+	AlphaBetaSearchAbstractSSS(const AlphaBetaSearchParameters & params, TTPtr TT = TTPtr((TranspositionTable *)NULL));
 
 	void doSearch(GameState & initialState);
         void doSearchWithMoves(GameState & initialState, UnitScriptData & UnitScriptData, std::set<IDType> & unitsAB, IDType _playerID, StateEvalScore & bestScore);

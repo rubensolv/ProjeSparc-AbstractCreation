@@ -9,35 +9,37 @@
 #include <memory>
 #include "AdaptableStratType.h"
 #include <fstream>
+#include "CacheSimpleString.h"
 
-namespace SparCraft
-{
-	
-typedef	std::shared_ptr<Player> PlayerPtr;
+namespace SparCraft {
 
-class AdaptableStratifiedPolicySearch
-{
-protected:
-	
-    const IDType				_player;
-    const IDType				_enemyScript;
-    const size_t				_iterations;
-    const size_t                _responses;
-    std::vector<IDType>			_playerScriptPortfolio;
-    size_t                      _totalEvals;
-    size_t                      _timeLimit;
-    std::ofstream				_fileTime;
+    typedef std::shared_ptr<Player> PlayerPtr;
+    class CacheSimpleString;
 
-    bool                        doStratifiedSearch(const IDType & player,const GameState & state,UnitScriptData & currentData, Timer & timer, int & numberTypes, double & timePlayouts);
-    std::vector<Action>     	getMoveVec(const IDType & player,const GameState & state,const std::vector<IDType> & playerScripts);
-    StateEvalScore              eval(const IDType & player,const GameState & state,UnitScriptData & playerScriptsChosen);
-    IDType                      calculateInitialSeed(const IDType & player,const GameState & state);
-    void                        setAllScripts(const IDType & player,const GameState & state,UnitScriptData & data,const IDType & script);
+    class SSSLimitCache {
+        CacheSimpleString * cacheLTD2;
+    protected:
 
-public:
+        const IDType _player;
+        const IDType _enemyScript;
+        const size_t _iterations;
+        const size_t _responses;
+        std::vector<IDType> _playerScriptPortfolio;
+        size_t _totalEvals;
+        size_t _timeLimit;
+        std::ofstream _fileTime;
 
-    AdaptableStratifiedPolicySearch(const IDType & player, const IDType & enemyScript, const size_t & iter, const size_t & responses, const size_t & timeLimit);
-    std::vector<Action> search(const IDType & player, const GameState & state);
-};
+        bool doStratifiedSearch(const IDType & player, const GameState & state, UnitScriptData & currentData, Timer & timer, int & numberTypes, double & timePlayouts, StateEvalScore & bestScore);
+        std::vector<Action> getMoveVec(const IDType & player, const GameState & state, const std::vector<IDType> & playerScripts);
+        StateEvalScore eval(const IDType & player, const GameState & state, UnitScriptData & playerScriptsChosen);
+        IDType calculateInitialSeed(const IDType & player, const GameState & state);
+        void setAllScripts(const IDType & player, const GameState & state, UnitScriptData & data, const IDType & script);
+
+    public:
+
+        SSSLimitCache(const IDType & player, const IDType & enemyScript, const size_t & iter, const size_t & responses, const size_t & timeLimit);
+        std::vector<Action> search(const IDType & player, const GameState & state, StateEvalScore & bestScore);
+        UnitScriptData searchForScripts(const IDType & player, const GameState & state, StateEvalScore & bestScore);
+    };
 
 }

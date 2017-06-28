@@ -12,7 +12,7 @@ AdaptableStratifiedPolicySearch::AdaptableStratifiedPolicySearch(const IDType & 
 {
 	_playerScriptPortfolio.push_back(PlayerModels::NOKDPS);
 	_playerScriptPortfolio.push_back(PlayerModels::KiterDPS);
-	_playerScriptPortfolio.push_back(PlayerModels::Cluster);
+	//_playerScriptPortfolio.push_back(PlayerModels::Cluster);
 //	_playerScriptPortfolio.push_back(PlayerModels::Kiter_NOKDPS);
 //	_playerScriptPortfolio.push_back(PlayerModels::MoveBackward);
 }
@@ -36,21 +36,21 @@ std::vector<Action> AdaptableStratifiedPolicySearch::search(const IDType & playe
 
     if(doStratifiedSearch(player, state, currentScriptData, t, numberTypes, timePlayout))
     {
-    	std::cout << timePlayout << ", ";
-        AdaptableStratType::printType();
+    	//std::cout << timePlayout << ", ";
+        //AdaptableStratType::printType();
     	//std::cout << "Types: " << numberTypes << " Time: " << timePlayout << std::endl;
     	AdaptableStratType::increase(timePlayout, _timeLimit, _playerScriptPortfolio.size());
     }
     else
     {
-    	std::cout << timePlayout << ", ";
-        AdaptableStratType::printType();
+    	//std::cout << timePlayout << ", ";
+        //AdaptableStratType::printType();
     	//std::cout << "Types: " << numberTypes << " Time: " << timePlayout << std::endl;
     	AdaptableStratType::decrease(numberTypes);
     }
 
-//    double ms = t.getElapsedTimeInMilliSec();
-//    printf("\nMove SPS chosen in %lf ms\n", ms);
+    //double ms = t.getElapsedTimeInMilliSec();
+    //printf("\nMove SPS chosen in %lf ms\n", ms);
     // convert the script vector into a move vector and return it
 	MoveArray moves;
 	state.generateMoves(moves, player);

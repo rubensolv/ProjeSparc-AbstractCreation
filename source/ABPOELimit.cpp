@@ -83,7 +83,7 @@ void ABPOELimit::getMoves(GameState& state, const MoveArray& moves, std::vector<
         ms = t.getElapsedTimeInMilliSec();
         currentScriptData = poe->searchForScripts(_playerID, state);
         ms = t.getElapsedTimeInMilliSec() - ms;
-        
+        //std::cout << "Tempo total de execução do POE " << t.getElapsedTimeInMilliSec()<< " "<< ms << std::endl;
         //controlUnitsForAB(state, moves);
         manager->controlUnitsForAB(state, moves, _unitAbsAB);
         
@@ -189,6 +189,7 @@ void ABPOELimit::getMoves(GameState& state, const MoveArray& moves, std::vector<
     std::cout<<"##################################################"<<std::endl;
      */
 }
+
 
 bool ABPOELimit::unitsInMoves(GameState& state, const MoveArray& moves) {
     for (size_t unitIndex(0); unitIndex < moves.numUnits(); ++unitIndex) {
