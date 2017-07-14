@@ -112,7 +112,7 @@ namespace SparCraft
             GenerationClassForMetric, GenerationClassForMonit, Player_PGSAA, AbstractScript, ABPGSSimetrico, 
             ABPOESimetrico, GenerationClassForMetricClosest, GenerationClassForDeep, ABPGSSimetricoDeep, 
             PortfolioGreedySearchDeep, PortfolioOnlineEvolutionDeep, ABPOESimetricoDeep, ABPOELimitDeep,
-            PortfolioGreedySearchCache, GenerationClassForMetricSample, PortfolioOnlineEvolutionCache, GAB, 
+            PortfolioGreedySearchCache, GenerationClassForMetricSample, PortfolioOnlineEvolutionCache, GAB, GUS,
             DovePlayerAlpha, DovePlayerAlphaTran,  DovePlayerBeta, DovePlayer, PortfolioGreedySearchPlus,
             AdaptablePGS, AdaptablePGSPlusCache, PortfolioGreedySearchDavePlus, PortfolioGreedySearchDavePlusShort,
             PortfolioGreedySearchPlusShort, PortfolioGreedySearchDaveCache, PortfolioGreedySearchDaveLongCache,
@@ -159,6 +159,7 @@ namespace SparCraft
             //incluída para teste
             setData(GenerationClass, "GenerationClass");
             setData(GAB, "GAB");
+            setData(GUS, "GUS");
             setData(GABCache, "GABCache");
             setData(EABCache, "EABCache");
             setData(SABCache, "SABCache");

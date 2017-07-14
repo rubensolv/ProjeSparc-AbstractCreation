@@ -82,6 +82,9 @@ namespace SparCraft {
         
         //métodos utilização das classes de gestão de unidades
         void iniciarClasseAbstracao(std::string controlAbstraction);
+        
+        //método temp para comparar jogadas
+        StateEvalScore eval(std::vector<Action> moveVec, GameState& state);
     };
 }
 

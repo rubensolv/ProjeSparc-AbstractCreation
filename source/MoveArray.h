@@ -33,6 +33,7 @@ namespace SparCraft {
 
         // returns a given move from a unit
         const Action & getMove(const size_t & unit, const size_t & move) const;
+        const std::vector<Action>  getMoves(const size_t & unit) const;
 
         void printCurrentMoveIndex();
 

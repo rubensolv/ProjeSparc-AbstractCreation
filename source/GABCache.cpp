@@ -104,11 +104,30 @@ void GABCache::getMoves(GameState& state, const MoveArray& moves, std::vector<Ac
             //movecAB.assign(alphaBeta->getResults().bestMoves.begin(), alphaBeta->getResults().bestMoves.end());
 
             //std::cout << "AB: " << ABScore.val() << " PGS: " << PGSScore.val() << std::endl;
-
+            /*
             if (ABScore.val() > PGSScore.val()) {
                 moveVec.clear();
                 moveVec.assign(alphaBeta->getResults().bestMoves.begin(), alphaBeta->getResults().bestMoves.end());
             } 
+             * */
+            
+            
+            // avaliação temporária dos scores
+            PGSScore = eval(moveVec,state);
+            moveVec.clear();
+            moveVec.assign(alphaBeta->getResults().bestMoves.begin(), alphaBeta->getResults().bestMoves.end());
+            ABScore  = eval(moveVec,state);
+            //std::cout << "SAB AB: " << ABScore.val() << " SSS+: " << PGSScore.val() << std::endl;
+            if (ABScore.val() > PGSScore.val()) {
+                moveVec.clear();
+                moveVec.assign(alphaBeta->getResults().bestMoves.begin(), alphaBeta->getResults().bestMoves.end());
+            } else {
+                moveVec.clear();
+                state.generateMoves(movesPGS, _playerID);
+                GameState copy2(state);
+                currentScriptData.calculateMoves(_playerID, movesPGS, copy2, moveVec);
+            }
+            
 
 
         } 
@@ -140,6 +159,42 @@ std::cout<<"************* FIM GenerationClass PGS **************"<<std::endl;
 std::cout<<"##################################################"<<std::endl;
      */
 
+}
+
+
+StateEvalScore GABCache::eval(std::vector<Action> moveVec, GameState& state) {
+    //tentativa de utilizar o playout para julgar qual seria a melhor execução Ab-PGS ou PGS.
+    UnitScriptData baseScriptData;
+    const IDType enemyPlayer(state.getEnemy(_playerID));
+    //inicializar o baseScriptData com NO-KDPS
+    //Player
+    for (size_t unitIndex(0); unitIndex < state.numUnits(_playerID); ++unitIndex) {
+        baseScriptData.setUnitScript(state.getUnit(_playerID, unitIndex), SparCraft::PlayerModels::NOKDPS);
+    }
+    //Enemy
+    for (size_t unitIndex(0); unitIndex < state.numUnits(enemyPlayer); ++unitIndex) {
+        baseScriptData.setUnitScript(state.getUnit(enemyPlayer, unitIndex), SparCraft::PlayerModels::NOKDPS);
+    }
+
+    std::vector<Action> moveVecPgsEnemy;
+    if (state.bothCanMove()) {
+        //gero os movimentos inimigos
+        MoveArray movesPGSEnemy;
+        state.generateMoves(movesPGSEnemy, enemyPlayer);
+        GameState copy2(state);
+        baseScriptData.calculateMoves(enemyPlayer, movesPGSEnemy, copy2, moveVecPgsEnemy);
+    }
+
+    //Execução AB-PGS
+    Game gABPGS(state, 25);
+    gABPGS.getState().makeMoves(moveVec);
+    if (gABPGS.getState().bothCanMove()) {
+        gABPGS.getState().makeMoves(moveVecPgsEnemy);
+    }
+    gABPGS.getState().finishedMoving();
+    gABPGS.playIndividualScripts(baseScriptData);
+
+    return gABPGS.getState().eval(_playerID, SparCraft::EvaluationMethods::LTD2);
 }
 
 bool GABCache::unitsInMoves(GameState& state, const MoveArray& moves) {

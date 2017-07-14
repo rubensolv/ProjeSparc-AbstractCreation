@@ -81,6 +81,23 @@ const Action & MoveArray::getMove(const size_t & unit, const size_t & move) cons
     return _moves[unit][(size_t)move];
 }
 
+const std::vector<Action> MoveArray::getMoves(const size_t& unit) const {
+    
+    std::vector<Action> mTemp;
+    
+    Action moveTemp;
+    
+    for (int a(numMoves(unit)-1); a >= 0; --a)
+        {
+            //std::cout<< _moves[unit][a].debugString() << std::endl;
+            moveTemp = _moves[unit][a];
+            //std::cout << "Action "<< a <<" " <<moveTemp.debugString() << std::endl;
+        }
+    
+    return mTemp;
+}
+
+
 void MoveArray::printCurrentMoveIndex()
 {
     for (size_t u(0); u<_numUnits; ++u)

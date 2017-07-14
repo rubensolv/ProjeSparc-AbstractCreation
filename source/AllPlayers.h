@@ -45,6 +45,7 @@
 #include "Player_Random.h"
 #include "GenerationClass.h"
 #include "GAB.h"
+#include "GUS.h"
 #include "GABCache.h"
 #include "EABCache.h"
 #include "SABCache.h"

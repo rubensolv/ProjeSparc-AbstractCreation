@@ -16,7 +16,7 @@ PortfolioOnlineEvolution::PortfolioOnlineEvolution(const IDType & player, const 
 {
 	_playerScriptPortfolio.push_back(PlayerModels::NOKDPS);
 	_playerScriptPortfolio.push_back(PlayerModels::KiterDPS);
-	_playerScriptPortfolio.push_back(PlayerModels::Cluster);
+	//_playerScriptPortfolio.push_back(PlayerModels::Cluster);
 //	_playerScriptPortfolio.push_back(PlayerModels::MoveForward);
 //	_playerScriptPortfolio.push_back(PlayerModels::MoveBackward);
 

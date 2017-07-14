@@ -102,13 +102,18 @@ void GAB::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>
             alphaBeta->doSearchWithMoves(state, currentScriptData, unitAbsAB, _playerID, ABScore);
             //movecAB.assign(alphaBeta->getResults().bestMoves.begin(), alphaBeta->getResults().bestMoves.end());
 
-            
+            /*
             if (ABScore.val() > PGSScore.val()) {
                 moveVec.clear();
                 moveVec.assign(alphaBeta->getResults().bestMoves.begin(), alphaBeta->getResults().bestMoves.end());
             } 
-             
-            /*
+             * */ 
+            
+            // avaliação temporária dos scores
+            PGSScore = eval(moveVec,state);
+            moveVec.clear();
+            moveVec.assign(alphaBeta->getResults().bestMoves.begin(), alphaBeta->getResults().bestMoves.end());
+            ABScore  = eval(moveVec,state);
             //std::cout << "SAB AB: " << ABScore.val() << " SSS+: " << PGSScore.val() << std::endl;
             if (ABScore.val() > PGSScore.val()) {
                 moveVec.clear();
@@ -119,7 +124,7 @@ void GAB::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>
                 GameState copy2(state);
                 currentScriptData.calculateMoves(_playerID, movesPGS, copy2, moveVec);
             }
-             * */
+            
 
 
         }

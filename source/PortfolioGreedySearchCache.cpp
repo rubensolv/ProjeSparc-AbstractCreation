@@ -11,7 +11,7 @@ PortfolioGreedySearchCache::PortfolioGreedySearchCache(const IDType & player, co
 , _timeLimit(timeLimit) {
     _playerScriptPortfolio.push_back(PlayerModels::NOKDPS);
     _playerScriptPortfolio.push_back(PlayerModels::KiterDPS);
-    _playerScriptPortfolio.push_back(PlayerModels::Cluster);
+    //_playerScriptPortfolio.push_back(PlayerModels::Cluster);
 
     cacheLTD2 = new CacheSimpleString();
     _qtdPlayoutIgnorar = 0;

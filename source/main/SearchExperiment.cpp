@@ -557,6 +557,15 @@ void SearchExperiment::addPlayer(const std::string & line)
         
         players[playerID].push_back(PlayerPtr(new GAB(playerID, numUnits, controlAbstractionID))); 
     }
+        else if (playerModelID == PlayerModels::GUS)				
+    { 
+        int numUnits(0);
+        std::string controlAbstractionID;
+        iss >> numUnits;
+        iss >> controlAbstractionID;
+        
+        players[playerID].push_back(PlayerPtr(new GUS(playerID, numUnits, controlAbstractionID))); 
+    }
         else if (playerModelID == PlayerModels::GABCache)				
     { 
         int numUnits(0);
