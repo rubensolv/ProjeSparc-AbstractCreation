@@ -566,6 +566,24 @@ void SearchExperiment::addPlayer(const std::string & line)
         
         players[playerID].push_back(PlayerPtr(new GUS(playerID, numUnits, controlAbstractionID))); 
     }
+        else if (playerModelID == PlayerModels::EUS)				
+    { 
+        int numUnits(0);
+        std::string controlAbstractionID;
+        iss >> numUnits;
+        iss >> controlAbstractionID;
+        
+        players[playerID].push_back(PlayerPtr(new EUS(playerID, numUnits, controlAbstractionID))); 
+    }
+        else if (playerModelID == PlayerModels::SUS)				
+    { 
+        int numUnits(0);
+        std::string controlAbstractionID;
+        iss >> numUnits;
+        iss >> controlAbstractionID;
+        
+        players[playerID].push_back(PlayerPtr(new SUS(playerID, numUnits, controlAbstractionID))); 
+    }
         else if (playerModelID == PlayerModels::GABCache)				
     { 
         int numUnits(0);

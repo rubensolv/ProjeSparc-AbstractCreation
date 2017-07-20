@@ -29,18 +29,12 @@ namespace SparCraft {
 
     class AlphaBetaSearchAbstract;
     class PortfolioOnlineEvolutionLimit;
-    
-    struct lex_compare_PoeL {
+    class UnifiedSearch;
 
-        bool operator()(const Unit & lUn, const Unit & rUn) const {
-            return lUn < rUn;
-        }
-    }; 
-    
-
-    class ABPOELimit : public Player {
+    class EUS : public Player {
         AlphaBetaSearchAbstract * alphaBeta;
         PortfolioOnlineEvolutionLimit * poe;
+        UnifiedSearch * us;
         std::map<Unit, std::vector<Unit>> _unAttack;
         std::vector<Unit> _UnReut;
         std::set<Unit> _unitAbsAB;
@@ -48,13 +42,13 @@ namespace SparCraft {
         int numUnits;
         ManagerAbstraction * manager;
     public:
-        ABPOELimit(const IDType & playerID);
-        ABPOELimit(const IDType & playerID, int numUnitsAB, std::string controlAbstraction);
-        ~ABPOELimit();
+        EUS(const IDType & playerID);
+        EUS(const IDType & playerID, int numUnitsAB, std::string controlAbstraction);
+        ~EUS();
         void getMoves(GameState & state, const MoveArray & moves, std::vector<Action> & moveVec);
 
         IDType getType() {
-            return PlayerModels::ABPOELimit;
+            return PlayerModels::EUS;
         }
         void listaOrdenada(const IDType & playerID, const Unit & unidade, GameState & state, std::vector<Unit> & unidades);
         void listaOrdenadaForMoves(const IDType & playerID, const Unit & unidade, GameState & state, std::vector<Unit> & unidades, const MoveArray & moves);
@@ -89,6 +83,9 @@ namespace SparCraft {
         
         //métodos utilização das classes de gestão de unidades
         void iniciarClasseAbstracao(std::string controlAbstraction);
+        
+        //método temp para comparar jogadas
+        StateEvalScore eval(std::vector<Action> moveVec, GameState& state);
         
     };
 }

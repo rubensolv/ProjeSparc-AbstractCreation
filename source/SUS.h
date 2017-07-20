@@ -22,6 +22,7 @@
 #include "ManagerFartherEnemy.h"
 #include "ManagerMoreDPS.h"
 #include "ManagerLessDPS.h"
+#include "UnifiedSearch.h"
 
 class TranspositionTable;
 
@@ -30,10 +31,12 @@ namespace SparCraft {
     class AlphaBetaSearchAbstractSAB;
     class AdaptableStratifiedPolicySearchLimit;   
     class CacheSimpleString;    
+    class UnifiedSearch;
 
-    class SAB : public Player {
+    class SUS : public Player {
         AlphaBetaSearchAbstractSAB * alphaBeta;
         AdaptableStratifiedPolicySearchLimit * pgs;
+        UnifiedSearch * us;
         std::map<Unit, std::vector<Unit>> _unAttack;
         std::vector<Unit> _UnReut;
         std::set<Unit> _unitAbsAB;
@@ -41,13 +44,13 @@ namespace SparCraft {
         int numUnits;
         ManagerAbstraction * manager;
     public:
-        SAB(const IDType & playerID);
-        SAB(const IDType & playerID, int numUnitsAB, std::string controlAbstraction);
-        ~SAB();
+        SUS(const IDType & playerID);
+        SUS(const IDType & playerID, int numUnitsAB, std::string controlAbstraction);
+        ~SUS();
         void getMoves(GameState & state, const MoveArray & moves, std::vector<Action> & moveVec);
 
         IDType getType() {
-            return PlayerModels::SAB;
+            return PlayerModels::SUS;
         }
         void listaOrdenada(const IDType & playerID, const Unit & unidade, GameState & state, std::vector<Unit> & unidades);
         void listaOrdenadaForMoves(const IDType & playerID, const Unit & unidade, GameState & state, std::vector<Unit> & unidades, const MoveArray & moves);

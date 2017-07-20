@@ -117,7 +117,7 @@ namespace SparCraft
             AdaptablePGS, AdaptablePGSPlusCache, PortfolioGreedySearchDavePlus, PortfolioGreedySearchDavePlusShort,
             PortfolioGreedySearchPlusShort, PortfolioGreedySearchDaveCache, PortfolioGreedySearchDaveLongCache,
             PortfolioGreedySearchLongCache, AdaptablePGSPlusDaveCache, StratifiedPolicySearchCache, GABCache, EABCache,
-            SSSCache, AdaptableStratifiedPolicySearchLimit, SSSLimitCache, SAB, SABCache, None, Size
+            SSSCache, AdaptableStratifiedPolicySearchLimit, SSSLimitCache, SAB, SABCache, EUS, SUS, None, Size
         };
 
         static void init() {
@@ -160,6 +160,8 @@ namespace SparCraft
             setData(GenerationClass, "GenerationClass");
             setData(GAB, "GAB");
             setData(GUS, "GUS");
+            setData(EUS, "EUS");
+            setData(SUS, "SUS");
             setData(GABCache, "GABCache");
             setData(EABCache, "EABCache");
             setData(SABCache, "SABCache");

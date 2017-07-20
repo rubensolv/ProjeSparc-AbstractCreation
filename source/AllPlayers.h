@@ -46,6 +46,8 @@
 #include "GenerationClass.h"
 #include "GAB.h"
 #include "GUS.h"
+#include "EUS.h"
+#include "SUS.h"
 #include "GABCache.h"
 #include "EABCache.h"
 #include "SABCache.h"
