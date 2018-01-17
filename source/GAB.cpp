@@ -25,6 +25,9 @@ GAB::~GAB() {
 }
 
 void GAB::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>& moveVec) {
+    if(unitsInMoves(state, moves)){
+        totalSteps++; //remover
+    }
     Timer t;
     t.start();
     moveVec.clear();
@@ -92,6 +95,9 @@ void GAB::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>
         currentScriptData.calculateMoves(_playerID, movesPGS, copy, moveVec);
 
         if (unitsInMoves(state, moves) and ((40 - ms) > 4)) {
+            totalSelec++; // remover
+            tempoTotal += (40 - ms); // remover
+            
             //Executo o AB
             std::set<IDType> unitAbsAB;
             for (auto & un : _unitAbsAB) {
@@ -155,6 +161,13 @@ for(auto & ac : moveVecPgs){
 std::cout<<"************* FIM GenerationClass PGS **************"<<std::endl;
 std::cout<<"##################################################"<<std::endl;
      */
+    
+    std::cout<<"##################################################"<<std::endl;
+    std::cout<<"Total de jogadas: "<< totalSteps<<std::endl;
+    std::cout<<"Total AB: "<< totalSelec <<std::endl;
+    std::cout<<"Total Tempo: "<< tempoTotal <<std::endl;
+    std::cout<<"Total Media tempo: "<< tempoTotal/(float)totalSteps <<std::endl;
+    std::cout<<"##################################################"<<std::endl;
 
 }
 

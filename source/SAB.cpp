@@ -26,6 +26,9 @@ SAB::~SAB() {
 }
 
 void SAB::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>& moveVec) {
+    if(unitsInMoves(state, moves)){
+        totalSteps++; //remover
+    }
     //std::cout << "************* INICIO SAB  **************" << std::endl;
     Timer t;
     t.start();
@@ -65,6 +68,8 @@ void SAB::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>
 
     if (unitsInMoves(state, moves) and ((40 - ms) > 4) //and (state.numUnits(_playerID) <= numUnits)
             ) {
+        totalSelec++; // remover
+        tempoTotal += (40 - ms); // remover
         //Executo o AB
         std::set<IDType> unitAbsAB;
         for (auto & un : _unitAbsAB) {
@@ -125,6 +130,12 @@ std::cout<<"************* FIM GenerationClass PGS **************"<<std::endl;
 std::cout<<"##################################################"<<std::endl;
      */
 
+    std::cout<<"##################################################"<<std::endl;
+    std::cout<<"Total de jogadas: "<< totalSteps<<std::endl;
+    std::cout<<"Total AB: "<< totalSelec <<std::endl;
+    std::cout<<"Total Tempo: "<< tempoTotal <<std::endl;
+    std::cout<<"Total Media tempo: "<< tempoTotal/(float)totalSteps <<std::endl;
+    std::cout<<"##################################################"<<std::endl;
 }
 
 StateEvalScore SAB::eval(std::vector<Action> moveVec, GameState& state) {

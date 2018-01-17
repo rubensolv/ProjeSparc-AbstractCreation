@@ -39,6 +39,11 @@ namespace SparCraft {
         TimeType lastTime;
         int numUnits;
         ManagerAbstraction * manager;
+        
+        //pode ser removido
+        int totalSteps =0;
+        int totalSelec =0;
+        TimeType tempoTotal = 0;
     public:
         GAB(const IDType & playerID);
         GAB(const IDType & playerID, int numUnitsAB, std::string controlAbstraction);

@@ -10,8 +10,8 @@
 #include <stdlib.h>
 #include "Player.h"
 #include "AlphaBetaSearchParameters.hpp"
-#include "AlphaBetaSearchAbstractSAB.h"
-#include "AdaptableStratifiedPolicySearchLimit.h"
+#include "AlphaBetaSearchSimetric.h"
+#include "AdaptableStratifiedPolicySearchLimitSim.h"
 #include "ManagerAbstraction.h"
 #include "ManagerRandom.h"
 #include "ManagerClosest.h"
@@ -27,13 +27,13 @@ class TranspositionTable;
 
 namespace SparCraft {
 
-    class AlphaBetaSearchAbstractSAB;
-    class AdaptableStratifiedPolicySearchLimit;   
+    class AlphaBetaSearchSimetric;
+    class AdaptableStratifiedPolicySearchLimitSim;   
     class CacheSimpleString;    
 
-    class SAB : public Player {
-        AlphaBetaSearchAbstractSAB * alphaBeta;
-        AdaptableStratifiedPolicySearchLimit * pgs;
+    class SABSim : public Player {
+        AlphaBetaSearchSimetric * alphaBeta;
+        AdaptableStratifiedPolicySearchLimitSim * pgs;
         std::map<Unit, std::vector<Unit>> _unAttack;
         std::vector<Unit> _UnReut;
         std::set<Unit> _unitAbsAB;
@@ -41,13 +41,13 @@ namespace SparCraft {
         int numUnits;
         ManagerAbstraction * manager;
     public:
-        SAB(const IDType & playerID);
-        SAB(const IDType & playerID, int numUnitsAB, std::string controlAbstraction);
-        ~SAB();
+        SABSim(const IDType & playerID);
+        SABSim(const IDType & playerID, int numUnitsAB, std::string controlAbstraction);
+        ~SABSim();
         void getMoves(GameState & state, const MoveArray & moves, std::vector<Action> & moveVec);
 
         IDType getType() {
-            return PlayerModels::SAB;
+            return PlayerModels::SABSim;
         }
         void listaOrdenada(const IDType & playerID, const Unit & unidade, GameState & state, std::vector<Unit> & unidades);
         void listaOrdenadaForMoves(const IDType & playerID, const Unit & unidade, GameState & state, std::vector<Unit> & unidades, const MoveArray & moves);

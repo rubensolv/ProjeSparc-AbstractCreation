@@ -6,7 +6,7 @@ using namespace SparCraft;
 ABPGSSimetrico::ABPGSSimetrico(const IDType& playerID) {
     _playerID = playerID;
     iniciarAlphaBeta();
-    pgs = new PortfolioGreedySearchNoTime(_playerID, PlayerModels::NOKDPS, 1, 0, 40);
+    pgs = new PortfolioGreedySearchNoTimeSim(_playerID, PlayerModels::NOKDPS, 1, 0, 40);
     lastTime = 0;
     numUnits = 7;
     manager = new ManagerMoreDPS(_playerID, numUnits);
@@ -15,7 +15,7 @@ ABPGSSimetrico::ABPGSSimetrico(const IDType& playerID) {
 ABPGSSimetrico::ABPGSSimetrico(const IDType& playerID, int numUnitsAB , std::string controlAbstraction) {
     _playerID = playerID;
     iniciarAlphaBeta();
-    pgs = new PortfolioGreedySearchNoTime(_playerID, PlayerModels::NOKDPS, 1, 0, 40);
+    pgs = new PortfolioGreedySearchNoTimeSim(_playerID, PlayerModels::NOKDPS, 1, 0, 40);
     lastTime = 0;
     numUnits = numUnitsAB;
     iniciarClasseAbstracao(controlAbstraction);

@@ -11,7 +11,7 @@
 #include "Player.h"
 #include "AlphaBetaSearchParameters.hpp"
 #include "AlphaBetaSearchSimetric.h"
-#include "PortfolioGreedySearchNoTime.h"
+#include "PortfolioGreedySearchNoTimeSim.h"
 #include "ManagerAbstraction.h"
 #include "ManagerRandom.h"
 #include "ManagerClosest.h"
@@ -28,7 +28,7 @@ class TranspositionTable;
 namespace SparCraft {
 
     class AlphaBetaSearchSimetric;
-    class PortfolioGreedySearchNoTime;
+    class PortfolioGreedySearchNoTimeSim;
     
     struct lex_sim {
 
@@ -40,7 +40,7 @@ namespace SparCraft {
 
     class ABPGSSimetrico : public Player {
         AlphaBetaSearchSimetric * alphaBeta;
-        PortfolioGreedySearchNoTime * pgs;
+        PortfolioGreedySearchNoTimeSim * pgs;
         std::map<Unit, std::vector<Unit>> _unAttack;
         std::vector<Unit> _UnReut;
         std::set<Unit> _unitAbsAB;

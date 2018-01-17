@@ -602,6 +602,15 @@ void SearchExperiment::addPlayer(const std::string & line)
         
         players[playerID].push_back(PlayerPtr(new SAB(playerID, numUnits, controlAbstractionID))); 
     }
+        else if (playerModelID == PlayerModels::SABSim)				
+    { 
+        int numUnits(0);
+        std::string controlAbstractionID;
+        iss >> numUnits;
+        iss >> controlAbstractionID;
+        
+        players[playerID].push_back(PlayerPtr(new SABSim(playerID, numUnits, controlAbstractionID))); 
+    }
         else if (playerModelID == PlayerModels::SABCache)				
     { 
         int numUnits(0);

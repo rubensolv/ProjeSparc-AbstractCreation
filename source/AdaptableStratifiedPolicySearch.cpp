@@ -13,8 +13,10 @@ AdaptableStratifiedPolicySearch::AdaptableStratifiedPolicySearch(const IDType & 
 	_playerScriptPortfolio.push_back(PlayerModels::NOKDPS);
 	_playerScriptPortfolio.push_back(PlayerModels::KiterDPS);
 	//_playerScriptPortfolio.push_back(PlayerModels::Cluster);
-//	_playerScriptPortfolio.push_back(PlayerModels::Kiter_NOKDPS);
-//	_playerScriptPortfolio.push_back(PlayerModels::MoveBackward);
+	_playerScriptPortfolio.push_back(PlayerModels::Kiter_NOKDPS);
+	_playerScriptPortfolio.push_back(PlayerModels::MoveBackward);
+        _playerScriptPortfolio.push_back(PlayerModels::AttackWeakest);
+        _playerScriptPortfolio.push_back(PlayerModels::AttackClosest);
 }
 
 std::vector<Action> AdaptableStratifiedPolicySearch::search(const IDType & player, const GameState & state)

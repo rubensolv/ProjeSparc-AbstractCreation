@@ -52,6 +52,7 @@
 #include "EABCache.h"
 #include "SABCache.h"
 #include "SAB.h"
+#include "SABSim.h"
 #include "DovePlayerAlpha.h"
 #include "DovePlayerAlphaTran.h"
 #include "DovePlayerBeta.h"

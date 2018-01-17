@@ -1,8 +1,8 @@
-#include "AdaptableStratifiedPolicySearchLimit.h"
+#include "AdaptableStratifiedPolicySearchLimitSim.h"
 
 using namespace SparCraft;
 
-AdaptableStratifiedPolicySearchLimit::AdaptableStratifiedPolicySearchLimit(const IDType & player, const IDType & enemyScript, const size_t & iter, const size_t & responses, const size_t & timeLimit)
+AdaptableStratifiedPolicySearchLimitSim::AdaptableStratifiedPolicySearchLimitSim(const IDType & player, const IDType & enemyScript, const size_t & iter, const size_t & responses, const size_t & timeLimit)
 	: _player(player)
 	, _enemyScript(enemyScript)
 	, _iterations(iter)
@@ -13,11 +13,13 @@ AdaptableStratifiedPolicySearchLimit::AdaptableStratifiedPolicySearchLimit(const
 	_playerScriptPortfolio.push_back(PlayerModels::NOKDPS);
 	_playerScriptPortfolio.push_back(PlayerModels::KiterDPS);
 	//_playerScriptPortfolio.push_back(PlayerModels::Cluster);
-//	_playerScriptPortfolio.push_back(PlayerModels::Kiter_NOKDPS);
-//	_playerScriptPortfolio.push_back(PlayerModels::MoveBackward);
+	_playerScriptPortfolio.push_back(PlayerModels::Kiter_NOKDPS);
+	_playerScriptPortfolio.push_back(PlayerModels::MoveBackward);
+        _playerScriptPortfolio.push_back(PlayerModels::AttackWeakest);
+        _playerScriptPortfolio.push_back(PlayerModels::AttackClosest);
 }
 
-std::vector<Action> AdaptableStratifiedPolicySearchLimit::search(const IDType & player, const GameState & state, StateEvalScore & bestScore)
+std::vector<Action> AdaptableStratifiedPolicySearchLimitSim::search(const IDType & player, const GameState & state, StateEvalScore & bestScore)
 {
     Timer t;
     t.start();
@@ -63,7 +65,7 @@ std::vector<Action> AdaptableStratifiedPolicySearchLimit::search(const IDType & 
     return moveVec;
 }
 
-UnitScriptData AdaptableStratifiedPolicySearchLimit::searchForScripts(const IDType& player, const GameState& state, StateEvalScore& bestScore) {
+UnitScriptData AdaptableStratifiedPolicySearchLimitSim::searchForScripts(const IDType& player, const GameState& state, StateEvalScore& bestScore) {
     Timer t;
     t.start();
 
@@ -109,7 +111,7 @@ UnitScriptData AdaptableStratifiedPolicySearchLimit::searchForScripts(const IDTy
 }
 
 
-bool AdaptableStratifiedPolicySearchLimit::doStratifiedSearch(const IDType & player, const GameState & state, UnitScriptData & currentScriptData, Timer & timer, int & numberTypes, double & timePlayouts, StateEvalScore & bestScore)
+bool AdaptableStratifiedPolicySearchLimitSim::doStratifiedSearch(const IDType & player, const GameState & state, UnitScriptData & currentScriptData, Timer & timer, int & numberTypes, double & timePlayouts, StateEvalScore & bestScore)
 {
 	int numberEvals = 0;
 
@@ -203,7 +205,7 @@ bool AdaptableStratifiedPolicySearchLimit::doStratifiedSearch(const IDType & pla
     return hasFinishedIteration;
 }
 
-IDType AdaptableStratifiedPolicySearchLimit::calculateInitialSeed(const IDType & player, const GameState & state)
+IDType AdaptableStratifiedPolicySearchLimitSim::calculateInitialSeed(const IDType & player, const GameState & state)
 {
     IDType bestScript;
     StateEvalScore bestScriptScore;
@@ -239,7 +241,7 @@ IDType AdaptableStratifiedPolicySearchLimit::calculateInitialSeed(const IDType &
     return bestScript;
 }
 
-StateEvalScore AdaptableStratifiedPolicySearchLimit::eval(const IDType & player, const GameState & state, UnitScriptData & playerScriptsChosen)
+StateEvalScore AdaptableStratifiedPolicySearchLimitSim::eval(const IDType & player, const GameState & state, UnitScriptData & playerScriptsChosen)
 {
     const IDType enemyPlayer(state.getEnemy(player));
     Game g(state, 100);
@@ -247,7 +249,7 @@ StateEvalScore AdaptableStratifiedPolicySearchLimit::eval(const IDType & player,
     return g.playLimitedIndividualScripts(player, playerScriptsChosen, 4);
 }
 
-void  AdaptableStratifiedPolicySearchLimit::setAllScripts(const IDType & player, const GameState & state, UnitScriptData & data, const IDType & script)
+void  AdaptableStratifiedPolicySearchLimitSim::setAllScripts(const IDType & player, const GameState & state, UnitScriptData & data, const IDType & script)
 {
     for (size_t unitIndex(0); unitIndex < state.numUnits(player); ++unitIndex)
     {

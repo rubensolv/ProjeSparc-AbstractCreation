@@ -13,7 +13,7 @@ namespace SparCraft
 	
 typedef	std::shared_ptr<Player> PlayerPtr;
 
-class PortfolioGreedySearchNoTime
+class PortfolioGreedySearchNoTimeSim
 {
 protected:
 	
@@ -34,7 +34,7 @@ protected:
 
 public:
 
-    PortfolioGreedySearchNoTime(const IDType & player, const IDType & enemyScript, const size_t & iter, const size_t & responses, const size_t & timeLimit);
+    PortfolioGreedySearchNoTimeSim(const IDType & player, const IDType & enemyScript, const size_t & iter, const size_t & responses, const size_t & timeLimit);
     std::vector<Action> search(const IDType & player, const GameState & state, StateEvalScore & bestScore);
     UnitScriptData searchForScripts(const IDType & player, const GameState & state, StateEvalScore & bestScore);
 };

@@ -10,8 +10,12 @@ PortfolioGreedySearch::PortfolioGreedySearch(const IDType & player, const IDType
 , _totalEvals(0)
 , _timeLimit(timeLimit) {
     _playerScriptPortfolio.push_back(PlayerModels::NOKDPS);
-    _playerScriptPortfolio.push_back(PlayerModels::KiterDPS);
-    //_playerScriptPortfolio.push_back(PlayerModels::Cluster);
+	_playerScriptPortfolio.push_back(PlayerModels::KiterDPS);
+	//_playerScriptPortfolio.push_back(PlayerModels::Cluster);
+	_playerScriptPortfolio.push_back(PlayerModels::Kiter_NOKDPS);
+	_playerScriptPortfolio.push_back(PlayerModels::MoveBackward);
+        _playerScriptPortfolio.push_back(PlayerModels::AttackWeakest);
+        _playerScriptPortfolio.push_back(PlayerModels::AttackClosest);
 }
 
 UnitScriptData PortfolioGreedySearch::searchForScripts(const IDType & player, const GameState & state) {
