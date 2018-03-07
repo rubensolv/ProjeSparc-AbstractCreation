@@ -65,26 +65,10 @@
 #Player 0 UCT 40 1.6 5000 20 ScriptFirst Playout NOKDPS NOKDPS Alternate None
 #Player 1 UCT 40 1.6 5000 20 ScriptFirst Playout NOKDPS NOKDPS Alternate NOKDPS
 
-# Sample PortfolioGreedySearch Players
+# Sample PortfolioGreedySearch e PortfolioOnlineEvolution Players
 #Player 0 PortfolioGreedySearch 40 NOKDPS 1 0
-#Player 1 PortfolioGreedySearchDavePlus 40 NOKDPS 1 0
-#Player 1 PortfolioGreedySearchPlus 40 NOKDPS 1 0
-#Player 1 PortfolioGreedySearchDavePlus 40 NOKDPS 1 0
-#Player 1 PortfolioGreedySearchDavePlusShort 40 NOKDPS 1 0
-#Player 1 PortfolioGreedySearchPlusShort 40 NOKDPS 1 0
-#Player 0 AdaptablePGS 40 NOKDPS 1 0
-#Player 0 AdaptablePGSPlusCache 40 NOKDPS 1 0
-#Player 0 AdaptablePGSPlusDaveCache 40 NOKDPS 1 0
-#Player 1 ImprovedPortfolioGreedySearch 80 NOKDPS 3 0
-#Player 0 ImprovedPortfolioGreedySearch 40 NOKDPS 1 0
 #Player 0 PortfolioGreedySearch 40 NOKDPS 1 0
 #Player 0 PortfolioOnlineEvolution 40 NOKDPS 1 0
-#Player 0 Player_PGSAA 40 NOKDPS 1 0
-#Player 1 PortfolioGreedySearchCache 40 NOKDPS 1 0
-#Player 1 PortfolioGreedySearchDaveCache 40 NOKDPS 1 0
-#Player 1 PortfolioGreedySearchDaveLongCache 40 NOKDPS 1 0
-#Player 1 PortfolioGreedySearchLongCache 40 NOKDPS 1 0
-#Player 1 PortfolioOnlineEvolutionCache 40 NOKDPS 1 0
 
 #Sample StratifiedPolicySearch Players
 #Player 0 StratifiedPolicySearch 40 NOKDPS 1 0
@@ -94,58 +78,15 @@
 #Player 1 AdaptableStratifiedPolicySearch 40 NOKDPS 1 0 1
 #Player 1 IRStratifiedPolicySearch 40 NOKDPS 1 0
 
-# Sample Scripted Players
-#best config for SSS+
-#Player 0 AlphaBeta 40 0 ScriptFirst Playout NOKDPS NOKDPS Alternate NOKDPS
-
+# Sample GAB Players
 #Method to select units: {Random, Closest, Farther, LessLife, MoreLife, ClosestEnemy, FartherEnemy, MoreDPS, LessDPS}
 Player 0 GAB 4 MoreDPS
-#Player 0 GUS 7 MoreDPS
-#Player 0 EUS 4 MoreLife
-#Player 0 SUS 4 MoreLife
-#Player 0 ABPOELimit 4 MoreLife
-#Player 1 GABCache 7 MoreDPS
-#Player 1 EABCache 4 MoreLife
+#Player 0 GAB 7 Farther
 
-#Player 1 AdaptableStratifiedPolicySearch 40 NOKDPS 1 0 1
-#Player 0 AdaptableStratifiedPolicySearchLimit 40 NOKDPS 1 0 1
-
-#Player 1 SSSLimitCache 40 NOKDPS 1 0 1
-#Player 1 SSSCache 40 NOKDPS 1 0 1
-
-#Player 0 SABCache 7 MoreDPS
+# Sample SAB Players
 Player 1 SAB 4 MoreDPS
-#Player 0 SAB 4 MoreLife
+#Player 0 SAB 3 MoreLife
 #Player 0 SABSim 4 MoreDPS
-
-
-#Player 0 GenerationClass 7
-#Player 0 DovePlayerAlpha
-#Player 0 DovePlayerAlphaTran
-#Player 0 DovePlayerBeta
-# 1 param - define if  POE will use the best script PGS {True, False}
-#Player 0 DovePlayer False
-#Player 0 ABPGSSimetrico 7 LessLife
-#Player 0 ABPOESimetrico 7 Closest
-#Player 0 ABPOESimetricoDeep 7
-#Player 0 ABPOELimitDeep 7
-#Player 0 ABPGSSimetricoDeep 7
-#Player 0 PortfolioGreedySearchDeep 0 NOKDPS 1 0
-#Player 0 PortfolioOnlineEvolutionDeep 0 NOKDPS 1 0
-#Player 0 GenerationClassForMetric 7
-#Player 0 GenerationClassForMetricSample 7
-#Player 0 GenerationClassForMetricClosest 7
-#Player 0 GenerationClassForDeep 7
-#Player 1 GenerationClassForMonit
-#Player 0 ABPOEFixo
-#Player 0 ABPGSPlus
-#Player 1 Kiter
-#Player 0 ABPGSSand
-#Player 0 ABPGSwithRepeatAction
-#Player 0 ABPOELimitWithRepeatAction
-#Player 0 GenerationClassWithClosest
-
-#Teste especiais
 
 
 
