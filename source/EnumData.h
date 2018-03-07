@@ -110,9 +110,8 @@ namespace SparCraft
             IRStratifiedPolicySearch, MoveForward, MoveBackward, ABPGSSand,
             ABPGSPlus, ABPGSwithRepeatAction, PortfolioGreedySearchPlus,
             Player_PGSAA, AbstractScript, ABPGSSimetrico, 
-            GAB, GUS,
-            AdaptablePGS, PortfolioGreedySearchDavePlus, PortfolioGreedySearchDavePlusShort,
-            PortfolioGreedySearchPlusShort, AdaptableStratifiedPolicySearchLimit, SAB, SABSim, EUS, SUS, None, Size
+            GAB, AdaptablePGS, PortfolioGreedySearchDavePlus, PortfolioGreedySearchDavePlusShort,
+            PortfolioGreedySearchPlusShort, AdaptableStratifiedPolicySearchLimit, SAB, SABSim, None, Size
         };
 
         static void init() {
@@ -144,10 +143,7 @@ namespace SparCraft
             setData(MoveForward, "MoveForward");
             setData(MoveBackward, "MoveBackward");
             //incluída para teste
-            setData(GAB, "GAB");
-            setData(GUS, "GUS");
-            setData(EUS, "EUS");
-            setData(SUS, "SUS");
+            setData(GAB, "GAB");            
             setData(SAB, "SAB");
             setData(SABSim, "SABSim");
             setData(ABPGSSand, "ABPGSSand");
