@@ -108,12 +108,10 @@ namespace SparCraft
             AlphaBeta, AdaptiveBeamAlphaBeta, AttackClosest, Kiter, Random, AttackWeakest, AttackDPS, KiterDPS, NOKDPS, Kiter_NOKDPS, Cluster,
             PortfolioGreedySearch, PortfolioOnlineEvolution, UCT, ImprovedPortfolioGreedySearch, StratifiedPolicySearch, AdaptableStratifiedPolicySearch,
             IRStratifiedPolicySearch, MoveForward, MoveBackward, GenerationClass, ABPGSSand,
-            ABPGSPlus, ABPGSwithRepeatAction, GenerationClassWithClosest, 
+            ABPGSPlus, ABPGSwithRepeatAction, GenerationClassWithClosest, PortfolioGreedySearchPlus,
             GenerationClassForMetric, GenerationClassForMonit, Player_PGSAA, AbstractScript, ABPGSSimetrico, 
-            GenerationClassForMetricClosest, GenerationClassForDeep, ABPGSSimetricoDeep, 
-            PortfolioGreedySearchDeep, PortfolioOnlineEvolutionDeep, ABPOESimetricoDeep, ABPOELimitDeep,
-            PortfolioGreedySearchCache, GenerationClassForMetricSample, PortfolioOnlineEvolutionCache, GAB, GUS,
-            DovePlayerAlpha, DovePlayerAlphaTran,  DovePlayerBeta, DovePlayer, PortfolioGreedySearchPlus,
+            GenerationClassForMetricClosest, PortfolioGreedySearchCache, GenerationClassForMetricSample, 
+            PortfolioOnlineEvolutionCache, GAB, GUS, DovePlayerAlpha, DovePlayerAlphaTran,  DovePlayerBeta, DovePlayer, 
             AdaptablePGS, AdaptablePGSPlusCache, PortfolioGreedySearchDavePlus, PortfolioGreedySearchDavePlusShort,
             PortfolioGreedySearchPlusShort, PortfolioGreedySearchDaveCache, PortfolioGreedySearchDaveLongCache,
             PortfolioGreedySearchLongCache, AdaptablePGSPlusDaveCache, StratifiedPolicySearchCache, GABCache, EABCache,
@@ -176,14 +174,7 @@ namespace SparCraft
             setData(GenerationClassForMetric, "GenerationClassForMetric");
             setData(GenerationClassForMetricSample, "GenerationClassForMetricSample");
             setData(GenerationClassForMetricClosest, "GenerationClassForMetricClosest");
-            //For Deep data
-            setData(GenerationClassForDeep, "GenerationClassForDeep");
-            setData(ABPGSSimetricoDeep, "ABPGSSimetricoDeep");
-            setData(PortfolioGreedySearchDeep, "PortfolioGreedySearchDeep");
-            setData(PortfolioOnlineEvolutionDeep, "PortfolioOnlineEvolutionDeep");
-            setData(ABPOESimetricoDeep, "ABPOESimetricoDeep");
-            setData(ABPOELimitDeep, "ABPOELimitDeep");
-            //
+            
             //For Dovetailing Cache
             setData(DovePlayerAlpha, "DovePlayerAlpha");
             setData(DovePlayerAlphaTran, "DovePlayerAlphaTran");
