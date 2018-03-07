@@ -107,10 +107,10 @@ namespace SparCraft
         enum {
             AlphaBeta, AdaptiveBeamAlphaBeta, AttackClosest, Kiter, Random, AttackWeakest, AttackDPS, KiterDPS, NOKDPS, Kiter_NOKDPS, Cluster,
             PortfolioGreedySearch, PortfolioOnlineEvolution, UCT, ImprovedPortfolioGreedySearch, StratifiedPolicySearch, AdaptableStratifiedPolicySearch,
-            IRStratifiedPolicySearch, MoveForward, MoveBackward, GenerationClass, ABPOEFixo, ABPOELimit, ABPGSSand,
-            ABPGSPlus, ABPGSwithRepeatAction, ABPOELimitWithRepeatAction, GenerationClassWithClosest, 
+            IRStratifiedPolicySearch, MoveForward, MoveBackward, GenerationClass, ABPGSSand,
+            ABPGSPlus, ABPGSwithRepeatAction, GenerationClassWithClosest, 
             GenerationClassForMetric, GenerationClassForMonit, Player_PGSAA, AbstractScript, ABPGSSimetrico, 
-            ABPOESimetrico, GenerationClassForMetricClosest, GenerationClassForDeep, ABPGSSimetricoDeep, 
+            GenerationClassForMetricClosest, GenerationClassForDeep, ABPGSSimetricoDeep, 
             PortfolioGreedySearchDeep, PortfolioOnlineEvolutionDeep, ABPOESimetricoDeep, ABPOELimitDeep,
             PortfolioGreedySearchCache, GenerationClassForMetricSample, PortfolioOnlineEvolutionCache, GAB, GUS,
             DovePlayerAlpha, DovePlayerAlphaTran,  DovePlayerBeta, DovePlayer, PortfolioGreedySearchPlus,
@@ -169,12 +169,9 @@ namespace SparCraft
             setData(SABSim, "SABSim");
             setData(SSSCache, "SSSCache");
             setData(SSSLimitCache, "SSSLimitCache");
-            setData(ABPOEFixo, "ABPOEFixo");
-            setData(ABPOELimit, "ABPOELimit");
             setData(ABPGSSand, "ABPGSSand");
             setData(ABPGSPlus, "ABPGSPlus");
             setData(ABPGSwithRepeatAction, "ABPGSwithRepeatAction");
-            setData(ABPOELimitWithRepeatAction, "ABPOELimitWithRepeatAction");
             setData(GenerationClassWithClosest, "GenerationClassWithClosest");
             setData(GenerationClassForMetric, "GenerationClassForMetric");
             setData(GenerationClassForMetricSample, "GenerationClassForMetricSample");
@@ -196,8 +193,7 @@ namespace SparCraft
             setData(GenerationClassForMonit, "GenerationClassForMonit");
             setData(Player_PGSAA, "Player_PGSAA");
             setData(AbstractScript, "AbstractScript");
-            setData(ABPGSSimetrico, "ABPGSSimetrico");
-            setData(ABPOESimetrico, "ABPOESimetrico");
+            setData(ABPGSSimetrico, "ABPGSSimetrico");            
             setData(None, "None");
 
         }

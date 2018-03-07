@@ -620,42 +620,12 @@ void SearchExperiment::addPlayer(const std::string & line)
         
         players[playerID].push_back(PlayerPtr(new SABCache(playerID, numUnits, controlAbstractionID))); 
     }
-        else if (playerModelID == PlayerModels::ABPOESimetrico)				
-    { 
-        int numUnits(0);
-        std::string controlAbstractionID;
-        iss >> numUnits;
-        iss >> controlAbstractionID;
-                
-        players[playerID].push_back(PlayerPtr(new ABPOESimetrico(playerID, numUnits, controlAbstractionID))); 
-    }
-    else if (playerModelID == PlayerModels::ABPOESimetricoDeep)				
-    { 
-        int numUnits(0);
-        iss >> numUnits;
-        
-        players[playerID].push_back(PlayerPtr(new ABPOESimetricoDeep(playerID, numUnits))); 
-    }
     else if (playerModelID == PlayerModels::ABPGSSimetricoDeep)				
     { 
         int numUnits(0);
         iss >> numUnits;
         
         players[playerID].push_back(PlayerPtr(new ABPGSSimetricoDeep(playerID, numUnits))); 
-    }
-    
-        else if (playerModelID == PlayerModels::ABPOEFixo)				
-    { 
-        players[playerID].push_back(PlayerPtr(new ABPOEFixo(playerID)));
-    }
-        else if (playerModelID == PlayerModels::ABPOELimit)				
-    { 
-        int numUnits(0);
-        std::string controlAbstractionID;
-        iss >> numUnits;
-        iss >> controlAbstractionID;
-        
-        players[playerID].push_back(PlayerPtr(new ABPOELimit(playerID, numUnits, controlAbstractionID)));
     }
         else if (playerModelID == PlayerModels::EABCache)				
     { 
@@ -665,13 +635,6 @@ void SearchExperiment::addPlayer(const std::string & line)
         iss >> controlAbstractionID;
         
         players[playerID].push_back(PlayerPtr(new EABCache(playerID, numUnits, controlAbstractionID)));
-    }
-        else if (playerModelID == PlayerModels::ABPOELimitDeep)				
-    { 
-        int numUnits(0);
-        iss >> numUnits;
-        
-        players[playerID].push_back(PlayerPtr(new ABPOELimitDeep(playerID, numUnits)));
     }
         else if (playerModelID == PlayerModels::ABPGSSand)				
     { 
@@ -684,10 +647,6 @@ void SearchExperiment::addPlayer(const std::string & line)
         else if (playerModelID == PlayerModels::ABPGSwithRepeatAction)				
     { 
         players[playerID].push_back(PlayerPtr(new ABPGSwithRepeatAction(playerID)));
-    }
-        else if (playerModelID == PlayerModels::ABPOELimitWithRepeatAction)				
-    { 
-        players[playerID].push_back(PlayerPtr(new ABPOELimitWithRepeatAction(playerID)));
     }
         else if (playerModelID == PlayerModels::GenerationClassWithClosest)				
     { 
