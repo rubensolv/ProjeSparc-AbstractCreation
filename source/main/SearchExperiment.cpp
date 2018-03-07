@@ -514,24 +514,6 @@ void SearchExperiment::addPlayer(const std::string & line)
     { 
         players[playerID].push_back(PlayerPtr(new Player_Random(playerID))); 
     }
-	else if (playerModelID == PlayerModels::DovePlayerAlpha)				
-    { 
-        players[playerID].push_back(PlayerPtr(new DovePlayerAlpha(playerID))); 
-    }
-        else if (playerModelID == PlayerModels::DovePlayerAlphaTran)				
-    { 
-        players[playerID].push_back(PlayerPtr(new DovePlayerAlphaTran(playerID))); 
-    }
-    	else if (playerModelID == PlayerModels::DovePlayerBeta)				
-    { 
-        players[playerID].push_back(PlayerPtr(new DovePlayerBeta(playerID))); 
-    }
-    	else if (playerModelID == PlayerModels::DovePlayer)				
-    { 
-        std::string useScriptPGS;
-        iss >> useScriptPGS;
-        players[playerID].push_back(PlayerPtr(new DovePlayer(playerID, useScriptPGS))); 
-    }
         else if (playerModelID == PlayerModels::ABPGSSimetrico)				
     { 
         int numUnits(0);
@@ -577,15 +559,6 @@ void SearchExperiment::addPlayer(const std::string & line)
         
         players[playerID].push_back(PlayerPtr(new SUS(playerID, numUnits, controlAbstractionID))); 
     }
-        else if (playerModelID == PlayerModels::GABCache)				
-    { 
-        int numUnits(0);
-        std::string controlAbstractionID;
-        iss >> numUnits;
-        iss >> controlAbstractionID;
-        
-        players[playerID].push_back(PlayerPtr(new GABCache(playerID, numUnits, controlAbstractionID))); 
-    }
         else if (playerModelID == PlayerModels::SAB)				
     { 
         int numUnits(0);
@@ -603,24 +576,6 @@ void SearchExperiment::addPlayer(const std::string & line)
         iss >> controlAbstractionID;
         
         players[playerID].push_back(PlayerPtr(new SABSim(playerID, numUnits, controlAbstractionID))); 
-    }
-        else if (playerModelID == PlayerModels::SABCache)				
-    { 
-        int numUnits(0);
-        std::string controlAbstractionID;
-        iss >> numUnits;
-        iss >> controlAbstractionID;
-        
-        players[playerID].push_back(PlayerPtr(new SABCache(playerID, numUnits, controlAbstractionID))); 
-    }
-        else if (playerModelID == PlayerModels::EABCache)				
-    { 
-        int numUnits(0);
-        std::string controlAbstractionID;
-        iss >> numUnits;
-        iss >> controlAbstractionID;
-        
-        players[playerID].push_back(PlayerPtr(new EABCache(playerID, numUnits, controlAbstractionID)));
     }
         else if (playerModelID == PlayerModels::ABPGSSand)				
     { 
@@ -749,119 +704,6 @@ else if (playerModelID == PlayerModels::ImprovedPortfolioGreedySearch)
 
         players[playerID].push_back(PlayerPtr(new Player_PortfolioGreedySearchPlusShort(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit))); 
     }
-    else if (playerModelID == PlayerModels::PortfolioGreedySearchDaveCache)				
-    { 
-        std::string enemyPlayerModel;
-        size_t timeLimit(0);
-        int iterations(1);
-        int responses(0);
-
-        iss >> timeLimit;
-        iss >> enemyPlayerModel;
-        iss >> iterations;
-        iss >> responses;
-
-        players[playerID].push_back(PlayerPtr(new Player_PortfolioGreedySearchDaveCache(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit))); 
-    }
-    else if (playerModelID == PlayerModels::PortfolioGreedySearchDaveLongCache)				
-    { 
-        std::string enemyPlayerModel;
-        size_t timeLimit(0);
-        int iterations(1);
-        int responses(0);
-
-        iss >> timeLimit;
-        iss >> enemyPlayerModel;
-        iss >> iterations;
-        iss >> responses;
-
-        players[playerID].push_back(PlayerPtr(new Player_PortfolioGreedySearchDaveLongCache(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit))); 
-    }
-    else if (playerModelID == PlayerModels::PortfolioGreedySearchLongCache)				
-    { 
-        std::string enemyPlayerModel;
-        size_t timeLimit(0);
-        int iterations(1);
-        int responses(0);
-
-        iss >> timeLimit;
-        iss >> enemyPlayerModel;
-        iss >> iterations;
-        iss >> responses;
-
-        players[playerID].push_back(PlayerPtr(new Player_PortfolioGreedySearchLongCache(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit))); 
-    }
-    else if (playerModelID == PlayerModels::AdaptablePGS)				
-    { 
-        std::string enemyPlayerModel;
-        size_t timeLimit(0);
-        int iterations(1);
-        int responses(0);
-
-        iss >> timeLimit;
-        iss >> enemyPlayerModel;
-        iss >> iterations;
-        iss >> responses;
-
-        players[playerID].push_back(PlayerPtr(new Player_AdaptablePGS(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit))); 
-    }
-    else if (playerModelID == PlayerModels::AdaptablePGSPlusCache)				
-    { 
-        std::string enemyPlayerModel;
-        size_t timeLimit(0);
-        int iterations(1);
-        int responses(0);
-
-        iss >> timeLimit;
-        iss >> enemyPlayerModel;
-        iss >> iterations;
-        iss >> responses;
-
-        players[playerID].push_back(PlayerPtr(new Player_AdaptablePGSCache(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit))); 
-    }
-    else if (playerModelID == PlayerModels::AdaptablePGSPlusDaveCache)				
-    { 
-        std::string enemyPlayerModel;
-        size_t timeLimit(0);
-        int iterations(1);
-        int responses(0);
-
-        iss >> timeLimit;
-        iss >> enemyPlayerModel;
-        iss >> iterations;
-        iss >> responses;
-
-        players[playerID].push_back(PlayerPtr(new Player_AdaptablePGSDaveCache(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit))); 
-    }
-    
-    else if (playerModelID == PlayerModels::PortfolioGreedySearchCache)				
-    { 
-        std::string enemyPlayerModel;
-        size_t timeLimit(0);
-        int iterations(1);
-        int responses(0);
-
-        iss >> timeLimit;
-        iss >> enemyPlayerModel;
-        iss >> iterations;
-        iss >> responses;
-
-        players[playerID].push_back(PlayerPtr(new Player_PortfolioGreedySearchCache(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit))); 
-    }
-    else if (playerModelID == PlayerModels::PortfolioOnlineEvolutionCache)				
-    { 
-        std::string enemyPlayerModel;
-        size_t timeLimit(0);
-        int iterations(1);
-        int responses(0);
-
-        iss >> timeLimit;
-        iss >> enemyPlayerModel;
-        iss >> iterations;
-        iss >> responses;
-
-        players[playerID].push_back(PlayerPtr(new Player_PortfolioOnlineEvolutionCache(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit))); 
-    }
     else if (playerModelID == PlayerModels::IRStratifiedPolicySearch)
     {
         std::string enemyPlayerModel;
@@ -904,34 +746,6 @@ else if (playerModelID == PlayerModels::ImprovedPortfolioGreedySearch)
 
         players[playerID].push_back(PlayerPtr(new Player_AdaptableStratifiedPolicySearchLimit(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit)));
     }
-    else if (playerModelID == PlayerModels::SSSCache)
-    {
-        std::string enemyPlayerModel;
-        size_t timeLimit(0);
-        int iterations(1);
-        int responses(0);
-
-        iss >> timeLimit;
-        iss >> enemyPlayerModel;
-        iss >> iterations;
-        iss >> responses;
-
-        players[playerID].push_back(PlayerPtr(new Player_SSSCache(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit)));
-    }
-    else if (playerModelID == PlayerModels::SSSLimitCache)
-    {
-        std::string enemyPlayerModel;
-        size_t timeLimit(0);
-        int iterations(1);
-        int responses(0);
-
-        iss >> timeLimit;
-        iss >> enemyPlayerModel;
-        iss >> iterations;
-        iss >> responses;
-
-        players[playerID].push_back(PlayerPtr(new Player_SSSLimitCache(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit)));
-    }
     else if (playerModelID == PlayerModels::StratifiedPolicySearch)
     {
         std::string enemyPlayerModel;
@@ -947,22 +761,6 @@ else if (playerModelID == PlayerModels::ImprovedPortfolioGreedySearch)
         iss >> hpLevelDiv;
 
         players[playerID].push_back(PlayerPtr(new Player_StratifiedPolicySearch(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit, hpLevelDiv)));
-    }
-    else if (playerModelID == PlayerModels::StratifiedPolicySearchCache)
-    {
-        std::string enemyPlayerModel;
-        size_t timeLimit(0);
-        size_t hpLevelDiv(1);
-        int iterations(1);
-        int responses(0);
-
-        iss >> timeLimit;
-        iss >> enemyPlayerModel;
-        iss >> iterations;
-        iss >> responses;
-        iss >> hpLevelDiv;
-
-        players[playerID].push_back(PlayerPtr(new Player_StratifiedPolicySearchCache(playerID, PlayerModels::getID(enemyPlayerModel), iterations, responses, timeLimit, hpLevelDiv)));
     }
     else if (playerModelID == PlayerModels::AdaptiveBeamAlphaBeta)
     {

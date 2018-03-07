@@ -109,12 +109,10 @@ namespace SparCraft
             PortfolioGreedySearch, PortfolioOnlineEvolution, UCT, ImprovedPortfolioGreedySearch, StratifiedPolicySearch, AdaptableStratifiedPolicySearch,
             IRStratifiedPolicySearch, MoveForward, MoveBackward, ABPGSSand,
             ABPGSPlus, ABPGSwithRepeatAction, PortfolioGreedySearchPlus,
-            Player_PGSAA, AbstractScript, ABPGSSimetrico, PortfolioGreedySearchCache, 
-            PortfolioOnlineEvolutionCache, GAB, GUS, DovePlayerAlpha, DovePlayerAlphaTran,  DovePlayerBeta, DovePlayer, 
-            AdaptablePGS, AdaptablePGSPlusCache, PortfolioGreedySearchDavePlus, PortfolioGreedySearchDavePlusShort,
-            PortfolioGreedySearchPlusShort, PortfolioGreedySearchDaveCache, PortfolioGreedySearchDaveLongCache,
-            PortfolioGreedySearchLongCache, AdaptablePGSPlusDaveCache, StratifiedPolicySearchCache, GABCache, EABCache,
-            SSSCache, AdaptableStratifiedPolicySearchLimit, SSSLimitCache, SAB, SABSim, SABCache, EUS, SUS, None, Size
+            Player_PGSAA, AbstractScript, ABPGSSimetrico, 
+            GAB, GUS,
+            AdaptablePGS, PortfolioGreedySearchDavePlus, PortfolioGreedySearchDavePlusShort,
+            PortfolioGreedySearchPlusShort, AdaptableStratifiedPolicySearchLimit, SAB, SABSim, EUS, SUS, None, Size
         };
 
         static void init() {
@@ -137,17 +135,9 @@ namespace SparCraft
             setData(PortfolioGreedySearchDavePlusShort, "PortfolioGreedySearchDavePlusShort");
             setData(PortfolioGreedySearchPlusShort, "PortfolioGreedySearchPlusShort");
             setData(AdaptablePGS, "AdaptablePGS");
-            setData(AdaptablePGSPlusCache, "AdaptablePGSPlusCache");
-            setData(AdaptablePGSPlusDaveCache, "AdaptablePGSPlusDaveCache");
             setData(PortfolioOnlineEvolution, "PortfolioOnlineEvolution");
-            setData(PortfolioOnlineEvolutionCache, "PortfolioOnlineEvolutionCache");
-            setData(PortfolioGreedySearchCache, "PortfolioGreedySearchCache");
-            setData(PortfolioGreedySearchDaveCache, "PortfolioGreedySearchDaveCache");
-            setData(PortfolioGreedySearchLongCache, "PortfolioGreedySearchLongCache");
-            setData(PortfolioGreedySearchDaveLongCache, "PortfolioGreedySearchDaveLongCache");
             setData(UCT, "UCT");
-            setData(StratifiedPolicySearch, "StratifiedPolicySearch");
-            setData(StratifiedPolicySearchCache, "StratifiedPolicySearchCache");
+            setData(StratifiedPolicySearch, "StratifiedPolicySearch");            
             setData(AdaptableStratifiedPolicySearch, "AdaptableStratifiedPolicySearch");
             setData(AdaptableStratifiedPolicySearchLimit, "AdaptableStratifiedPolicySearchLimit");
             setData(IRStratifiedPolicySearch, "IRStratifiedPolicySearch");
@@ -158,22 +148,12 @@ namespace SparCraft
             setData(GUS, "GUS");
             setData(EUS, "EUS");
             setData(SUS, "SUS");
-            setData(GABCache, "GABCache");
-            setData(EABCache, "EABCache");
-            setData(SABCache, "SABCache");
             setData(SAB, "SAB");
             setData(SABSim, "SABSim");
-            setData(SSSCache, "SSSCache");
-            setData(SSSLimitCache, "SSSLimitCache");
             setData(ABPGSSand, "ABPGSSand");
             setData(ABPGSPlus, "ABPGSPlus");
             setData(ABPGSwithRepeatAction, "ABPGSwithRepeatAction");
             
-            //For Dovetailing Cache
-            setData(DovePlayerAlpha, "DovePlayerAlpha");
-            setData(DovePlayerAlphaTran, "DovePlayerAlphaTran");
-            setData(DovePlayerBeta, "DovePlayerBeta");
-            setData(DovePlayer, "DovePlayer");
             //
             setData(Player_PGSAA, "Player_PGSAA");
             setData(AbstractScript, "AbstractScript");

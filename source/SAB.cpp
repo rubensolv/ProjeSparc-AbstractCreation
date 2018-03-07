@@ -128,7 +128,7 @@ for(auto & ac : moveVecPgs){
 }
 std::cout<<"************* FIM GenerationClass PGS **************"<<std::endl;
 std::cout<<"##################################################"<<std::endl;
-     */
+     
 
     std::cout<<"##################################################"<<std::endl;
     std::cout<<"Total de jogadas: "<< totalSteps<<std::endl;
@@ -136,6 +136,7 @@ std::cout<<"##################################################"<<std::endl;
     std::cout<<"Total Tempo: "<< tempoTotal <<std::endl;
     std::cout<<"Total Media tempo: "<< tempoTotal/(float)totalSteps <<std::endl;
     std::cout<<"##################################################"<<std::endl;
+    */
 }
 
 StateEvalScore SAB::eval(std::vector<Action> moveVec, GameState& state) {
