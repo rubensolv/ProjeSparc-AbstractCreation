@@ -107,10 +107,9 @@ namespace SparCraft
         enum {
             AlphaBeta, AdaptiveBeamAlphaBeta, AttackClosest, Kiter, Random, AttackWeakest, AttackDPS, KiterDPS, NOKDPS, Kiter_NOKDPS, Cluster,
             PortfolioGreedySearch, PortfolioOnlineEvolution, UCT, ImprovedPortfolioGreedySearch, StratifiedPolicySearch, AdaptableStratifiedPolicySearch,
-            IRStratifiedPolicySearch, MoveForward, MoveBackward, ABPGSSand,
-            ABPGSPlus, ABPGSwithRepeatAction, PortfolioGreedySearchPlus,
-            Player_PGSAA, AbstractScript, ABPGSSimetrico, 
-            GAB, AdaptablePGS, PortfolioGreedySearchDavePlus, PortfolioGreedySearchDavePlusShort,
+            IRStratifiedPolicySearch, MoveForward, MoveBackward, 
+            PortfolioGreedySearchPlus, Player_PGSAA, AbstractScript, ABPGSSimetrico, 
+            GAB, PortfolioGreedySearchDavePlus, PortfolioGreedySearchDavePlusShort,
             PortfolioGreedySearchPlusShort, AdaptableStratifiedPolicySearchLimit, SAB, SABSim, None, Size
         };
 
@@ -133,7 +132,6 @@ namespace SparCraft
             setData(PortfolioGreedySearchDavePlus, "PortfolioGreedySearchDavePlus");
             setData(PortfolioGreedySearchDavePlusShort, "PortfolioGreedySearchDavePlusShort");
             setData(PortfolioGreedySearchPlusShort, "PortfolioGreedySearchPlusShort");
-            setData(AdaptablePGS, "AdaptablePGS");
             setData(PortfolioOnlineEvolution, "PortfolioOnlineEvolution");
             setData(UCT, "UCT");
             setData(StratifiedPolicySearch, "StratifiedPolicySearch");            
@@ -146,9 +144,6 @@ namespace SparCraft
             setData(GAB, "GAB");            
             setData(SAB, "SAB");
             setData(SABSim, "SABSim");
-            setData(ABPGSSand, "ABPGSSand");
-            setData(ABPGSPlus, "ABPGSPlus");
-            setData(ABPGSwithRepeatAction, "ABPGSwithRepeatAction");
             
             //
             setData(Player_PGSAA, "Player_PGSAA");

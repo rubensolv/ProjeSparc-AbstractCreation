@@ -550,18 +550,6 @@ void SearchExperiment::addPlayer(const std::string & line)
         
         players[playerID].push_back(PlayerPtr(new SABSim(playerID, numUnits, controlAbstractionID))); 
     }
-        else if (playerModelID == PlayerModels::ABPGSSand)				
-    { 
-        players[playerID].push_back(PlayerPtr(new ABPGSSand(playerID)));
-    }
-        else if (playerModelID == PlayerModels::ABPGSPlus)				
-    { 
-        players[playerID].push_back(PlayerPtr(new ABPGSPlus(playerID)));
-    }
-        else if (playerModelID == PlayerModels::ABPGSwithRepeatAction)				
-    { 
-        players[playerID].push_back(PlayerPtr(new ABPGSwithRepeatAction(playerID)));
-    }
         
 else if (playerModelID == PlayerModels::ImprovedPortfolioGreedySearch)
     {
