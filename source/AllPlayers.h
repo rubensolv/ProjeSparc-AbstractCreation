@@ -32,7 +32,6 @@
 #include "Player_Random.h"
 #include "GAB.h"
 #include "SAB.h"
-#include "SABSim.h"
 #include "Player_PGSAA.h"
 #include "AbstractScript.h"
 #include "ABPGSSimetrico.h"
