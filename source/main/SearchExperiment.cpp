@@ -541,13 +541,6 @@ void SearchExperiment::addPlayer(const std::string & line)
         
         players[playerID].push_back(PlayerPtr(new ABPGSSimetrico(playerID, numUnits, controlAbstractionID))); 
     }
-        else if (playerModelID == PlayerModels::GenerationClass)				
-    { 
-        int numUnits(0);
-        iss >> numUnits;
-        
-        players[playerID].push_back(PlayerPtr(new GenerationClass(playerID, numUnits))); 
-    }
         else if (playerModelID == PlayerModels::GAB)				
     { 
         int numUnits(0);
@@ -641,32 +634,7 @@ void SearchExperiment::addPlayer(const std::string & line)
     { 
         players[playerID].push_back(PlayerPtr(new ABPGSwithRepeatAction(playerID)));
     }
-        else if (playerModelID == PlayerModels::GenerationClassWithClosest)				
-    { 
-        players[playerID].push_back(PlayerPtr(new GenerationClassWithClosest(playerID)));
-    }
-        else if (playerModelID == PlayerModels::GenerationClassForMetricSample)				
-    { 
-        int numUnits(0);
-        iss >> numUnits;
-        players[playerID].push_back(PlayerPtr(new GenerationClassForMetricSample(playerID, numUnits)));
-    }
-        else if (playerModelID == PlayerModels::GenerationClassForMetric)				
-    { 
-        int numUnits(0);
-        iss >> numUnits;
-        players[playerID].push_back(PlayerPtr(new GenerationClassForMetric(playerID, numUnits)));
-    }
-        else if (playerModelID == PlayerModels::GenerationClassForMetricClosest)				
-    { 
-        int numUnits(0);
-        iss >> numUnits;
-        players[playerID].push_back(PlayerPtr(new GenerationClassForMetricClosest(playerID, numUnits)));
-    }
-        else if (playerModelID == PlayerModels::GenerationClassForMonit)				
-    { 
-        players[playerID].push_back(PlayerPtr(new GenerationClassForMonit(playerID)));
-    }
+        
 else if (playerModelID == PlayerModels::ImprovedPortfolioGreedySearch)
     {
         std::string enemyPlayerModel;
