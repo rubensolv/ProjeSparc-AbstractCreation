@@ -169,6 +169,8 @@ void Unit::takeAttack(const Unit & attacker)
 {
     PlayerWeapon    weapon(attacker.getWeapon(*this));
     HealthType      damage(weapon.GetDamageBase());
+    //damage counted for abstraction selection regardless of armor types.
+    g_overall_damage+=damage;
 
     // calculate the damage based on armor and damage types
     damage = std::max((int)((damage-getArmor()) * weapon.GetDamageMultiplier(getSize())), 2);
@@ -177,9 +179,13 @@ void Unit::takeAttack(const Unit & attacker)
     if (attacker.type() == BWAPI::UnitTypes::Protoss_Zealot || attacker.type() == BWAPI::UnitTypes::Terran_Firebat)
     {
         damage *= 2;
+	g_overall_damage*=damage;
     }
 
     //std::cout << type().getName() << " took " << (int)attacker.player() << " " << damage << "\n";
+    //Not counting damage over current HP, that is simply a waste.  It would be better if we could use that damage somewhere else.
+    g_overall_damage=std::min(g_overall_damage,_currentHP);
+
 
     updateCurrentHP(_currentHP - damage);
 }

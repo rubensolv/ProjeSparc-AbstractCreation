@@ -135,6 +135,8 @@ void GAB::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>
 
         }
     }
+    long long unsigned nodes = alphaBeta->getResults().nodesExpanded;double msi = t.getElapsedTimeInMilliSec();
+    std::cout<<"GAB::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>& moveVec),nodes:"<<nodes<<",ms:"<<msi<<",PlayerID:"<<static_cast<unsigned>(_playerID)<<",maxDepthReached:"<<alphaBeta->getResults().maxDepthReached<<",g_overall_damage:"<<g_overall_damage<<std::endl;
 
     /*
 std::cout << "************* INICIO GenerationClass  **************" << std::endl;

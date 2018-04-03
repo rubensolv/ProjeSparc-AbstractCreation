@@ -47,9 +47,15 @@ void AlphaBetaSearchAbstractSAB::doSearchWithMoves(GameState& initialState, Unit
     AlphaBetaValue val;
 
     if (_params.searchMethod() == SearchMethods::AlphaBeta) {
+      //std::cout<<" AlphaBetaSearchAbstractSAB::doSearchWithMoves, hola alphaBetaWithPGS"<<std::endl;
         val = alphaBetaWithPGS(initialState, _params.maxDepth(), Players::Player_None, NULL, alpha, beta, UnitScriptData, unitsAB, _playerID);
     } else if (_params.searchMethod() == SearchMethods::IDAlphaBeta) {
+      //std::cout<<" AlphaBetaSearchAbstractSAB::doSearchWithMoves, hola IDAalphaBetaWithPGS"<<std::endl;
         val = IDAlphaBetaWithPGS(initialState, _params.maxDepth(), UnitScriptData, unitsAB, _playerID);
+    }
+    else{
+      std::cout<<" AlphaBetaSearchAbstractSAB::doSearchWithMoves, no search"<<std::endl;
+
     }
 
     bestScore = val.score();
@@ -59,6 +65,7 @@ void AlphaBetaSearchAbstractSAB::doSearchWithMoves(GameState& initialState, Unit
 }
 
 AlphaBetaValue AlphaBetaSearchAbstractSAB::IDAlphaBetaWithPGS(GameState & initialState, const size_t & maxDepth, UnitScriptData & UnitScriptData, std::set<IDType> & unitsAB, IDType _playerID) {
+  //std::cout<<"Hola to AlphaBetaValue AlphaBetaSearchAbstractSAB::IDAlphaBetaWithPGS,maxDepth:"<<maxDepth<<std::endl;
     AlphaBetaValue val;
     _results.nodesExpanded = 0;
     _results.maxDepthReached = 0;
@@ -73,6 +80,7 @@ AlphaBetaValue AlphaBetaSearchAbstractSAB::IDAlphaBetaWithPGS(GameState & initia
 
         // perform ID-AB until time-out
         try {
+	  //std::cout<<"AlphaBetaSearchAbstractSAB::IDAlphaBetaWithPGS, perform ID-AB until time-out"<<std::endl;
             val = alphaBetaWithPGS(initialState, d, Players::Player_None, NULL, alpha, beta, UnitScriptData, unitsAB, _playerID);
             
             _results.bestMoves = val.abMove().moveVec();
@@ -80,9 +88,12 @@ AlphaBetaValue AlphaBetaSearchAbstractSAB::IDAlphaBetaWithPGS(GameState & initia
         }        // if we do time-out
         catch (int e) {
             e += 1;
+	      
+	    std::cout<<"AlphaBetaSearchAbstractSAB::IDAlphaBetaWithPGS, timed-out"<<std::endl;
 
             // if we didn't finish the first depth, set the move to the best script move
             if (d == 1) {
+	      std::cout<<"AlphaBetaSearchAbstractSAB::IDAlphaBetaWithPGS, timed-out at d==1 so script move"<<std::endl;
                 MoveArray moves;
                 const IDType playerToMove(getPlayerToMove(initialState, 1, Players::Player_None, true));
                 initialState.generateMoves(moves, playerToMove);
@@ -98,7 +109,12 @@ AlphaBetaValue AlphaBetaSearchAbstractSAB::IDAlphaBetaWithPGS(GameState & initia
         //printTTResults();
         //fprintf(stdout, "%s %8d %9d %9d %13.4lf %14llu %12d %12llu %15.2lf\n", "IDA", d, val.score().val(), (int)val.abMove().moveTuple(), ms, nodes, (int)_TT->numFound(), getResults().ttcuts, 1000*nodes/ms);
     }
-
+	
+    long long unsigned nodes = _results.nodesExpanded;double ms = _searchTimer.getElapsedTimeInMilliSec();std::cout<<"AlphaBetaSearchAbstractSAB::IDAlphaBetaWithPGS, units:"<<unitsAB.size()<< ",nodes:"<<nodes<<",ms:"<<ms<<",PlayerID:"<<static_cast<unsigned>(_playerID)<<",maxDepthReached:"<<_results.maxDepthReached<<",g_overall_damage:"<<g_overall_damage<<",ControlledUnits:";
+    for(auto it : unitsAB){
+      std::cout<<static_cast<unsigned>(it)<<",";
+    }
+    std::cout<<std::endl;
     return val;
 }
 
@@ -369,6 +385,7 @@ const bool AlphaBetaSearchAbstractSAB::isTranspositionLookupState(GameState & st
 }
 
 AlphaBetaValue AlphaBetaSearchAbstractSAB::alphaBetaWithPGS(GameState & state, size_t depth, const IDType lastPlayerToMove, std::vector<Action> * prevSimMove, StateEvalScore alpha, StateEvalScore beta, UnitScriptData & unitScriptData, std::set<IDType> & unitsAB, IDType _playerID) {
+  //std::cout<<"hola alphaBetaWithPGS"<<std::endl;
     // update statistics
     _results.nodesExpanded++;
 

@@ -5,6 +5,7 @@ char SPARCRAFT_LOGFILE[100] { "sparcraft_error_log.txt" };
 
 namespace SparCraft
 {
+  HealthType g_overall_damage=0;
     namespace System
     {
         void FatalError(const std::string & errorMessage)

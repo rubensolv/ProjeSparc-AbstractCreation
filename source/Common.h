@@ -19,6 +19,7 @@ extern char SPARCRAFT_LOGFILE[100];
 
 namespace SparCraft
 {
+  extern HealthType g_overall_damage;
 	// constants for search
 	namespace Constants
 	{

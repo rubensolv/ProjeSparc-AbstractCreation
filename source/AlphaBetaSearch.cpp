@@ -7,7 +7,7 @@ AlphaBetaSearch::AlphaBetaSearch(const AlphaBetaSearchParameters & params, TTPtr
 	, _currentRootDepth(0)
 	, _TT(TT ? TT : TTPtr(new TranspositionTable()))
 {
-	//std::cout << "Inside Alpha Beta" << std::endl;
+	std::cout << "Inside Alpha Beta" << std::endl;
     for (size_t p(0); p<Constants::Num_Players; ++p)
     {
         // set ordered move script player objects
@@ -43,7 +43,7 @@ void AlphaBetaSearch::doSearch(GameState & initialState)
 	}
 
 	_results.timeElapsed = _searchTimer.getElapsedTimeInMilliSec();
-	//printf("\nMove chosen in %lf ms\n", _results.timeElapsed);
+	printf("\nMove chosen in %lf ms\n", _results.timeElapsed);
 }
 
 AlphaBetaValue AlphaBetaSearch::IDAlphaBeta(GameState & initialState, const size_t & maxDepth)
@@ -95,7 +95,8 @@ AlphaBetaValue AlphaBetaSearch::IDAlphaBeta(GameState & initialState, const size
 	}
 
 //	const IDType playerToMove(getPlayerToMove(initialState, 1, Players::Player_None, true));
-//	printf("Maximum depth reached %lu for player %d \n", _results.maxDepthReached, playerToMove);
+	//printf("Maximum depth reached %lu for player %d \n", _results.maxDepthReached, playerToMove);
+	printf("Maximum depth reached %lu\n", _results.maxDepthReached);
 	return val;
 }
 

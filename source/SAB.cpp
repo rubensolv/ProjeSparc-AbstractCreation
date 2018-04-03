@@ -5,17 +5,21 @@ using namespace SparCraft;
 SAB::SAB(const IDType& playerID) {
     _playerID = playerID;
     iniciarAlphaBeta();
-    pgs = new AdaptableStratifiedPolicySearchLimit(_playerID, PlayerModels::NOKDPS, 1, 0, 40);
+    pgs = new AdaptableStratifiedPolicySearchLimit(_playerID, PlayerModels::NOKDPS, 1, 0, 400);
     lastTime = 0;
-    numUnits = 7;
+    //numUnits = 7;
+    numUnits = 30;
+    std::cout<<"SAB constructor1, numUnits:"<<numUnits<<std::endl;
 }
 
 SAB::SAB(const IDType& playerID, int numUnitsAB, std::string controlAbstraction) {
     _playerID = playerID;
     iniciarAlphaBeta();
-    pgs = new AdaptableStratifiedPolicySearchLimit(_playerID, PlayerModels::NOKDPS, 1, 0, 40);
+    pgs = new AdaptableStratifiedPolicySearchLimit(_playerID, PlayerModels::NOKDPS, 1, 0, 400);
     lastTime = 0;
     numUnits = numUnitsAB;
+    numUnits=60;
+    std::cout<<"numUnits overwritten to"<<numUnits<<" from :"<<numUnitsAB<<std::endl;
     iniciarClasseAbstracao(controlAbstraction);
 }
 
@@ -57,8 +61,10 @@ void SAB::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>
     //std::cout << " Tempo parcial de execução do SSS Cache " << ms << std::endl;
 
     //controlUnitsForAB(state, moves);
+    //std::cout<<"calling controlUnitsFoAB"<<std::endl;
     manager->controlUnitsForAB(state, moves, _unitAbsAB);
 
+    std::cout<<"_unitAbsAB.size:"<<_unitAbsAB.size()<<std::endl;
     //std::vector<Action> moveVecPgs, movecAB;
 
     MoveArray movesPGS;
@@ -66,19 +72,52 @@ void SAB::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>
     GameState copy(state);
     currentScriptData.calculateMoves(_playerID, movesPGS, copy, moveVec);
 
-    if (unitsInMoves(state, moves) and ((40 - ms) > 4) //and (state.numUnits(_playerID) <= numUnits)
+    if (unitsInMoves(state, moves) and ((400 - ms) > 4) //and (state.numUnits(_playerID) <= numUnits)
             ) {
         totalSelec++; // remover
-        tempoTotal += (40 - ms); // remover
+        tempoTotal += (400 - ms); // remover
         //Executo o AB
         std::set<IDType> unitAbsAB;
-        for (auto & un : _unitAbsAB) {
+	//std::vector<std::set<IDType> > unitsAbsABvec;
+        /*for (auto & un : _unitAbsAB) {
             unitAbsAB.insert(un.ID());
-        }
-        //std::cout << " Tempo total para SAB AB " << 40 - ms << std::endl;
+	    unitsAbsABvec.push_back(unitAbsAB);
+            unitAbsAB.clear();
+        }*/
+	std::cout<<"unitsAbsAB:"<<unitAbsAB.size()<<",tempoTotal:"<<tempoTotal<<std::endl;
+	//std::cout << " Tempo total para SAB AB " << 400 - ms << std::endl;
         //std::cout << " Tempo parcial de execução do SSS Cache antes do AB " << t.getElapsedTimeInMilliSec() << std::endl;
-        alphaBeta->setLimitTime(40 - ms);
-        alphaBeta->doSearchWithMoves(state, currentScriptData, unitAbsAB, _playerID, ABScore);
+	int max_overall_damage=0;
+	IDType best_unit=_unitAbsAB.begin()->ID();
+	std::pair<std::set<IDType>::iterator,bool> ret;
+	bool found_improvement=true;
+	size_t iterations=0;
+	unitAbsAB.clear();
+	//Calculate baseline first, no controlable units:
+	alphaBeta->doSearchWithMoves(state, currentScriptData, unitAbsAB, _playerID, ABScore);
+	std::cout<<"all units scripted,new max_damage:"<<g_overall_damage<<std::endl;g_overall_damage=0;
+	while(found_improvement){
+	  std::cout<<"iteration:"<<iterations++<<std::endl;
+	  found_improvement=false;
+	  for (auto & un : _unitAbsAB) {
+	    ret=unitAbsAB.insert(un.ID());
+	    if(!ret.second){//on second and future iterations, insert might fail, this is quite inneficient code, JUST FOR TESTING IDEA NOT FOR FINAL IMPLEMENTATION!!!
+	      continue;
+	    }
+	    alphaBeta->setLimitTime(iterations*400 - ms);
+	    //std::cout<<"calling alphaBeta->doSearchWithMoves"<<std::endl;
+	    alphaBeta->doSearchWithMoves(state, currentScriptData, unitAbsAB, _playerID, ABScore);
+	    if(g_overall_damage>max_overall_damage){
+	      max_overall_damage=g_overall_damage;
+	      best_unit=un.ID();
+	      std::cout<<"found better candidate_unit:"<<static_cast<unsigned>(best_unit)<<",new max_damage:"<<max_overall_damage<<std::endl;
+	      found_improvement=true;
+	    }
+	    unitAbsAB.erase(ret.first);//constant performance but insert still logarithmic, should switch to vectors for unitsAbsAB if possible
+	  }
+	  ret=unitAbsAB.insert(best_unit);//adding better unit-id from iteration
+	}
+	exit(1);
         //movecAB.assign(alphaBeta->getResults().bestMoves.begin(), alphaBeta->getResults().bestMoves.end());
         //std::cout << " Tempo parcial de execução do SSS Cache após AB " << t.getElapsedTimeInMilliSec() << std::endl;
         //std::cout << "SAB AB: " << ABScore.val() << " SSSCache: " << PGSScore.val() << std::endl;
@@ -198,14 +237,17 @@ void SAB::controlUnitsForAB(GameState & state, const MoveArray & moves) {
             tempUnitAbsAB.insert(un);
         }
     }
+    std::cout<<"tempUnitAbsAB.size():"<<tempUnitAbsAB.size()<<",";
     _unitAbsAB = tempUnitAbsAB;
 
-    if (state.numUnits(_playerID) <= numUnits) {
+    //if (state.numUnits(_playerID) <= numUnits) {
+    if (true){//HACK to add all units
         _unitAbsAB.clear();
         //adiciono todas as unidades para serem controladas pelo AB
         for (int u(0); u < state.numUnits(_playerID); ++u) {
             _unitAbsAB.insert(state.getUnit(_playerID, u));
         }
+	std::cout<<"_unitAbsAB.size():"<<_unitAbsAB.size()<<std::endl;
     } else if (!(_unitAbsAB.size() == numUnits)) {
 
         if ((state.numUnits(_playerID) < 2 or moves.numUnits() < 2)
@@ -575,7 +617,7 @@ void SAB::iniciarAlphaBeta() {
 
     // set the parameters from the options in the file
     params.setMaxPlayer(_playerID);
-    params.setTimeLimit(40);
+    params.setTimeLimit(400);
     params.setMaxChildren(0);
     params.setMoveOrderingMethod(moveOrderingID);
     params.setEvalMethod(evalMethodID);
