@@ -5,7 +5,7 @@ using namespace SparCraft;
 ManagerMoreDPS::ManagerMoreDPS(const IDType & playerID, int numUnits) {
     this->_playerID = playerID;
     this->numUnits = numUnits;
-    srand(time(NULL));
+    srand(1);
 }
 
 ManagerMoreDPS::~ManagerMoreDPS() {
@@ -23,7 +23,9 @@ void ManagerMoreDPS::controlUnitsForAB(GameState& state, const MoveArray& moves,
     
     //printUnits(unidades);
     
-    if (state.numUnits(_playerID) <= numUnits) {
+    if (state.numUnits(_playerID) <= numUnits){
+    //if (state.numUnits(_playerID) <= 1) 
+    //if (true)
         unidades.clear();
         //adiciono todas as unidades para serem controladas pelo AB
         for (int u(0); u < state.numUnits(_playerID); ++u) {

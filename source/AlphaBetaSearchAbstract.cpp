@@ -45,21 +45,26 @@ void AlphaBetaSearchAbstract::doSearchWithMoves(GameState& initialState, UnitScr
     AlphaBetaValue val;
 
     if (_params.searchMethod() == SearchMethods::AlphaBeta) {
+      std::cout<<"hola AlphaBeta"<<std::endl;
         val = alphaBetaWithPGS(initialState, _params.maxDepth(), Players::Player_None, NULL, alpha, beta, UnitScriptData, unitsAB, _playerID);
     } else if (_params.searchMethod() == SearchMethods::IDAlphaBeta) {
+	std::cout<<"hola IDAAlphaBeta"<<std::endl;
         val = IDAlphaBetaWithPGS(initialState, _params.maxDepth(), UnitScriptData, unitsAB, _playerID);
     }
 
     bestScore = val.score();
-    //std::cout << "LTD2 Alpha-beta: " << val.score().val() << std::endl;
+    std::cout << "LTD2 Alpha-beta: " << val.score().val() << std::endl;
 
     _results.timeElapsed = _searchTimer.getElapsedTimeInMilliSec();
+    std::cout<<"\ttime_elapsed:"<<_results.timeElapsed<<",maxDepth:"<<_results.maxDepthReached<<std::endl;
 }
 
 AlphaBetaValue AlphaBetaSearchAbstract::IDAlphaBetaWithPGS(GameState & initialState, const size_t & maxDepth, UnitScriptData & UnitScriptData, std::set<IDType> & unitsAB, IDType _playerID) {
     AlphaBetaValue val;
     _results.nodesExpanded = 0;
     _results.maxDepthReached = 0;
+	  
+    std::cout<<"hola to AlphaBetaSearchAbstract::IDAlphaBetaWithPGS, maxDepth:"<<maxDepth<<std::endl;
     
     for (size_t d(1); d < maxDepth; ++d) {
 
@@ -71,6 +76,7 @@ AlphaBetaValue AlphaBetaSearchAbstract::IDAlphaBetaWithPGS(GameState & initialSt
 
         // perform ID-AB until time-out
         try {
+	  std::cout<<"AlphaBetaSearchAbstract::IDAlphaBetaWithPGS, perform ID-AB until time-out"<<std::endl;
             val = alphaBetaWithPGS(initialState, d, Players::Player_None, NULL, alpha, beta, UnitScriptData, unitsAB, _playerID);
             
             _results.bestMoves = val.abMove().moveVec();
@@ -86,6 +92,7 @@ AlphaBetaValue AlphaBetaSearchAbstract::IDAlphaBetaWithPGS(GameState & initialSt
                 initialState.generateMoves(moves, playerToMove);
                 PlayerPtr bestScript(new Player_NOKDPS(playerToMove));
                 bestScript->getMoves(initialState, moves, _results.bestMoves);
+		std::cout<<"AlphaBetaSearchAbstract::IDAlphaBetaWithPGS, hola to ID-AB timed out without moves at d==1"<<std::endl;
             }
 
             break;
@@ -137,6 +144,7 @@ AlphaBetaValue AlphaBetaSearchAbstract::IDAlphaBeta(GameState & initialState, co
 
         long long unsigned nodes = _results.nodesExpanded;
         double ms = _searchTimer.getElapsedTimeInMilliSec();
+	std::cout<<"IDAlphaBeta time_ms:"<<ms<<",maxDepthReached:"<<_results.maxDepthReached<<std::endl;
 
         //printTTResults();
         //fprintf(stdout, "%s %8d %9d %9d %13.4lf %14llu %12d %12llu %15.2lf\n", "IDA", d, val.score().val(), (int)val.abMove().moveTuple(), ms, nodes, (int)_TT->numFound(), getResults().ttcuts, 1000*nodes/ms);
@@ -386,6 +394,8 @@ AlphaBetaValue AlphaBetaSearchAbstract::alphaBetaWithPGS(GameState & state, size
 
     // is the player to move the max player?
     bool maxPlayer = (playerToMove == _params.maxPlayer());
+    std::cout<<"\t\tPlayer:"<< static_cast<unsigned>(playerToMove)<<",g_overall_damage:"<<g_overall_damage<<",depth:"<<depth<<std::endl;
+    g_overall_damage=0;
 
     // Transposition Table Logic
     TTLookupValue TTval;
@@ -447,9 +457,11 @@ AlphaBetaValue AlphaBetaSearchAbstract::alphaBetaWithPGS(GameState & state, size
     std::vector<Action> moveVec;
 
     // for each child
+    unsigned child_counter=0;
     while (getNextMoveVec(playerToMove, moves, moveNumber, TTval, depth, moveVec)) {
         // the value of the recursive AB we will call
         AlphaBetaValue val;
+	std::cout<<"\tWorking on child:"<<child_counter++;
 
         // generate the child state
         GameState child(state);
@@ -476,6 +488,7 @@ AlphaBetaValue AlphaBetaSearchAbstract::alphaBetaWithPGS(GameState & state, size
 
             // get the alpha beta value
             val = alphaBetaWithPGS(child, depth - 1, playerToMove, NULL, alpha, beta, unitScriptData, unitsAB, _playerID);
+	    std::cout<<",val.score:"<<val.score().val()<<",moves:"<<val.score().numMoves()<<std::endl;
         }
 
         // set alpha or beta based on maxplayer
@@ -510,6 +523,7 @@ AlphaBetaValue AlphaBetaSearchAbstract::alphaBetaWithPGS(GameState & state, size
 
         moveNumber++;
     }
+    std::cout<<"Finished working on children:"<<child_counter<<std::endl;
 
     if (isTranspositionLookupState(state, prevSimMove)) {
         TTsave(state, maxPlayer ? alpha : beta, alpha, beta, depth, playerToMove, bestMove, bestSimResponse);

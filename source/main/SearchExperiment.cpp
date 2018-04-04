@@ -6,7 +6,7 @@ SearchExperiment::SearchExperiment(const std::string & configFile)
     : map(NULL)
     , showDisplay(false)
     , appendTimeStamp(true)
-	, rand(0, std::numeric_limits<int>::max(), 0)
+	, rand(0, std::numeric_limits<int>::max(), 1)
 {
     configFileSmall = getBaseFilename(configFile);
     map = new Map(40, 22);
@@ -538,6 +538,7 @@ void SearchExperiment::addPlayer(const std::string & line)
         std::string controlAbstractionID;
         iss >> numUnits;
         iss >> controlAbstractionID;
+	std::cout<<"numUnits:"<<numUnits<<std::endl;
         
         players[playerID].push_back(PlayerPtr(new SAB(playerID, numUnits, controlAbstractionID))); 
     }
@@ -972,6 +973,7 @@ Position SearchExperiment::getRandomPosition(const PositionType & xlimit, const 
 {
 	int x = xlimit - (rand.nextInt() % (2*xlimit));
 	int y = ylimit - (rand.nextInt() % (2*ylimit));
+	std::cout<<"New Random Position:"<<x<<","<<y<<std::endl;
 
 	return Position(x, y);
 }
@@ -1072,6 +1074,9 @@ void SearchExperiment::addSeparatedState(  std::vector<std::string> & unitTypes,
 	GameState state;
     GameState state2;
 
+    std::cout<<"HACK:INITIALIZING RANDOM SEEDS"<<std::endl;
+    srand(1);
+
     // for each unit type to add
     for (size_t i(0); i<unitTypes.size(); ++i)
     {
@@ -1091,6 +1096,8 @@ void SearchExperiment::addSeparatedState(  std::vector<std::string> & unitTypes,
             Position r((rand.nextInt() % (2*xLimit)) - xLimit, (rand.nextInt() % (2*yLimit)) - yLimit);
             Position u1(cx1 + r.x(), cy1 + r.y());
             Position u2(cx2 - r.x(), cy2 - r.y());
+
+	    std::cout<<"Pos:"<<u<<",u1_x:"<<u1.x()<<",u1_y:"<<u1.y()<<std::endl;
 
             state.addUnit(type, Players::Player_One, u1);
             state.addUnit(type, Players::Player_Two, u2);
@@ -1201,6 +1208,8 @@ void SearchExperiment::runExperiment()
 	{
         states[state].setMap(map);
     }
+    //Santiago
+    cout<<"number of states:"<<states.size()<<endl;
 
 	#ifdef USING_VISUALIZATION_LIBRARIES
 		GUI * disp = NULL;
@@ -1218,12 +1227,15 @@ void SearchExperiment::runExperiment()
 	// for each player one player
 	for (size_t p1Player(0); p1Player < players[0].size(); p1Player++)
 	{
+	  cout<<"p1Player:"<<p1Player<<endl;
 		// for each player two player
 		for (size_t p2Player(0); p2Player < players[1].size(); p2Player++)
 		{
+		  cout<<"p2Player:"<<p2Player<<endl;
 			// for each state we care about
 			for (size_t state(0); state < states.size(); ++state)
 			{
+			  cout<<"state:"<<state<<endl;
                 char buf[255];
                 fprintf(stderr, "%s  ", configFileSmall.c_str());
 				fprintf(stderr, "%5d %5d %5d %5d", (int)p1Player, (int)p2Player, (int)state, (int)states[state].numUnits(Players::Player_One));
@@ -1271,9 +1283,13 @@ void SearchExperiment::runExperiment()
                 }
                 else
                 {
+			SparCraft::Timer  MetaSearchTimer;
+			cout<<"calling g.play,time:"<<MetaSearchTimer.getElapsedTimeInMilliSec()<<endl;
                 	g.play();
-                	//printf("Finished in %d rounds \n", g.getRounds());
+                	printf("Finished in %d rounds \n", g.getRounds());
+			cout<<"timer before gameEval:"<<MetaSearchTimer.getElapsedTimeInMilliSec()<<endl;
                		gameEval = g.getState().eval(Players::Player_One, SparCraft::EvaluationMethods::LTD2).val();
+			cout<<"timer after gameEval:"<<MetaSearchTimer.getElapsedTimeInMilliSec()<<endl;exit(1);
                 }
 
                 numGames[p1Player][p2Player]++;

@@ -5,7 +5,7 @@ using namespace SparCraft;
 SAB::SAB(const IDType& playerID) {
     _playerID = playerID;
     iniciarAlphaBeta();
-    pgs = new AdaptableStratifiedPolicySearchLimit(_playerID, PlayerModels::NOKDPS, 1, 0, 400);
+    pgs = new AdaptableStratifiedPolicySearchLimit(_playerID, PlayerModels::NOKDPS, 1, 0, 40);
     lastTime = 0;
     //numUnits = 7;
     numUnits = 30;
@@ -15,7 +15,7 @@ SAB::SAB(const IDType& playerID) {
 SAB::SAB(const IDType& playerID, int numUnitsAB, std::string controlAbstraction) {
     _playerID = playerID;
     iniciarAlphaBeta();
-    pgs = new AdaptableStratifiedPolicySearchLimit(_playerID, PlayerModels::NOKDPS, 1, 0, 400);
+    pgs = new AdaptableStratifiedPolicySearchLimit(_playerID, PlayerModels::NOKDPS, 1, 0, 40);
     lastTime = 0;
     numUnits = numUnitsAB;
     numUnits=60;
@@ -72,10 +72,10 @@ void SAB::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>
     GameState copy(state);
     currentScriptData.calculateMoves(_playerID, movesPGS, copy, moveVec);
 
-    if (unitsInMoves(state, moves) and ((400 - ms) > 4) //and (state.numUnits(_playerID) <= numUnits)
+    if (unitsInMoves(state, moves) and ((40 - ms) > 4) //and (state.numUnits(_playerID) <= numUnits)
             ) {
         totalSelec++; // remover
-        tempoTotal += (400 - ms); // remover
+        tempoTotal += (40 - ms); // remover
         //Executo o AB
         std::set<IDType> unitAbsAB;
 	//std::vector<std::set<IDType> > unitsAbsABvec;
@@ -85,7 +85,7 @@ void SAB::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>
             unitAbsAB.clear();
         }*/
 	std::cout<<"unitsAbsAB:"<<unitAbsAB.size()<<",tempoTotal:"<<tempoTotal<<std::endl;
-	//std::cout << " Tempo total para SAB AB " << 400 - ms << std::endl;
+	//std::cout << " Tempo total para SAB AB " << 40 - ms << std::endl;
         //std::cout << " Tempo parcial de execução do SSS Cache antes do AB " << t.getElapsedTimeInMilliSec() << std::endl;
 	int max_overall_damage=0;
 	IDType best_unit=_unitAbsAB.begin()->ID();
@@ -104,7 +104,7 @@ void SAB::getMoves(GameState& state, const MoveArray& moves, std::vector<Action>
 	    if(!ret.second){//on second and future iterations, insert might fail, this is quite inneficient code, JUST FOR TESTING IDEA NOT FOR FINAL IMPLEMENTATION!!!
 	      continue;
 	    }
-	    alphaBeta->setLimitTime(iterations*400 - ms);
+	    alphaBeta->setLimitTime(iterations*40 - ms);
 	    //std::cout<<"calling alphaBeta->doSearchWithMoves"<<std::endl;
 	    alphaBeta->doSearchWithMoves(state, currentScriptData, unitAbsAB, _playerID, ABScore);
 	    if(g_overall_damage>max_overall_damage){
@@ -617,7 +617,7 @@ void SAB::iniciarAlphaBeta() {
 
     // set the parameters from the options in the file
     params.setMaxPlayer(_playerID);
-    params.setTimeLimit(400);
+    params.setTimeLimit(40);
     params.setMaxChildren(0);
     params.setMoveOrderingMethod(moveOrderingID);
     params.setEvalMethod(evalMethodID);

@@ -21,7 +21,8 @@ public:
         , _min(min)
         , _max(max)
 	{
-		srand(seed);
+	  _seed=1;
+	  srand(_seed);
 	}
 
 	int nextInt()

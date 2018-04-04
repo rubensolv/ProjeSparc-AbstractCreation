@@ -5,7 +5,7 @@ using namespace SparCraft;
 ManagerClosestEnemy::ManagerClosestEnemy(const IDType & playerID, int numUnits) {
     this->_playerID = playerID;
     this->numUnits = numUnits;
-    srand(time(NULL));
+    srand(1);
 }
 
 ManagerClosestEnemy::~ManagerClosestEnemy() {

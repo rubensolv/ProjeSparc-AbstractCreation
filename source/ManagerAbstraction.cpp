@@ -14,6 +14,7 @@ ManagerAbstraction::~ManagerAbstraction() {
 }
 
 void ManagerAbstraction::controlUnitsForAB(GameState& state, const MoveArray& moves, std::set<Unit>& unidades) {
+  std::cout<<"ManagerAbstraction is not implemented"<<std::endl;
     //not implemented
 }
 
