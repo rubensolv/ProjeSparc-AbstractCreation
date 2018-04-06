@@ -8,7 +8,7 @@ SAB::SAB(const IDType& playerID) {
     pgs = new AdaptableStratifiedPolicySearchLimit(_playerID, PlayerModels::NOKDPS, 1, 0, 40);
     lastTime = 0;
     //numUnits = 7;
-    numUnits = 30;
+    numUnits = 2;
     std::cout<<"SAB constructor1, numUnits:"<<numUnits<<std::endl;
 }
 
@@ -18,7 +18,7 @@ SAB::SAB(const IDType& playerID, int numUnitsAB, std::string controlAbstraction)
     pgs = new AdaptableStratifiedPolicySearchLimit(_playerID, PlayerModels::NOKDPS, 1, 0, 40);
     lastTime = 0;
     numUnits = numUnitsAB;
-    numUnits=60;
+    //numUnits=;
     std::cout<<"numUnits overwritten to"<<numUnits<<" from :"<<numUnitsAB<<std::endl;
     iniciarClasseAbstracao(controlAbstraction);
 }
@@ -612,7 +612,7 @@ void SAB::iniciarAlphaBeta() {
     AlphaBetaSearchParameters params;
 
     // give the default parameters we can't set via options
-    params.setMaxDepth(50);
+    params.setMaxDepth(10);
     params.setSearchMethod(SearchMethods::IDAlphaBeta);
 
     // set the parameters from the options in the file

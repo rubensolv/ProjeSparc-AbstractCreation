@@ -10,16 +10,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/rubens/ProjeSparc-AbstractCreation/source/GenerationClass.h</file>
             <file>file:/home/rubens/ProjeSparc-AbstractCreation/source/main/SearchExperiment.cpp</file>
-            <file>file:/home/rubens/ProjeSparc-AbstractCreation/source/main/SearchExperiment.h</file>
             <file>file:/home/rubens/ProjeSparc-AbstractCreation/source/ABPGSSimetrico.h</file>
-            <file>file:/home/rubens/ProjeSparc-AbstractCreation/source/GameState.cpp</file>
-            <file>file:/home/rubens/ProjeSparc-AbstractCreation/source/PortfolioGreedySearch.h</file>
-            <file>file:/home/rubens/ProjeSparc-AbstractCreation/source/PortfolioGreedySearch.cpp</file>
-            <file>file:/home/rubens/ProjeSparc-AbstractCreation/source/GenerationClass.cpp</file>
-            <file>file:/home/rubens/ProjeSparc-AbstractCreation/source/ABPGSSimetrico.cpp</file>
-            <file>file:/home/rubens/ProjeSparc-AbstractCreation/source/GenerationClassForMetric.cpp</file>
+            <file>file:/home/rubens/ProjeSparc-AbstractCreation/source/GAB.h</file>
         </group>
     </open-files>
 </project-private>

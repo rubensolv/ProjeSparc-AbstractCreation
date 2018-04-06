@@ -17,12 +17,6 @@
         </df>
       </df>
       <df name="bin">
-        <df name="amostragens">
-        </df>
-        <df name="Monitoramento">
-        </df>
-        <df name="resultDeep">
-        </df>
       </df>
       <df name="bwapidata">
         <df name="include">
@@ -125,12 +119,8 @@
           <in>WeaponType.cpp</in>
         </df>
       </df>
-      <df name="documentacao">
-      </df>
       <df name="sample_experiment">
         <df name="sample_map_files">
-        </df>
-        <df name="sample_results">
         </df>
       </df>
       <df name="source">
@@ -156,27 +146,17 @@
           <in>main.cpp</in>
         </df>
         <in>ABPGSPlus.cpp</in>
-        <in>ABPGSPlus.h</in>
         <in>ABPGSSand.cpp</in>
-        <in>ABPGSSand.h</in>
         <in>ABPGSSimetrico.cpp</in>
         <in>ABPGSSimetrico.h</in>
         <in>ABPGSSimetricoDeep.cpp</in>
-        <in>ABPGSSimetricoDeep.h</in>
         <in>ABPGSwithRepeatAction.cpp</in>
-        <in>ABPGSwithRepeatAction.h</in>
         <in>ABPOEFixo.cpp</in>
-        <in>ABPOEFixo.h</in>
         <in>ABPOELimit.cpp</in>
-        <in>ABPOELimit.h</in>
         <in>ABPOELimitDeep.cpp</in>
-        <in>ABPOELimitDeep.h</in>
         <in>ABPOELimitWithRepeatAction.cpp</in>
-        <in>ABPOELimitWithRepeatAction.h</in>
         <in>ABPOESimetrico.cpp</in>
-        <in>ABPOESimetrico.h</in>
         <in>ABPOESimetricoDeep.cpp</in>
-        <in>ABPOESimetricoDeep.h</in>
         <in>AbstractScript.cpp</in>
         <in>AbstractScript.h</in>
         <in>Action.cpp</in>
@@ -185,6 +165,10 @@
         <in>AdaptableStratType.h</in>
         <in>AdaptableStratifiedPolicySearch.cpp</in>
         <in>AdaptableStratifiedPolicySearch.h</in>
+        <in>AdaptableStratifiedPolicySearchLimit.cpp</in>
+        <in>AdaptableStratifiedPolicySearchLimit.h</in>
+        <in>AdaptableStratifiedPolicySearchLimitSim.cpp</in>
+        <in>AdaptableStratifiedPolicySearchLimitSim.h</in>
         <in>AllPlayers.cpp</in>
         <in>AllPlayers.h</in>
         <in>AlphaBetaMove.cpp</in>
@@ -193,6 +177,10 @@
         <in>AlphaBetaSearch.h</in>
         <in>AlphaBetaSearchAbstract.cpp</in>
         <in>AlphaBetaSearchAbstract.h</in>
+        <in>AlphaBetaSearchAbstractSAB.cpp</in>
+        <in>AlphaBetaSearchAbstractSAB.h</in>
+        <in>AlphaBetaSearchAbstractSSS.cpp</in>
+        <in>AlphaBetaSearchAbstractSSS.h</in>
         <in>AlphaBetaSearchParameters.hpp</in>
         <in>AlphaBetaSearchResults.hpp</in>
         <in>AlphaBetaSearchSimetric.cpp</in>
@@ -227,21 +215,13 @@
         <in>GameState.cpp</in>
         <in>GameState.h</in>
         <in>GenerationClass.cpp</in>
-        <in>GenerationClass.h</in>
         <in>GenerationClassForDeep.cpp</in>
-        <in>GenerationClassForDeep.h</in>
         <in>GenerationClassForMetric.cpp</in>
-        <in>GenerationClassForMetric.h</in>
         <in>GenerationClassForMetricClosest.cpp</in>
-        <in>GenerationClassForMetricClosest.h</in>
         <in>GenerationClassForMetricSample.cpp</in>
-        <in>GenerationClassForMetricSample.h</in>
         <in>GenerationClassForMetricold.cpp</in>
-        <in>GenerationClassForMetricold.h</in>
         <in>GenerationClassForMonit.cpp</in>
-        <in>GenerationClassForMonit.h</in>
         <in>GenerationClassWithClosest.cpp</in>
-        <in>GenerationClassWithClosest.h</in>
         <in>GraphViz.hpp</in>
         <in>Hash.cpp</in>
         <in>Hash.h</in>
@@ -255,6 +235,22 @@
         <in>Logger.h</in>
         <in>ManagerAbstraction.cpp</in>
         <in>ManagerAbstraction.h</in>
+        <in>ManagerClosest.cpp</in>
+        <in>ManagerClosest.h</in>
+        <in>ManagerClosestEnemy.cpp</in>
+        <in>ManagerClosestEnemy.h</in>
+        <in>ManagerFarther.cpp</in>
+        <in>ManagerFarther.h</in>
+        <in>ManagerFartherEnemy.cpp</in>
+        <in>ManagerFartherEnemy.h</in>
+        <in>ManagerLessDPS.cpp</in>
+        <in>ManagerLessDPS.h</in>
+        <in>ManagerLessLife.cpp</in>
+        <in>ManagerLessLife.h</in>
+        <in>ManagerMoreDPS.cpp</in>
+        <in>ManagerMoreDPS.h</in>
+        <in>ManagerMoreLife.cpp</in>
+        <in>ManagerMoreLife.h</in>
         <in>ManagerRandom.cpp</in>
         <in>ManagerRandom.h</in>
         <in>Map.hpp</in>
@@ -273,6 +269,8 @@
         <in>PlayerProperties.h</in>
         <in>Player_AdaptableStratifiedPolicySearch.cpp</in>
         <in>Player_AdaptableStratifiedPolicySearch.h</in>
+        <in>Player_AdaptableStratifiedPolicySearchLimit.cpp</in>
+        <in>Player_AdaptableStratifiedPolicySearchLimit.h</in>
         <in>Player_AdaptiveBeamAlphaBeta.cpp</in>
         <in>Player_AdaptiveBeamAlphaBeta.h</in>
         <in>Player_AlphaBeta.cpp</in>
@@ -306,15 +304,18 @@
         <in>Player_PortfolioGreedySearch.cpp</in>
         <in>Player_PortfolioGreedySearch.h</in>
         <in>Player_PortfolioGreedySearchCache.cpp</in>
-        <in>Player_PortfolioGreedySearchCache.h</in>
+        <in>Player_PortfolioGreedySearchDavePlus.cpp</in>
+        <in>Player_PortfolioGreedySearchDavePlus.h</in>
+        <in>Player_PortfolioGreedySearchDavePlusShort.cpp</in>
+        <in>Player_PortfolioGreedySearchDavePlusShort.h</in>
         <in>Player_PortfolioGreedySearchDeep.cpp</in>
-        <in>Player_PortfolioGreedySearchDeep.h</in>
+        <in>Player_PortfolioGreedySearchPlus.cpp</in>
+        <in>Player_PortfolioGreedySearchPlus.h</in>
+        <in>Player_PortfolioGreedySearchPlusShort.cpp</in>
+        <in>Player_PortfolioGreedySearchPlusShort.h</in>
         <in>Player_PortfolioOnlineEvolution.cpp</in>
         <in>Player_PortfolioOnlineEvolution.h</in>
-        <in>Player_PortfolioOnlineEvolutionCache.cpp</in>
-        <in>Player_PortfolioOnlineEvolutionCache.h</in>
         <in>Player_PortfolioOnlineEvolutionDeep.cpp</in>
-        <in>Player_PortfolioOnlineEvolutionDeep.h</in>
         <in>Player_Random.cpp</in>
         <in>Player_Random.h</in>
         <in>Player_StratifiedPolicySearch.cpp</in>
@@ -324,23 +325,30 @@
         <in>PortfolioGreedySearch.cpp</in>
         <in>PortfolioGreedySearch.h</in>
         <in>PortfolioGreedySearchCache.cpp</in>
-        <in>PortfolioGreedySearchCache.h</in>
+        <in>PortfolioGreedySearchDavePlus.cpp</in>
+        <in>PortfolioGreedySearchDavePlus.h</in>
+        <in>PortfolioGreedySearchDavePlusShort.cpp</in>
+        <in>PortfolioGreedySearchDavePlusShort.h</in>
         <in>PortfolioGreedySearchDeep.cpp</in>
-        <in>PortfolioGreedySearchDeep.h</in>
         <in>PortfolioGreedySearchNoTime.cpp</in>
         <in>PortfolioGreedySearchNoTime.h</in>
+        <in>PortfolioGreedySearchNoTimeSim.cpp</in>
+        <in>PortfolioGreedySearchNoTimeSim.h</in>
+        <in>PortfolioGreedySearchPlus.cpp</in>
+        <in>PortfolioGreedySearchPlus.h</in>
+        <in>PortfolioGreedySearchPlusShort.cpp</in>
+        <in>PortfolioGreedySearchPlusShort.h</in>
         <in>PortfolioOnlineEvolution.cpp</in>
         <in>PortfolioOnlineEvolution.h</in>
-        <in>PortfolioOnlineEvolutionCache.cpp</in>
-        <in>PortfolioOnlineEvolutionCache.h</in>
         <in>PortfolioOnlineEvolutionDeep.cpp</in>
-        <in>PortfolioOnlineEvolutionDeep.h</in>
         <in>PortfolioOnlineEvolutionLimit.cpp</in>
         <in>PortfolioOnlineEvolutionLimit.h</in>
         <in>PortfolioOnlineGenome.cpp</in>
         <in>PortfolioOnlineGenome.h</in>
         <in>Position.hpp</in>
         <in>Random.hpp</in>
+        <in>SAB.cpp</in>
+        <in>SAB.h</in>
         <in>SparCraft.cpp</in>
         <in>SparCraft.h</in>
         <in>SparCraftAssert.cpp</in>
@@ -362,6 +370,8 @@
         <in>UCTSearch.h</in>
         <in>UCTSearchParameters.hpp</in>
         <in>UCTSearchResults.hpp</in>
+        <in>UnifiedSearch.cpp</in>
+        <in>UnifiedSearch.h</in>
         <in>Unit.cpp</in>
         <in>Unit.h</in>
         <in>UnitAction.hpp</in>
